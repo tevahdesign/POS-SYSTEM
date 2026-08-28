@@ -3,22 +3,15 @@ import { Header } from '../components/common/Header';
 import { KpiCard } from '../components/common/KpiCard';
 import { LineChart } from '../components/common/LineChart';
 import { StatusBadge } from '../components/common/StatusBadge';
-import { usePosStore, posStore } from '../store/posStore';
-import { DollarSign, ShoppingBag, CreditCard, HeartHandshake, AlertTriangle, ChevronRight, Store, Power, PlusCircle, Grid, UtensilsCrossed } from 'lucide-react';
+import { usePosStore } from '../store/posStore';
+import { DollarSign, ShoppingBag, CreditCard, HeartHandshake, AlertTriangle, ChevronRight, PlusCircle, Grid, UtensilsCrossed } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatINR } from '../utils/formatters';
 
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { orders, alerts, settings, currentUser } = usePosStore();
+  const { orders, alerts } = usePosStore();
   const [chartPeriod, setChartPeriod] = useState<'Day' | 'Week' | 'Month'>('Week');
-
-  const isManager = currentUser.role === 'Manager' || currentUser.role === 'Owner';
-  const isShopOpen = settings.isShopOpen !== false;
-
-  const toggleShop = () => {
-    posStore.toggleShopStatus(!isShopOpen);
-  };
 
   // Dynamic Chart Data based on selected period
   const chartDataByPeriod = {
@@ -60,7 +53,7 @@ export const Dashboard: React.FC = () => {
     <div className="main-content">
       <Header title="Dashboard Overview" />
 
-      {/* Waiter & Staff Quick Action Shortcuts for Mobile */}
+      {/* Waiter & Staff Quick Action Shortcuts */}
       <div className="waiter-shortcuts-row">
         <button className="shortcut-btn primary" onClick={() => navigate('/orders')}>
           <PlusCircle size={18} />
@@ -75,32 +68,6 @@ export const Dashboard: React.FC = () => {
           <span>KDS Prep</span>
         </button>
       </div>
-
-      {/* Store Control Banner for Manager */}
-      {isManager && (
-        <div className={`store-status-banner ${isShopOpen ? 'is-open' : 'is-closed'}`}>
-          <div className="banner-info">
-            <Store size={22} className="banner-icon" />
-            <div>
-              <div className="banner-title">
-                Restaurant Status: <strong>{isShopOpen ? 'OPEN FOR BUSINESS' : 'CLOSED'}</strong>
-              </div>
-              <div className="banner-sub">
-                {isShopOpen
-                  ? 'All Waiter and Kitchen features are active and accessible.'
-                  : 'Waiters and Kitchen staff are locked out from accessing POS order screens until you open the shop.'}
-              </div>
-            </div>
-          </div>
-          <button
-            className={`btn ${isShopOpen ? 'btn-danger' : 'btn-primary'} store-toggle-action`}
-            onClick={toggleShop}
-          >
-            <Power size={16} />
-            {isShopOpen ? 'Close Shop Now' : 'Open Shop Now'}
-          </button>
-        </div>
-      )}
 
       {/* 4 KPI Cards Grid */}
       <div className="kpi-grid">
