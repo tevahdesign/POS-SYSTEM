@@ -1,0 +1,24 @@
+{
+  "short_name": "Nexora POS",
+  "name": "Nexora POS — Restaurant Management & Mobile POS",
+  "description": "Enterprise Restaurant POS Platform with Web and Mobile App Capabilities",
+  "icons": [
+    {
+      "src": "pwa-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "pwa-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#F7F7F5",
+  "theme_color": "#F97316",
+  "display": "standalone",
+  "orientation": "any",
+  "categories": ["business", "food", "productivity"]
+}
