@@ -5,7 +5,8 @@ import { ModifierModal } from '../components/order/ModifierModal';
 import { CartPanel } from '../components/order/CartPanel';
 import { usePosStore, posStore } from '../store/posStore';
 import { Product, Order } from '../types/pos';
-import { Search, ShoppingBag } from 'lucide-react';
+import { Search, ShoppingBag, ArrowRight } from 'lucide-react';
+import { formatINR } from '../utils/formatters';
 
 export const OrderEntry: React.FC = () => {
   const { products, cart } = usePosStore();
@@ -16,6 +17,9 @@ export const OrderEntry: React.FC = () => {
   const [activeTabMobile, setActiveTabMobile] = useState<'catalog' | 'cart'>('catalog');
 
   const categories = ['All', 'Starters', 'Main Course', 'Beverages', 'Desserts'];
+
+  const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const cartSubtotal = cart.reduce((sum, item) => sum + item.itemTotal, 0);
 
   const filteredProducts = products.filter((item) => {
     const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
@@ -54,7 +58,7 @@ export const OrderEntry: React.FC = () => {
           onClick={() => setActiveTabMobile('cart')}
         >
           <ShoppingBag size={14} />
-          Current Cart ({cart.length})
+          Current Cart ({cartItemCount})
         </button>
       </div>
 
@@ -101,9 +105,22 @@ export const OrderEntry: React.FC = () => {
 
         {/* Right Section: Order Cart Panel */}
         <div className={`cart-section ${activeTabMobile === 'catalog' ? 'mobile-hidden' : ''}`}>
-          <CartPanel />
+          <CartPanel onReturnToCatalog={() => setActiveTabMobile('catalog')} />
         </div>
       </div>
+
+      {/* Mobile Floating Sticky Cart Bar */}
+      {cartItemCount > 0 && activeTabMobile === 'catalog' && (
+        <div className="mobile-floating-cart-bar" onClick={() => setActiveTabMobile('cart')}>
+          <div className="floating-cart-info">
+            <span className="cart-badge-count">{cartItemCount} {cartItemCount === 1 ? 'Item' : 'Items'}</span>
+            <span className="cart-total-amount">{formatINR(cartSubtotal)}</span>
+          </div>
+          <button className="floating-cart-btn">
+            View Order Cart <ArrowRight size={14} />
+          </button>
+        </div>
+      )}
 
       {/* Item Modifier / Detail Modal */}
       <ModifierModal
@@ -220,6 +237,67 @@ export const OrderEntry: React.FC = () => {
           }
           .mobile-hidden {
             display: none !important;
+          }
+          .product-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+          }
+        }
+
+        .mobile-floating-cart-bar {
+          display: none;
+          position: fixed;
+          bottom: calc(var(--mobile-nav-height) + 10px);
+          left: 12px;
+          right: 12px;
+          height: 52px;
+          background: #1F2937;
+          color: #FFFFFF;
+          border-radius: 12px;
+          padding: 0 16px;
+          align-items: center;
+          justify-content: space-between;
+          z-index: 980;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+          cursor: pointer;
+          animation: slideUp 0.2s ease-out;
+        }
+
+        .floating-cart-info {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .cart-badge-count {
+          background: var(--primary-orange);
+          color: #FFFFFF;
+          font-size: 11px;
+          font-weight: 700;
+          padding: 3px 8px;
+          border-radius: 6px;
+        }
+
+        .cart-total-amount {
+          font-size: 15px;
+          font-weight: 700;
+        }
+
+        .floating-cart-btn {
+          background: transparent;
+          border: none;
+          color: var(--primary-orange);
+          font-size: 13px;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+          .mobile-floating-cart-bar {
+            display: flex;
           }
         }
       `}</style>

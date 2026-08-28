@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Minus, Trash2, ChevronDown, Send, PauseCircle, CreditCard, Lock, Unlock, KeyRound, Check, RefreshCw } from 'lucide-react';
+import { Plus, Minus, Trash2, ChevronDown, Send, PauseCircle, CreditCard, Lock, Unlock, KeyRound, Check, RefreshCw, ArrowLeft } from 'lucide-react';
 import { posStore, usePosStore } from '../../store/posStore';
 import { OrderType, Order } from '../../types/pos';
 import { BillReceiptModal } from '../print/BillReceiptModal';
@@ -8,9 +8,10 @@ import { formatINR } from '../../utils/formatters';
 interface CartPanelProps {
   onHoldSuccess?: () => void;
   onSendSuccess?: (order: Order) => void;
+  onReturnToCatalog?: () => void;
 }
 
-export const CartPanel: React.FC<CartPanelProps> = ({ onHoldSuccess, onSendSuccess }) => {
+export const CartPanel: React.FC<CartPanelProps> = ({ onHoldSuccess, onSendSuccess, onReturnToCatalog }) => {
   const {
     activeOrderType,
     selectedTableId,
@@ -97,6 +98,14 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onHoldSuccess, onSendSucce
 
   return (
     <div className="pos-card cart-panel">
+      {/* Mobile Back Button */}
+      {onReturnToCatalog && (
+        <button className="cart-mobile-back-btn" onClick={onReturnToCatalog}>
+          <ArrowLeft size={16} />
+          <span>Back to Menu Catalog</span>
+        </button>
+      )}
+
       {/* Order Type Tabs */}
       <div className="order-type-tabs">
         {(['Dine In', 'Takeaway', 'Delivery'] as const).map((type) => (
@@ -559,6 +568,27 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onHoldSuccess, onSendSucce
           font-size: 14px;
           font-weight: 700;
           border-radius: 10px;
+        }
+
+        .cart-mobile-back-btn {
+          display: none;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 12px;
+          border-radius: 8px;
+          background: #F3F4F6;
+          border: 1px solid var(--border-color);
+          color: var(--text-primary);
+          font-weight: 600;
+          font-size: 13px;
+          cursor: pointer;
+          margin-bottom: 8px;
+        }
+
+        @media (max-width: 900px) {
+          .cart-mobile-back-btn {
+            display: flex;
+          }
         }
       `}</style>
     </div>

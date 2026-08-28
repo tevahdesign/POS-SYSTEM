@@ -4,7 +4,7 @@ import { KpiCard } from '../components/common/KpiCard';
 import { LineChart } from '../components/common/LineChart';
 import { StatusBadge } from '../components/common/StatusBadge';
 import { usePosStore, posStore } from '../store/posStore';
-import { DollarSign, ShoppingBag, CreditCard, HeartHandshake, AlertTriangle, ChevronRight, Store, Power } from 'lucide-react';
+import { DollarSign, ShoppingBag, CreditCard, HeartHandshake, AlertTriangle, ChevronRight, Store, Power, PlusCircle, Grid, UtensilsCrossed } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatINR } from '../utils/formatters';
 
@@ -59,6 +59,22 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="main-content">
       <Header title="Dashboard Overview" />
+
+      {/* Waiter & Staff Quick Action Shortcuts for Mobile */}
+      <div className="waiter-shortcuts-row">
+        <button className="shortcut-btn primary" onClick={() => navigate('/orders')}>
+          <PlusCircle size={18} />
+          <span>New Order</span>
+        </button>
+        <button className="shortcut-btn" onClick={() => navigate('/tables')}>
+          <Grid size={18} />
+          <span>Floor Plan</span>
+        </button>
+        <button className="shortcut-btn" onClick={() => navigate('/kitchen')}>
+          <UtensilsCrossed size={18} />
+          <span>KDS Prep</span>
+        </button>
+      </div>
 
       {/* Store Control Banner for Manager */}
       {isManager && (
@@ -444,6 +460,40 @@ export const Dashboard: React.FC = () => {
           background-color: #DC2626;
         }
 
+        .waiter-shortcuts-row {
+          display: flex;
+          gap: 12px;
+          margin-bottom: 20px;
+        }
+
+        .shortcut-btn {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 12px;
+          border-radius: var(--radius-md);
+          border: 1px solid var(--border-color);
+          background: #FFFFFF;
+          color: var(--text-primary);
+          font-weight: 700;
+          font-size: 13px;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .shortcut-btn.primary {
+          background: var(--primary-orange);
+          color: #FFFFFF;
+          border-color: var(--primary-orange);
+        }
+
+        .shortcut-btn:hover {
+          transform: translateY(-1px);
+        }
+
         @media (max-width: 1024px) {
           .kpi-grid {
             grid-template-columns: repeat(2, 1fr);
@@ -454,11 +504,19 @@ export const Dashboard: React.FC = () => {
         }
 
         @media (max-width: 640px) {
+          .waiter-shortcuts-row {
+            flex-direction: row;
+            gap: 8px;
+          }
+          .shortcut-btn {
+            font-size: 11px;
+            padding: 10px 6px;
+            flex-direction: column;
+            gap: 4px;
+          }
           .kpi-grid {
-            grid-template-columns: 1fr;
-            display: flex;
-            overflow-x: auto;
-            padding-bottom: 4px;
+            grid-template-columns: repeat(2, 1fr);
+            display: grid;
           }
         }
       `}</style>
