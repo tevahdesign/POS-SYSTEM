@@ -71,15 +71,15 @@ export const Dashboard: React.FC = () => {
   return (
     <MainLayoutTemplate title="Dashboard Overview">
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
-        {/* 1st: KPI Cards Grid (Today's Sales & Orders) */}
-        <Grid container spacing={{ xs: 1.25, sm: 2 }}>
-          <Grid size={{ xs: 12, sm: 6 }}>
+        {/* 1st: KPI Cards Grid (Today's Sales & Orders in Single Line on Mobile) */}
+        <Grid container spacing={{ xs: 1, sm: 2 }}>
+          <Grid size={{ xs: 6, sm: 6 }}>
             <KpiCard
               title="Today's Sales"
               value={formatINR(44825)}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid size={{ xs: 6, sm: 6 }}>
             <KpiCard
               title="Orders"
               value="128"

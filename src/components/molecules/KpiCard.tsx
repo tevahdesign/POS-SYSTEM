@@ -18,13 +18,13 @@ export const KpiCard: React.FC<KpiCardProps> = ({
     <Paper
       elevation={1}
       sx={{
-        p: { xs: 1.75, sm: 2.25 },
+        p: { xs: 1.25, sm: 2.25 },
         borderRadius: '16px',
         backgroundColor: '#000000', // Solid Uber Jet Black
         border: '1px solid #1C1C1C',
         display: 'flex',
         flexDirection: 'column',
-        gap: 0.75,
+        gap: 0.5,
         height: 'auto',
         boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
         transition: 'all 0.2s ease',
@@ -40,11 +40,12 @@ export const KpiCard: React.FC<KpiCardProps> = ({
         sx={{
           color: '#AFAFAF', // Solid neutral gray
           fontWeight: 600,
-          fontSize: '0.75rem',
+          fontSize: { xs: '0.68rem', sm: '0.75rem' },
           fontFamily: "'Plus Jakarta Sans', sans-serif",
           textTransform: 'uppercase',
           letterSpacing: '0.04em',
         }}
+        noWrap
       >
         {title}
       </Typography>
@@ -56,8 +57,9 @@ export const KpiCard: React.FC<KpiCardProps> = ({
           color: '#FFFFFF', // Solid bold white text
           letterSpacing: '-0.02em',
           fontFamily: "'Plus Jakarta Sans', sans-serif",
-          fontSize: { xs: '1.5rem', sm: '1.75rem' },
+          fontSize: { xs: '1.2rem', sm: '1.75rem' },
         }}
+        noWrap
       >
         {value}
       </Typography>
