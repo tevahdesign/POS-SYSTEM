@@ -71,7 +71,23 @@ export const Dashboard: React.FC = () => {
   return (
     <MainLayoutTemplate title="Dashboard Overview">
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
-        {/* 1st: Sales Overview Chart (Default: Today / Day) */}
+        {/* 1st: KPI Cards Grid (Today's Sales & Orders) */}
+        <Grid container spacing={{ xs: 1.25, sm: 2 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <KpiCard
+              title="Today's Sales"
+              value={formatINR(44825)}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <KpiCard
+              title="Orders"
+              value="128"
+            />
+          </Grid>
+        </Grid>
+
+        {/* 2nd: Sales Overview Chart (Default: Today / Day) */}
         <Paper elevation={1} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: '16px', backgroundColor: '#FFFFFF', border: '1px solid #EEEEEE', height: 'auto' }}>
           <LineChart
             data={chartDataByPeriod[chartPeriod]}
@@ -80,46 +96,6 @@ export const Dashboard: React.FC = () => {
             height={160}
           />
         </Paper>
-
-        {/* 2nd: 4 KPI Cards Grid */}
-        <Grid container spacing={{ xs: 1.25, sm: 2 }}>
-          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
-            <KpiCard
-              title="Today's Sales"
-              value={formatINR(44825)}
-              change="+12.5%"
-              isPositive={true}
-              icon={<AttachMoneyIcon />}
-            />
-          </Grid>
-          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
-            <KpiCard
-              title="Orders"
-              value="128"
-              change="+8.0%"
-              isPositive={true}
-              icon={<ShoppingBagIcon />}
-            />
-          </Grid>
-          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
-            <KpiCard
-              title="Average Order"
-              value={formatINR(350.2)}
-              change="+2.2%"
-              isPositive={true}
-              icon={<CreditCardIcon />}
-            />
-          </Grid>
-          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
-            <KpiCard
-              title="Tips"
-              value={formatINR(6207)}
-              change="+15.4%"
-              isPositive={true}
-              icon={<VolunteerActivismIcon />}
-            />
-          </Grid>
-        </Grid>
 
         {/* 3rd: Recent Orders Table & Top Selling Items / Alerts */}
         <Grid container spacing={{ xs: 1.5, sm: 2 }}>
