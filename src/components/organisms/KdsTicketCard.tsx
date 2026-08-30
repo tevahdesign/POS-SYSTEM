@@ -33,17 +33,22 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
   };
 
   const getHeaderBg = () => {
-    if (isUrgent) return '#FEE2E2';
-    if (ticket.status === 'Ready') return '#ECFDF5';
-    if (ticket.status === 'In-Progress') return '#EEF2FF';
-    return '#F8FAFC';
+    if (isUrgent) return '#FED7D7';
+    if (ticket.status === 'Ready') return '#E6F9F0';
+    if (ticket.status === 'In-Progress') return '#000000';
+    return '#F6F6F6';
+  };
+
+  const getHeaderColor = () => {
+    if (ticket.status === 'In-Progress') return '#FFFFFF';
+    return '#000000';
   };
 
   const getBorderColor = () => {
-    if (isUrgent) return '#F43F5E';
-    if (ticket.status === 'Ready') return '#10B981';
-    if (ticket.status === 'In-Progress') return '#6366F1';
-    return '#E2E8F0';
+    if (isUrgent) return '#E53E3E';
+    if (ticket.status === 'Ready') return '#06C167';
+    if (ticket.status === 'In-Progress') return '#000000';
+    return '#EEEEEE';
   };
 
   return (
@@ -57,7 +62,7 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        boxShadow: isUrgent ? '0 4px 16px rgba(244, 63, 94, 0.2)' : '0 1px 3px rgba(15, 23, 42, 0.04)',
+        boxShadow: isUrgent ? '0 4px 16px rgba(229, 62, 62, 0.2)' : '0 2px 8px rgba(0, 0, 0, 0.04)',
         transition: 'all 0.2s ease',
       }}
     >
@@ -66,31 +71,31 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
         sx={{
           p: 1.75,
           backgroundColor: getHeaderBg(),
-          borderBottom: '1px solid #E2E8F0',
+          borderBottom: '1px solid #EEEEEE',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}
       >
         <Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: getHeaderColor(), fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
             {ticket.orderNumber}
           </Typography>
-          <Typography variant="caption" sx={{ color: '#64748B', display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 600 }}>
+          <Typography variant="caption" sx={{ color: ticket.status === 'In-Progress' ? '#CCCCCC' : '#545454', display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 600 }}>
             <TableRestaurantIcon sx={{ fontSize: 14 }} /> {ticket.tableName || 'Takeaway'}
           </Typography>
         </Box>
 
         {/* Timer Chip Badge */}
         <Chip
-          icon={isUrgent ? <PriorityHighIcon sx={{ fontSize: '14px !important', color: '#B91C1C' }} /> : <AccessTimeIcon sx={{ fontSize: '14px !important' }} />}
+          icon={isUrgent ? <PriorityHighIcon sx={{ fontSize: '14px !important', color: '#C53030' }} /> : <AccessTimeIcon sx={{ fontSize: '14px !important' }} />}
           label={`${elapsedMinutes}m`}
           size="small"
           sx={{
-            backgroundColor: isUrgent ? '#FEE2E2' : '#EEF2FF',
-            color: isUrgent ? '#B91C1C' : '#4338CA',
+            backgroundColor: isUrgent ? '#FED7D7' : ticket.status === 'In-Progress' ? '#242424' : '#E6F9F0',
+            color: isUrgent ? '#C53030' : ticket.status === 'In-Progress' ? '#FFFFFF' : '#06C167',
             fontWeight: 800,
-            border: `1px solid ${isUrgent ? '#FECACA' : '#C7D2FE'}`,
+            border: `1px solid ${isUrgent ? '#FEB2B2' : ticket.status === 'In-Progress' ? '#333333' : '#A3E9C5'}`,
             borderRadius: 9999,
           }}
         />
@@ -107,20 +112,20 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
               gap: 1,
               p: 0.75,
               borderRadius: '10px',
-              backgroundColor: '#F8FAFC',
+              backgroundColor: '#FAFAFA',
             }}
           >
             <Box sx={{ flex: 1 }}>
-              <Typography variant="body2" sx={{ fontWeight: 700, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              <Typography variant="body2" sx={{ fontWeight: 700, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                 {item.quantity}x {item.name}
               </Typography>
               {item.modifiers && item.modifiers.length > 0 && (
-                <Typography variant="caption" sx={{ color: '#6366F1', display: 'block', fontSize: '0.7rem' }}>
+                <Typography variant="caption" sx={{ color: '#06C167', display: 'block', fontSize: '0.7rem' }}>
                   + {item.modifiers.join(', ')}
                 </Typography>
               )}
               {item.notes && (
-                <Typography variant="caption" sx={{ color: '#B45309', fontWeight: 600, display: 'block' }}>
+                <Typography variant="caption" sx={{ color: '#C05621', fontWeight: 600, display: 'block' }}>
                   Note: {item.notes}
                 </Typography>
               )}
@@ -129,7 +134,7 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
         ))}
       </Box>
 
-      <Divider sx={{ borderColor: '#E2E8F0' }} />
+      <Divider sx={{ borderColor: '#EEEEEE' }} />
 
       {/* Footer Action Button */}
       <Box sx={{ p: 1.5 }}>
@@ -141,17 +146,25 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
           startIcon={ticket.status === 'Ready' ? <CheckCircleIcon /> : undefined}
           sx={{
             py: 1,
-            borderRadius: 9999, // Yoko Pill Button
+            borderRadius: 9999, // Uber Eats Pill Button
             fontWeight: 800,
             fontSize: '0.8125rem',
             fontFamily: "'Plus Jakarta Sans', sans-serif",
-            background:
+            backgroundColor:
               ticket.status === 'New'
-                ? 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)'
+                ? '#06C167'
                 : ticket.status === 'In-Progress'
-                ? '#F59E0B'
-                : '#10B981',
+                ? '#000000'
+                : '#06C167',
             color: '#FFFFFF',
+            '&:hover': {
+              backgroundColor:
+                ticket.status === 'New'
+                  ? '#049851'
+                  : ticket.status === 'In-Progress'
+                  ? '#242424'
+                  : '#049851',
+            },
           }}
         >
           {ticket.status === 'New'

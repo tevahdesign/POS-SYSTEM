@@ -61,11 +61,11 @@ export const KitchenDisplay: React.FC = () => {
               borderRadius: 9999,
               fontWeight: 700,
               fontFamily: "'Plus Jakarta Sans', sans-serif",
-              backgroundColor: '#FEF3C7',
-              borderColor: '#FDE68A',
-              color: '#B45309',
+              backgroundColor: '#FEEBC8',
+              borderColor: '#FBD38D',
+              color: '#C05621',
               '&:hover': {
-                backgroundColor: '#FDE68A',
+                backgroundColor: '#FBD38D',
               },
             }}
           >
@@ -80,24 +80,24 @@ export const KitchenDisplay: React.FC = () => {
             p: 2,
             borderRadius: '16px',
             backgroundColor: '#FFFFFF',
-            border: '1px solid #E2E8F0',
+            border: '1px solid #EEEEEE',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <SoupKitchenIcon sx={{ color: '#6366F1' }} />
-            <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <SoupKitchenIcon sx={{ color: '#06C167' }} />
+            <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
               Active Prep Stream ({filteredTickets.length} Orders Pending)
             </Typography>
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Typography variant="caption" sx={{ color: '#64748B', fontWeight: 600 }}>
+            <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600 }}>
               Avg Prep Time: <strong>12 mins</strong>
             </Typography>
-            <Typography variant="caption" sx={{ color: '#64748B', fontWeight: 600 }}>
+            <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600 }}>
               Urgent Tickets (&gt;15m): <strong>{kitchenTickets.filter((t) => (Date.now() - t.timestamp) / 60000 > 15 && t.status !== 'Ready').length}</strong>
             </Typography>
           </Box>

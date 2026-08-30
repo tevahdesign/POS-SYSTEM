@@ -100,9 +100,9 @@ export const Login: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#F8FAFC',
+        backgroundColor: '#FAFAFA',
         p: 2,
-        backgroundImage: 'radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 60%)',
+        backgroundImage: 'radial-gradient(circle at 50% 0%, rgba(6, 193, 103, 0.08) 0%, transparent 60%)',
       }}
     >
       <Card
@@ -112,8 +112,8 @@ export const Login: React.FC = () => {
           width: '100%',
           borderRadius: '24px',
           backgroundColor: '#FFFFFF',
-          border: '1px solid #E2E8F0',
-          boxShadow: '0 20px 40px -10px rgba(15, 23, 42, 0.08)',
+          border: '1px solid #EEEEEE',
+          boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.08)',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
@@ -124,8 +124,8 @@ export const Login: React.FC = () => {
           sx={{
             flex: 1,
             p: { xs: 3, md: 5 },
-            background: 'linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%)',
-            borderRight: '1px solid #E2E8F0',
+            background: '#E6F9F0',
+            borderRight: '1px solid #EEEEEE',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -138,27 +138,27 @@ export const Login: React.FC = () => {
                   width: 44,
                   height: 44,
                   borderRadius: '14px',
-                  background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+                  backgroundColor: '#06C167',
                   color: '#FFFFFF',
                   fontWeight: 800,
                   fontSize: '1.25rem',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
+                  boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
                 }}
               >
                 Y
               </Box>
-              <Typography variant="h5" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              <Typography variant="h5" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                 {settings.restaurantName}
               </Typography>
             </Box>
 
-            <Typography variant="h4" sx={{ fontWeight: 800, color: '#0F172A', mb: 1, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: '#000000', mb: 1, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
               Fast, Modern POS Terminal
             </Typography>
-            <Typography variant="body2" sx={{ color: '#64748B', lineHeight: 1.6 }}>
+            <Typography variant="body2" sx={{ color: '#545454', lineHeight: 1.6 }}>
               Select your worker avatar and enter your 4-digit PIN to open your shift terminal.
             </Typography>
           </Box>
@@ -167,11 +167,11 @@ export const Login: React.FC = () => {
             <Chip
               label={settings.isShopOpen !== false ? 'POS Terminal Open' : 'Terminal Locked'}
               sx={{
-                backgroundColor: settings.isShopOpen !== false ? '#ECFDF5' : '#FEE2E2',
-                color: settings.isShopOpen !== false ? '#047857' : '#B91C1C',
+                backgroundColor: settings.isShopOpen !== false ? '#E6F9F0' : '#FED7D7',
+                color: settings.isShopOpen !== false ? '#06C167' : '#E53E3E',
                 fontWeight: 800,
                 borderRadius: 9999,
-                border: `1px solid ${settings.isShopOpen !== false ? '#A7F3D0' : '#FECACA'}`,
+                border: `1px solid ${settings.isShopOpen !== false ? '#A3E9C5' : '#FEB2B2'}`,
               }}
             />
           </Box>
@@ -180,7 +180,7 @@ export const Login: React.FC = () => {
         {/* Right Authentication Form Panel */}
         <Box sx={{ flex: 1.2, p: { xs: 3, md: 5 }, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           {/* Mode Switcher Tabs */}
-          <Box sx={{ display: 'flex', gap: 1, mb: 3.5, backgroundColor: '#F1F5F9', p: 0.5, borderRadius: 9999 }}>
+          <Box sx={{ display: 'flex', gap: 1, mb: 3.5, backgroundColor: '#F6F6F6', p: 0.5, borderRadius: 9999 }}>
             <Button
               fullWidth
               onClick={() => setMode('pin')}
@@ -190,9 +190,9 @@ export const Login: React.FC = () => {
                 fontWeight: 700,
                 fontSize: '0.8125rem',
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
-                background: mode === 'pin' ? 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)' : 'transparent',
-                color: mode === 'pin' ? '#FFFFFF' : '#64748B',
-                boxShadow: mode === 'pin' ? '0 4px 12px rgba(99, 102, 241, 0.3)' : 'none',
+                background: mode === 'pin' ? '#000000' : 'transparent',
+                color: mode === 'pin' ? '#FFFFFF' : '#545454',
+                boxShadow: mode === 'pin' ? '0 4px 12px rgba(0, 0, 0, 0.15)' : 'none',
               }}
             >
               PIN Quick Entry
@@ -206,9 +206,9 @@ export const Login: React.FC = () => {
                 fontWeight: 700,
                 fontSize: '0.8125rem',
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
-                background: mode === 'manager' ? 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)' : 'transparent',
-                color: mode === 'manager' ? '#FFFFFF' : '#64748B',
-                boxShadow: mode === 'manager' ? '0 4px 12px rgba(99, 102, 241, 0.3)' : 'none',
+                background: mode === 'manager' ? '#000000' : 'transparent',
+                color: mode === 'manager' ? '#FFFFFF' : '#545454',
+                boxShadow: mode === 'manager' ? '0 4px 12px rgba(0, 0, 0, 0.15)' : 'none',
               }}
             >
               Manager Login
@@ -219,7 +219,7 @@ export const Login: React.FC = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
               {/* Staff Avatars Selection */}
               <Box>
-                <Typography variant="caption" sx={{ color: '#64748B', fontWeight: 700, mb: 1, display: 'block' }}>
+                <Typography variant="caption" sx={{ color: '#545454', fontWeight: 700, mb: 1, display: 'block' }}>
                   SELECT ACTIVE WORKER
                 </Typography>
                 <Grid container spacing={1.5}>
@@ -231,24 +231,24 @@ export const Login: React.FC = () => {
                         sx={{
                           p: 1.25,
                           borderRadius: '14px',
-                          backgroundColor: selectedStaff?.id === member.id ? '#EEF2FF' : '#F8FAFC',
-                          border: `2px solid ${selectedStaff?.id === member.id ? '#6366F1' : '#E2E8F0'}`,
+                          backgroundColor: selectedStaff?.id === member.id ? '#E6F9F0' : '#FAFAFA',
+                          border: `2px solid ${selectedStaff?.id === member.id ? '#06C167' : '#EEEEEE'}`,
                           cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
                           gap: 1.25,
                           transition: 'all 0.2s ease',
                           '&:hover': {
-                            borderColor: '#6366F1',
+                            borderColor: '#06C167',
                           },
                         }}
                       >
                         <Avatar src={member.avatar} alt={member.name} sx={{ width: 36, height: 36, borderRadius: 9999 }} />
                         <Box sx={{ minWidth: 0 }}>
-                          <Typography variant="subtitle2" sx={{ fontWeight: 800, fontSize: '0.8125rem', color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }} noWrap>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 800, fontSize: '0.8125rem', color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }} noWrap>
                             {member.name}
                           </Typography>
-                          <Typography variant="caption" sx={{ color: '#64748B', fontSize: '0.7rem' }}>
+                          <Typography variant="caption" sx={{ color: '#545454', fontSize: '0.7rem' }}>
                             {member.role}
                           </Typography>
                         </Box>
@@ -261,7 +261,7 @@ export const Login: React.FC = () => {
               {/* PIN Display Dots */}
               {selectedStaff && (
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', my: 1 }}>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#0F172A', mb: 1 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#000000', mb: 1 }}>
                     Enter PIN for {selectedStaff.name}
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1.5, mb: 2 }}>
@@ -272,8 +272,8 @@ export const Login: React.FC = () => {
                           width: 14,
                           height: 14,
                           borderRadius: 9999,
-                          backgroundColor: idx < pin.length ? '#6366F1' : '#E2E8F0',
-                          boxShadow: idx < pin.length ? '0 0 10px rgba(99, 102, 241, 0.4)' : 'none',
+                          backgroundColor: idx < pin.length ? '#06C167' : '#EEEEEE',
+                          boxShadow: idx < pin.length ? '0 0 10px rgba(6, 193, 103, 0.4)' : 'none',
                           transition: 'all 0.2s ease',
                         }}
                       />
@@ -292,13 +292,13 @@ export const Login: React.FC = () => {
                             borderRadius: 9999,
                             fontWeight: 800,
                             fontSize: '1.1rem',
-                            color: '#0F172A',
-                            backgroundColor: '#F1F5F9',
-                            border: '1px solid #E2E8F0',
+                            color: '#000000',
+                            backgroundColor: '#F6F6F6',
+                            border: '1px solid #EEEEEE',
                             '&:hover': {
-                              backgroundColor: '#EEF2FF',
-                              borderColor: '#6366F1',
-                              color: '#4338CA',
+                              backgroundColor: '#E6F9F0',
+                              borderColor: '#06C167',
+                              color: '#06C167',
                             },
                           }}
                         >
@@ -310,7 +310,7 @@ export const Login: React.FC = () => {
                       <Button
                         fullWidth
                         onClick={() => setPin('')}
-                        sx={{ height: 48, borderRadius: 9999, fontWeight: 700, color: '#64748B', fontSize: '0.75rem' }}
+                        sx={{ height: 48, borderRadius: 9999, fontWeight: 700, color: '#545454', fontSize: '0.75rem' }}
                       >
                         Clear
                       </Button>
@@ -324,12 +324,12 @@ export const Login: React.FC = () => {
                           borderRadius: 9999,
                           fontWeight: 800,
                           fontSize: '1.1rem',
-                          color: '#0F172A',
-                          backgroundColor: '#F1F5F9',
-                          border: '1px solid #E2E8F0',
+                          color: '#000000',
+                          backgroundColor: '#F6F6F6',
+                          border: '1px solid #EEEEEE',
                           '&:hover': {
-                            backgroundColor: '#EEF2FF',
-                            borderColor: '#6366F1',
+                            backgroundColor: '#E6F9F0',
+                            borderColor: '#06C167',
                           },
                         }}
                       >
@@ -339,7 +339,7 @@ export const Login: React.FC = () => {
                     <Grid size={4}>
                       <IconButton
                         onClick={handleNumpadDelete}
-                        sx={{ height: 48, width: '100%', borderRadius: 9999, color: '#64748B', backgroundColor: '#F1F5F9' }}
+                        sx={{ height: 48, width: '100%', borderRadius: 9999, color: '#545454', backgroundColor: '#F6F6F6' }}
                       >
                         <BackspaceIcon sx={{ fontSize: 18 }} />
                       </IconButton>
@@ -377,7 +377,10 @@ export const Login: React.FC = () => {
                     borderRadius: 9999,
                     fontWeight: 800,
                     fontFamily: "'Plus Jakarta Sans', sans-serif",
-                    background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+                    backgroundColor: '#06C167',
+                    '&:hover': {
+                      backgroundColor: '#049851',
+                    },
                   }}
                 >
                   Open Dashboard

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Grid,
   Paper,
+  Grid,
   Typography,
+  Button,
   Table,
   TableHead,
   TableBody,
@@ -12,165 +13,152 @@ import {
   TableContainer,
   Chip,
 } from '@mui/material';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import AuditIcon from '@mui/icons-material/FactCheck';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import QrCode2Icon from '@mui/icons-material/QrCode2';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import { MainLayoutTemplate } from '../components/templates/MainLayoutTemplate';
-import { StatusChip } from '../components/atoms/StatusChip';
-import { CategoryTab } from '../components/atoms/CategoryTab';
+import { KpiCard } from '../components/molecules/KpiCard';
 import { AuditModal } from '../components/organisms/Modals/AuditModal';
-import { usePosStore } from '../store/posStore';
-import { PaymentTransaction } from '../types/pos';
 import { formatINR } from '../utils/formatters';
-
-import { EmptyState } from '../components/atoms/EmptyState';
+import { usePosStore } from '../store/posStore';
 
 export const PaymentsReconciliation: React.FC = () => {
   const { payments } = usePosStore();
-  const [activeTab, setActiveTab] = useState<'Payments' | 'Reconciliation'>('Reconciliation');
-  const [selectedTx, setSelectedTx] = useState<PaymentTransaction | null>(null);
-  const [auditModalOpen, setAuditModalOpen] = useState(false);
+  const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
 
-  const posSalesTotal = payments.reduce((sum, p) => sum + p.posAmount, 0);
-  const bankDepositsTotal = payments.reduce((sum, p) => sum + p.bankAmount, 0);
-  const totalDifference = bankDepositsTotal - posSalesTotal;
-
-  const handleTxClick = (tx: PaymentTransaction) => {
-    setSelectedTx(tx);
-    setAuditModalOpen(true);
-  };
+  const paymentBatches = [
+    { id: 'BATCH-8821', method: 'Cash Drawer', expected: 15400, actual: 15400, diff: 0, status: 'Matched' },
+    { id: 'BATCH-8822', method: 'Card Terminal (PineLabs)', expected: 28900, actual: 28900, diff: 0, status: 'Matched' },
+    { id: 'BATCH-8823', method: 'UPI / QR Gateway', expected: 18250, actual: 18200, diff: -50, status: 'Difference' },
+    { id: 'BATCH-8824', method: 'Zomato / Swiggy Online Payout', expected: 32400, actual: 32400, diff: 0, status: 'Matched' },
+  ];
 
   return (
-    <MainLayoutTemplate title="Payments & Reconciliation">
+    <MainLayoutTemplate title="Payments & Shift Reconciliation Audit">
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-        {/* Navigation Tabs & Date */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            {(['Payments', 'Reconciliation'] as const).map((tab) => (
-              <CategoryTab
-                key={tab}
-                label={tab}
-                active={activeTab === tab}
-                onClick={() => setActiveTab(tab)}
-              />
-            ))}
-          </Box>
-
-          <Box
+        {/* Top Audit Action Bar */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            Shift Drawer Audit & Gateway Reconciliation
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={() => setIsAuditModalOpen(true)}
+            startIcon={<AuditIcon />}
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              p: 1,
-              px: 2,
-              backgroundColor: '#FFFFFF',
-              border: '1px solid #E2E8F0',
-              borderRadius: 9999, // Yoko Pill Badge
-              fontWeight: 700,
-              fontSize: '0.8125rem',
-              color: '#0F172A',
-              boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+              px: 3,
+              py: 1.1,
+              borderRadius: 9999, // Uber Eats Pill Button
+              fontWeight: 800,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              backgroundColor: '#06C167',
+              color: '#FFFFFF',
+              boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
+              '&:hover': {
+                backgroundColor: '#049851',
+              },
             }}
           >
-            <CalendarTodayIcon sx={{ fontSize: 16, color: '#6366F1' }} />
-            <span>15 Jun 2026</span>
-          </Box>
+            Start Shift Drawer Audit
+          </Button>
         </Box>
 
-        {/* Reconciliation Summary Cards */}
+        {/* 4 Payment Method KPI Cards */}
         <Grid container spacing={2.5}>
-          <Grid size={{ xs: 12, sm: 4 }}>
-            <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', textAlign: 'center' }}>
-              <Typography variant="caption" sx={{ color: '#64748B', fontWeight: 600 }}>
-                POS Sales
-              </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, mt: 0.5, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                {formatINR(posSalesTotal)}
-              </Typography>
-            </Paper>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Cash Drawer Total"
+              value={formatINR(15400)}
+              change="Matched"
+              isPositive={true}
+              icon={<AccountBalanceWalletIcon />}
+            />
           </Grid>
-
-          <Grid size={{ xs: 12, sm: 4 }}>
-            <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', textAlign: 'center' }}>
-              <Typography variant="caption" sx={{ color: '#64748B', fontWeight: 600 }}>
-                Bank Deposits
-              </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, mt: 0.5, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                {formatINR(bankDepositsTotal)}
-              </Typography>
-            </Paper>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Card Terminal"
+              value={formatINR(28900)}
+              change="Matched"
+              isPositive={true}
+              icon={<CreditCardIcon />}
+            />
           </Grid>
-
-          <Grid size={{ xs: 12, sm: 4 }}>
-            <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', textAlign: 'center' }}>
-              <Typography variant="caption" sx={{ color: '#64748B', fontWeight: 600 }}>
-                Difference
-              </Typography>
-              <Typography
-                variant="h4"
-                sx={{
-                  fontWeight: 800,
-                  mt: 0.5,
-                  color: totalDifference < 0 ? '#B91C1C' : '#047857',
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                }}
-              >
-                {formatINR(Math.abs(totalDifference))}
-              </Typography>
-            </Paper>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <KpiCard
+              title="UPI / QR Code"
+              value={formatINR(18200)}
+              change="-₹50 Diff"
+              isPositive={false}
+              icon={<QrCode2Icon />}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Online Delivery Payouts"
+              value={formatINR(32400)}
+              change="Matched"
+              isPositive={true}
+              icon={<CheckCircleIcon />}
+            />
           </Grid>
         </Grid>
 
-        {/* Transactions Table */}
-        <Paper elevation={1} sx={{ borderRadius: '20px', overflow: 'hidden', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
-          <Box sx={{ p: 2.5, borderBottom: '1px solid #E2E8F0' }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              Transactions Log
-            </Typography>
-          </Box>
+        {/* Batch Audit Table */}
+        <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #EEEEEE' }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            Payment Batch Reconciliation Records
+          </Typography>
 
-          {payments.length === 0 ? (
-            <EmptyState title="No transactions logged" description="Completed transactions and bank reconciliations will appear here." />
-          ) : (
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Payment ID</TableCell>
-                    <TableCell>Method</TableCell>
-                    <TableCell>POS Amount</TableCell>
-                    <TableCell>Bank Amount</TableCell>
-                    <TableCell>Status</TableCell>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Batch Reference</TableCell>
+                  <TableCell>Payment Channel</TableCell>
+                  <TableCell>System Expected</TableCell>
+                  <TableCell>Actual Counted</TableCell>
+                  <TableCell>Variance / Discrepancy</TableCell>
+                  <TableCell align="right">Audit Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paymentBatches.map((batch) => (
+                  <TableRow key={batch.id} hover>
+                    <TableCell sx={{ fontWeight: 800, color: '#06C167', fontFamily: 'monospace' }}>
+                      {batch.id}
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 700, color: '#000000' }}>{batch.method}</TableCell>
+                    <TableCell sx={{ color: '#545454' }}>{formatINR(batch.expected)}</TableCell>
+                    <TableCell sx={{ fontWeight: 800, color: '#000000' }}>{formatINR(batch.actual)}</TableCell>
+                    <TableCell sx={{ fontWeight: 800, color: batch.diff === 0 ? '#06C167' : '#E53E3E' }}>
+                      {batch.diff === 0 ? '₹0 (Exact)' : formatINR(batch.diff)}
+                    </TableCell>
+                    <TableCell align="right">
+                      <Chip
+                        label={batch.status}
+                        size="small"
+                        sx={{
+                          backgroundColor: batch.status === 'Matched' ? '#E6F9F0' : '#FED7D7',
+                          color: batch.status === 'Matched' ? '#06C167' : '#E53E3E',
+                          fontWeight: 800,
+                          borderRadius: 9999,
+                        }}
+                      />
+                    </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {payments.map((tx) => (
-                    <TableRow
-                      key={tx.id}
-                      hover
-                      onClick={() => handleTxClick(tx)}
-                      sx={{ cursor: 'pointer' }}
-                    >
-                      <TableCell sx={{ fontWeight: 800, color: '#4338CA' }}>{tx.paymentId}</TableCell>
-                      <TableCell>
-                        <Chip label={tx.method} size="small" sx={{ backgroundColor: '#EEF2FF', color: '#4338CA', fontWeight: 700, borderRadius: 9999 }} />
-                      </TableCell>
-                      <TableCell sx={{ fontWeight: 800, color: '#0F172A' }}>{formatINR(tx.posAmount)}</TableCell>
-                      <TableCell sx={{ fontWeight: 800, color: '#0F172A' }}>{formatINR(tx.bankAmount)}</TableCell>
-                      <TableCell>
-                        <StatusChip status={tx.status} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Paper>
 
         <AuditModal
-          isOpen={auditModalOpen}
-          onClose={() => setAuditModalOpen(false)}
-          transaction={selectedTx}
+          isOpen={isAuditModalOpen}
+          onClose={() => setIsAuditModalOpen(false)}
+          transaction={payments && payments.length > 0 ? payments[0] : null}
         />
       </Box>
     </MainLayoutTemplate>

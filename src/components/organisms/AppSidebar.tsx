@@ -80,7 +80,7 @@ export const AppSidebar: React.FC = () => {
         position: 'sticky',
         top: 0,
         backgroundColor: '#FFFFFF',
-        borderRight: '1px solid #E2E8F0',
+        borderRight: '1px solid #EEEEEE',
         display: { xs: 'none', md: 'flex' },
         flexDirection: 'column',
         alignItems: 'center',
@@ -88,30 +88,30 @@ export const AppSidebar: React.FC = () => {
         zIndex: 1100,
         userSelect: 'none',
         flexShrink: 0,
-        boxShadow: '0 4px 14px rgba(15, 23, 42, 0.04)',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
       }}
     >
-      {/* Brand Logo - Yoko Space Light Style */}
+      {/* Brand Logo - Uber Eats Style */}
       <Box
         onClick={() => navigate(filteredNavItems[0]?.path || '/login')}
         sx={{
           width: 48,
           height: 48,
-          borderRadius: '14px',
-          background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+          borderRadius: '16px',
+          backgroundColor: '#06C167',
           color: '#FFFFFF',
           fontWeight: 800,
           fontSize: '1.4rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
+          boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
           cursor: 'pointer',
           mb: 3,
           transition: 'all 0.2s ease',
           '&:hover': {
             transform: 'scale(1.06)',
-            boxShadow: '0 6px 20px rgba(99, 102, 241, 0.5)',
+            boxShadow: '0 6px 20px rgba(6, 193, 103, 0.5)',
           },
         }}
       >
@@ -145,8 +145,8 @@ export const AppSidebar: React.FC = () => {
                       width: 4,
                       height: 28,
                       borderRadius: '0 4px 4px 0',
-                      backgroundColor: '#6366F1',
-                      boxShadow: '0 0 10px rgba(99, 102, 241, 0.5)',
+                      backgroundColor: '#06C167',
+                      boxShadow: '0 0 10px rgba(6, 193, 103, 0.5)',
                     }}
                   />
                 )}
@@ -156,14 +156,14 @@ export const AppSidebar: React.FC = () => {
                   sx={{
                     width: 46,
                     height: 46,
-                    borderRadius: 9999, // Yoko Pill Button
-                    backgroundColor: isActive ? '#EEF2FF' : 'transparent',
-                    color: isActive ? '#4338CA' : '#64748B',
-                    border: isActive ? '1px solid #C7D2FE' : '1px solid transparent',
+                    borderRadius: 9999, // Pill style
+                    backgroundColor: isActive ? '#E6F9F0' : 'transparent',
+                    color: isActive ? '#06C167' : '#545454',
+                    border: isActive ? '1px solid #A3E9C5' : '1px solid transparent',
                     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      backgroundColor: isActive ? '#E0E7FF' : '#F1F5F9',
-                      color: isActive ? '#3730A3' : '#0F172A',
+                      backgroundColor: isActive ? '#D1FAE5' : '#F6F6F6',
+                      color: isActive ? '#049851' : '#000000',
                       transform: 'translateY(-1px)',
                     },
                   }}
@@ -176,7 +176,7 @@ export const AppSidebar: React.FC = () => {
         })}
       </Box>
 
-      <Divider sx={{ width: 40, my: 2, borderColor: '#E2E8F0' }} />
+      <Divider sx={{ width: 40, my: 2, borderColor: '#EEEEEE' }} />
 
       {/* Footer Shop Toggle & Profile Actions */}
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1.5 }}>
@@ -197,12 +197,12 @@ export const AppSidebar: React.FC = () => {
                 width: 42,
                 height: 42,
                 borderRadius: 9999,
-                backgroundColor: isShopOpen ? '#ECFDF5' : '#FEE2E2',
-                color: isShopOpen ? '#047857' : '#B91C1C',
-                border: `1px solid ${isShopOpen ? '#A7F3D0' : '#FECACA'}`,
+                backgroundColor: isShopOpen ? '#E6F9F0' : '#FED7D7',
+                color: isShopOpen ? '#06C167' : '#E53E3E',
+                border: `1px solid ${isShopOpen ? '#A3E9C5' : '#FEB2B2'}`,
                 transition: 'all 0.2s ease',
                 '&:hover': {
-                  backgroundColor: isShopOpen ? '#D1FAE5' : '#FCA5A5',
+                  backgroundColor: isShopOpen ? '#D1FAE5' : '#FEB2B2',
                   transform: 'scale(1.05)',
                 },
               }}
@@ -221,10 +221,10 @@ export const AppSidebar: React.FC = () => {
               width: 38,
               height: 38,
               cursor: isManager ? 'pointer' : 'default',
-              border: '2px solid #E2E8F0',
+              border: '2px solid #EEEEEE',
               borderRadius: '12px',
               transition: 'all 0.2s ease',
-              '&:hover': isManager ? { borderColor: '#6366F1', boxShadow: '0 0 10px rgba(99, 102, 241, 0.3)' } : {},
+              '&:hover': isManager ? { borderColor: '#06C167', boxShadow: '0 0 10px rgba(6, 193, 103, 0.3)' } : {},
             }}
           />
         </Tooltip>
@@ -237,11 +237,11 @@ export const AppSidebar: React.FC = () => {
               width: 42,
               height: 42,
               borderRadius: 9999,
-              color: '#64748B',
+              color: '#545454',
               transition: 'all 0.2s ease',
               '&:hover': {
-                backgroundColor: '#FEE2E2',
-                color: '#DC2626',
+                backgroundColor: '#FED7D7',
+                color: '#E53E3E',
               },
             }}
           >

@@ -22,24 +22,24 @@ export const StatusChip: React.FC<StatusChipProps> = ({ status, size = 'small', 
       case 'Matched':
       case 'Active':
       case 'Ready':
-        return { bg: '#ECFDF5', color: '#047857', border: '#A7F3D0' };
+        return { bg: '#E6F9F0', color: '#06C167', border: '#A3E9C5' };
       case 'Preparing':
       case 'Occupied':
       case 'In-Progress':
       case 'Medium':
-        return { bg: '#EEF2FF', color: '#4338CA', border: '#C7D2FE' };
+        return { bg: '#000000', color: '#FFFFFF', border: '#000000' };
       case 'Pending':
       case 'Reserved':
       case 'New':
       case 'Low':
-        return { bg: '#FEF3C7', color: '#B45309', border: '#FDE68A' };
+        return { bg: '#FEEBC8', color: '#C05621', border: '#FBD38D' };
       case 'Cancelled':
       case 'Difference':
       case 'Inactive':
       case 'Paused':
-        return { bg: '#FEE2E2', color: '#B91C1C', border: '#FECACA' };
+        return { bg: '#FED7D7', color: '#E53E3E', border: '#FEB2B2' };
       default:
-        return { bg: '#F1F5F9', color: '#475569', border: '#E2E8F0' };
+        return { bg: '#F6F6F6', color: '#545454', border: '#EEEEEE' };
     }
   };
 
@@ -54,7 +54,7 @@ export const StatusChip: React.FC<StatusChipProps> = ({ status, size = 'small', 
         color: color,
         border: `1px solid ${border}`,
         fontWeight: 700,
-        borderRadius: 9999, // Yoko Pill Shape
+        borderRadius: 9999, // Uber Eats Pill Shape
         fontSize: size === 'small' ? '0.72rem' : '0.78rem',
         height: size === 'small' ? 24 : 28,
         letterSpacing: '0.01em',

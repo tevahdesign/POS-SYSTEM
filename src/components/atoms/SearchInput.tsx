@@ -29,12 +29,12 @@ export const SearchInput: React.FC<SearchInputProps> = ({
         input: {
           startAdornment: (
             <InputAdornment position="start">
-              <SearchIcon sx={{ color: '#6366F1', fontSize: 20 }} />
+              <SearchIcon sx={{ color: '#06C167', fontSize: 20 }} />
             </InputAdornment>
           ),
           endAdornment: value ? (
             <InputAdornment position="end">
-              <IconButton size="small" onClick={() => onChange('')} edge="end" sx={{ color: '#64748B' }}>
+              <IconButton size="small" onClick={() => onChange('')} edge="end" sx={{ color: '#545454' }}>
                 <ClearIcon sx={{ fontSize: 16 }} />
               </IconButton>
             </InputAdornment>
@@ -44,19 +44,19 @@ export const SearchInput: React.FC<SearchInputProps> = ({
       sx={{
         '& .MuiOutlinedInput-root': {
           backgroundColor: '#FFFFFF',
-          borderRadius: 9999, // Yoko Pill Shape
-          color: '#0F172A',
-          border: '1px solid #E2E8F0',
-          boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+          borderRadius: 9999, // Uber Eats Pill Shape
+          color: '#000000',
+          border: '1px solid #EEEEEE',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
           '& fieldset': {
             border: 'none',
           },
           '&:hover': {
-            borderColor: 'rgba(99, 102, 241, 0.5)',
+            borderColor: 'rgba(6, 193, 103, 0.5)',
           },
           '&.Mui-focused': {
-            boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.15)',
-            borderColor: '#6366F1',
+            boxShadow: '0 0 0 3px rgba(6, 193, 103, 0.15)',
+            borderColor: '#06C167',
           },
         },
         ...sx,

@@ -4,51 +4,51 @@ export const posTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#6366F1', // Yoko Indigo Accent
-      light: '#EEF2FF',
-      dark: '#4338CA',
+      main: '#06C167', // Uber Eats Signature Green
+      light: '#E6F9F0',
+      dark: '#049851',
       contrastText: '#FFFFFF',
     },
     secondary: {
-      main: '#8B5CF6', // Yoko Accent Violet
-      light: '#F3E8FF',
-      dark: '#6D28D9',
+      main: '#000000', // Uber Jet Black
+      light: '#242424',
+      dark: '#000000',
       contrastText: '#FFFFFF',
     },
     success: {
-      main: '#10B981', // Emerald
-      light: '#ECFDF5',
-      dark: '#047857',
+      main: '#06C167',
+      light: '#E6F9F0',
+      dark: '#049851',
       contrastText: '#FFFFFF',
     },
     warning: {
-      main: '#F59E0B', // Amber
+      main: '#F59E0B',
       light: '#FEF3C7',
       dark: '#B45309',
       contrastText: '#FFFFFF',
     },
     error: {
-      main: '#F43F5E', // Rose
-      light: '#FEE2E2',
-      dark: '#B91C1C',
+      main: '#E53E3E',
+      light: '#FED7D7',
+      dark: '#C53030',
       contrastText: '#FFFFFF',
     },
     info: {
-      main: '#06B6D4', // Cyan
-      light: '#E0F2FE',
-      dark: '#0369A1',
+      main: '#000000',
+      light: '#F6F6F6',
+      dark: '#000000',
       contrastText: '#FFFFFF',
     },
     background: {
-      default: '#F8FAFC', // Yoko Light Space Canvas
-      paper: '#FFFFFF',   // Yoko Light Space Card Surface
+      default: '#FAFAFA', // Uber Eats Crisp Background Canvas
+      paper: '#FFFFFF',   // Uber Eats Surface Card
     },
     text: {
-      primary: '#0F172A',
-      secondary: '#64748B',
-      disabled: '#94A3B8',
+      primary: '#000000',
+      secondary: '#545454',
+      disabled: '#9E9E9E',
     },
-    divider: '#E2E8F0',
+    divider: '#EEEEEE',
   },
   typography: {
     fontFamily: [
@@ -123,53 +123,52 @@ export const posTheme = createTheme({
   },
   shadows: [
     'none',
-    '0px 1px 3px rgba(15, 23, 42, 0.05), 0px 1px 2px rgba(15, 23, 42, 0.03)',
-    '0px 4px 14px rgba(15, 23, 42, 0.06)',
-    '0px 8px 20px rgba(15, 23, 42, 0.08)',
-    '0px 12px 28px rgba(15, 23, 42, 0.10)',
-    '0px 16px 36px rgba(15, 23, 42, 0.12)',
-    '0px 20px 44px rgba(15, 23, 42, 0.14)',
-    ...Array(18).fill('0px 24px 52px rgba(15, 23, 42, 0.16)'),
+    '0px 2px 8px rgba(0, 0, 0, 0.04)',
+    '0px 4px 16px rgba(0, 0, 0, 0.08)',
+    '0px 8px 24px rgba(0, 0, 0, 0.10)',
+    '0px 12px 32px rgba(0, 0, 0, 0.12)',
+    '0px 16px 40px rgba(0, 0, 0, 0.14)',
+    '0px 20px 48px rgba(0, 0, 0, 0.16)',
+    ...Array(18).fill('0px 24px 56px rgba(0, 0, 0, 0.18)'),
   ] as any,
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 9999, // Pill style per Yoko Space System
+          borderRadius: 9999, // Uber Eats Pill Style
           fontWeight: 700,
           boxShadow: 'none',
-          padding: '8px 20px',
+          padding: '8px 22px',
           transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
             transform: 'translateY(-1px)',
-            boxShadow: '0 4px 14px rgba(99, 102, 241, 0.25)',
+            boxShadow: '0 4px 14px rgba(6, 193, 103, 0.3)',
           },
         },
         contained: {
           '&.MuiButton-containedPrimary': {
-            background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+            backgroundColor: '#06C167',
             color: '#FFFFFF',
-            boxShadow: '0 4px 14px rgba(99, 102, 241, 0.3)',
+            boxShadow: '0 4px 14px rgba(6, 193, 103, 0.3)',
             '&:hover': {
-              boxShadow: '0 6px 20px rgba(99, 102, 241, 0.45)',
+              backgroundColor: '#049851',
+              boxShadow: '0 6px 20px rgba(6, 193, 103, 0.45)',
             },
           },
           '&.MuiButton-containedSecondary': {
-            backgroundColor: '#F1F5F9',
-            color: '#0F172A',
-            border: '1px solid #E2E8F0',
+            backgroundColor: '#000000',
+            color: '#FFFFFF',
             '&:hover': {
-              backgroundColor: '#E2E8F0',
-              borderColor: 'rgba(99, 102, 241, 0.4)',
+              backgroundColor: '#242424',
             },
           },
         },
         outlined: {
-          borderColor: '#E2E8F0',
-          color: '#0F172A',
+          borderColor: '#EEEEEE',
+          color: '#000000',
           '&:hover': {
-            borderColor: '#6366F1',
-            backgroundColor: '#EEF2FF',
+            borderColor: '#06C167',
+            backgroundColor: '#E6F9F0',
           },
         },
       },
@@ -180,16 +179,16 @@ export const posTheme = createTheme({
           backgroundImage: 'none',
           borderRadius: 16,
           backgroundColor: '#FFFFFF',
-          border: '1px solid #E2E8F0',
+          border: '1px solid #EEEEEE',
         },
         elevation1: {
-          boxShadow: '0px 1px 3px rgba(15, 23, 42, 0.05), 0px 1px 2px rgba(15, 23, 42, 0.03)',
+          boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.04)',
         },
         elevation2: {
-          boxShadow: '0px 4px 14px rgba(15, 23, 42, 0.06)',
+          boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.08)',
         },
         elevation3: {
-          boxShadow: '0px 8px 20px rgba(15, 23, 42, 0.08)',
+          boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.10)',
         },
       },
     },
@@ -197,12 +196,12 @@ export const posTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: '#FFFFFF',
-          border: '1px solid #E2E8F0',
-          boxShadow: '0px 1px 3px rgba(15, 23, 42, 0.05)',
+          border: '1px solid #EEEEEE',
+          boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.04)',
           borderRadius: 16,
           transition: 'all 0.2s ease-in-out',
           '&:hover': {
-            borderColor: 'rgba(99, 102, 241, 0.4)',
+            borderColor: 'rgba(6, 193, 103, 0.5)',
           },
         },
       },
@@ -212,7 +211,7 @@ export const posTheme = createTheme({
         root: {
           fontWeight: 700,
           fontSize: '0.75rem',
-          borderRadius: 9999, // Yoko Pill Badge
+          borderRadius: 9999, // Pill Badge
         },
       },
     },
@@ -227,17 +226,17 @@ export const posTheme = createTheme({
       styleOverrides: {
         head: {
           fontWeight: 700,
-          color: '#64748B',
-          backgroundColor: '#F8FAFC',
-          borderBottom: '1px solid #E2E8F0',
+          color: '#545454',
+          backgroundColor: '#F6F6F6',
+          borderBottom: '1px solid #EEEEEE',
           fontSize: '0.75rem',
           textTransform: 'uppercase',
           letterSpacing: '0.05em',
         },
         body: {
           fontSize: '0.875rem',
-          borderBottom: '1px solid #F1F5F9',
-          color: '#0F172A',
+          borderBottom: '1px solid #F6F6F6',
+          color: '#000000',
         },
       },
     },
@@ -249,16 +248,16 @@ export const posTheme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
+          borderRadius: 9999, // Uber Eats Pill Inputs
           backgroundColor: '#FFFFFF',
           '& fieldset': {
-            borderColor: '#E2E8F0',
+            borderColor: '#EEEEEE',
           },
           '&:hover fieldset': {
-            borderColor: 'rgba(99, 102, 241, 0.5)',
+            borderColor: 'rgba(6, 193, 103, 0.5)',
           },
           '&.Mui-focused fieldset': {
-            borderColor: '#6366F1',
+            borderColor: '#06C167',
             borderWidth: '1.5px',
           },
         },
@@ -267,10 +266,10 @@ export const posTheme = createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: {
-          borderRadius: 20,
+          borderRadius: 24,
           backgroundColor: '#FFFFFF',
-          boxShadow: '0px 20px 40px -10px rgba(15, 23, 42, 0.15)',
-          border: '1px solid #E2E8F0',
+          boxShadow: '0px 20px 40px -10px rgba(0, 0, 0, 0.15)',
+          border: '1px solid #EEEEEE',
         },
       },
     },
@@ -278,14 +277,14 @@ export const posTheme = createTheme({
       styleOverrides: {
         tooltip: {
           borderRadius: 8,
-          backgroundColor: '#0F172A',
+          backgroundColor: '#000000',
           color: '#FFFFFF',
           fontSize: '0.75rem',
           fontWeight: 600,
           padding: '6px 12px',
         },
         arrow: {
-          color: '#0F172A',
+          color: '#000000',
         },
       },
     },

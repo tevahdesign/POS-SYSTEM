@@ -22,41 +22,41 @@ export const FloorPlanGrid: React.FC<FloorPlanGridProps> = ({
       case 'Available':
         return {
           bg: '#FFFFFF',
-          border: '2px solid #10B981',
-          chipBg: '#ECFDF5',
-          chipColor: '#047857',
-          glow: '0 4px 14px rgba(16, 185, 129, 0.15)',
+          border: '2px solid #06C167',
+          chipBg: '#E6F9F0',
+          chipColor: '#06C167',
+          glow: '0 4px 14px rgba(6, 193, 103, 0.15)',
         };
       case 'Occupied':
         return {
           bg: '#FFFFFF',
-          border: '2px solid #6366F1',
-          chipBg: '#EEF2FF',
-          chipColor: '#4338CA',
-          glow: '0 4px 14px rgba(99, 102, 241, 0.2)',
+          border: '2px solid #000000',
+          chipBg: '#000000',
+          chipColor: '#FFFFFF',
+          glow: '0 4px 14px rgba(0, 0, 0, 0.15)',
         };
       case 'Reserved':
         return {
           bg: '#FFFFFF',
           border: '2px solid #F59E0B',
           chipBg: '#FEF3C7',
-          chipColor: '#B45309',
+          chipColor: '#C05621',
           glow: '0 4px 14px rgba(245, 158, 11, 0.15)',
         };
       case 'Paused':
         return {
           bg: '#FFFFFF',
-          border: '2px solid #F43F5E',
-          chipBg: '#FEE2E2',
-          chipColor: '#B91C1C',
-          glow: '0 4px 14px rgba(244, 63, 94, 0.15)',
+          border: '2px solid #E53E3E',
+          chipBg: '#FED7D7',
+          chipColor: '#E53E3E',
+          glow: '0 4px 14px rgba(229, 62, 62, 0.15)',
         };
       default:
         return {
           bg: '#FFFFFF',
-          border: '2px solid #CBD5E1',
-          chipBg: '#F1F5F9',
-          chipColor: '#475569',
+          border: '2px solid #CCCCCC',
+          chipBg: '#F6F6F6',
+          chipColor: '#545454',
           glow: 'none',
         };
     }
@@ -69,13 +69,13 @@ export const FloorPlanGrid: React.FC<FloorPlanGridProps> = ({
         p: 3,
         borderRadius: '20px',
         backgroundColor: '#FFFFFF',
-        border: '1px solid #E2E8F0',
+        border: '1px solid #EEEEEE',
         minHeight: 520,
-        boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+        <Typography variant="h6" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           Floor Layout Overview ({tables.length} Tables)
         </Typography>
       </Box>
@@ -94,21 +94,21 @@ export const FloorPlanGrid: React.FC<FloorPlanGridProps> = ({
                   p: 2,
                   borderRadius: '18px',
                   backgroundColor: style.bg,
-                  border: isSelected ? '2.5px solid #6366F1' : style.border,
+                  border: isSelected ? '2.5px solid #06C167' : style.border,
                   cursor: 'pointer',
-                  boxShadow: isSelected ? '0 0 20px rgba(99, 102, 241, 0.3)' : style.glow,
+                  boxShadow: isSelected ? '0 0 20px rgba(6, 193, 103, 0.3)' : style.glow,
                   transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                   position: 'relative',
                   transform: isSelected ? 'scale(1.02)' : 'none',
                   '&:hover': {
                     transform: 'translateY(-2px) scale(1.02)',
-                    boxShadow: '0 8px 25px rgba(15, 23, 42, 0.08)',
+                    boxShadow: '0 8px 25px rgba(0, 0, 0, 0.08)',
                   },
                 }}
               >
                 {/* Header Table Name & Status Badge */}
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  <Typography variant="h6" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     {table.tableName || `Table ${table.number}`}
                   </Typography>
                   <Box
@@ -128,7 +128,7 @@ export const FloorPlanGrid: React.FC<FloorPlanGridProps> = ({
 
                 {/* Table Metrics */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#64748B' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#545454' }}>
                     <PeopleIcon sx={{ fontSize: 16 }} />
                     <Typography variant="caption" sx={{ fontWeight: 600 }}>
                       {table.guestCount ? `${table.guestCount}/${table.seats} Guests` : `${table.seats} Seats`}
@@ -137,7 +137,7 @@ export const FloorPlanGrid: React.FC<FloorPlanGridProps> = ({
 
                   {table.status === 'Occupied' && (
                     <>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#64748B' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#545454' }}>
                         <AccessTimeIcon sx={{ fontSize: 16 }} />
                         <Typography variant="caption" sx={{ fontWeight: 600 }}>
                           {table.startTime || 'Started'}
@@ -145,7 +145,7 @@ export const FloorPlanGrid: React.FC<FloorPlanGridProps> = ({
                       </Box>
 
                       {table.totalAmount !== undefined && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: '#4338CA', pt: 0.5 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: '#06C167', pt: 0.5 }}>
                           <AttachMoneyIcon sx={{ fontSize: 16 }} />
                           <Typography variant="subtitle2" sx={{ fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                             {formatINR(table.totalAmount)}

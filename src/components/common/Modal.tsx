@@ -26,7 +26,7 @@ export const Modal: React.FC<ModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
-          <h3 className="section-title" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '18px', fontWeight: 800, color: '#0F172A' }}>{title}</h3>
+          <h3 className="section-title" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '18px', fontWeight: 800, color: '#000000' }}>{title}</h3>
           <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
             <X size={18} />
           </button>
@@ -41,28 +41,28 @@ export const Modal: React.FC<ModalProps> = ({
           align-items: center;
           justify-content: space-between;
           padding-bottom: 16px;
-          border-bottom: 1px solid #E2E8F0;
+          border-bottom: 1px solid #EEEEEE;
           margin-bottom: 20px;
         }
 
         .modal-close-btn {
-          background: #F1F5F9;
-          border: 1px solid #E2E8F0;
+          background: #F6F6F6;
+          border: 1px solid #EEEEEE;
           width: 32px;
           height: 32px;
           border-radius: 9999px;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #64748B;
+          color: #545454;
           cursor: pointer;
           transition: all 0.2s ease;
         }
 
         .modal-close-btn:hover {
-          background: #FEE2E2;
-          border-color: #FECACA;
-          color: #DC2626;
+          background: #FED7D7;
+          border-color: #FEB2B2;
+          color: #E53E3E;
         }
 
         .modal-body {

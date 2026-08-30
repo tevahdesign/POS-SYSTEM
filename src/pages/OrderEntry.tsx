@@ -54,7 +54,7 @@ export const OrderEntry: React.FC = () => {
           fullWidth
           variant={activeTabMobile === 'catalog' ? 'contained' : 'outlined'}
           onClick={() => setActiveTabMobile('catalog')}
-          sx={{ borderRadius: 9999, fontWeight: 700 }}
+          sx={{ borderRadius: 9999, fontWeight: 700, backgroundColor: activeTabMobile === 'catalog' ? '#000000' : 'transparent' }}
         >
           Catalog ({filteredProducts.length})
         </Button>
@@ -63,7 +63,7 @@ export const OrderEntry: React.FC = () => {
           variant={activeTabMobile === 'cart' ? 'contained' : 'outlined'}
           onClick={() => setActiveTabMobile('cart')}
           startIcon={<ShoppingBagIcon />}
-          sx={{ borderRadius: 9999, fontWeight: 700 }}
+          sx={{ borderRadius: 9999, fontWeight: 700, backgroundColor: activeTabMobile === 'cart' ? '#000000' : 'transparent' }}
         >
           Cart ({cart.reduce((acc, item) => acc + item.quantity, 0)})
         </Button>

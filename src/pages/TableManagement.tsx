@@ -64,22 +64,22 @@ export const TableManagement: React.FC = () => {
             px: 3,
             borderRadius: 9999, // Pill style
             backgroundColor: '#FFFFFF',
-            border: '1px solid #E2E8F0',
+            border: '1px solid #EEEEEE',
             display: 'flex',
             alignItems: 'center',
             gap: 3,
             flexWrap: 'wrap',
           }}
         >
-          <Typography variant="caption" sx={{ fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <Typography variant="caption" sx={{ fontWeight: 800, color: '#000000', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Table Legend:
           </Typography>
 
           {[
-            { label: 'Available', color: '#10B981', bg: '#ECFDF5' },
-            { label: 'Occupied', color: '#6366F1', bg: '#EEF2FF' },
+            { label: 'Available', color: '#06C167', bg: '#E6F9F0' },
+            { label: 'Occupied', color: '#000000', bg: '#000000' },
             { label: 'Reserved', color: '#F59E0B', bg: '#FEF3C7' },
-            { label: 'Paused / Dirty', color: '#F43F5E', bg: '#FEE2E2' },
+            { label: 'Paused / Dirty', color: '#E53E3E', bg: '#FED7D7' },
           ].map((item) => (
             <Box key={item.label} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Box
@@ -91,7 +91,7 @@ export const TableManagement: React.FC = () => {
                   boxShadow: `0 0 6px ${item.color}`,
                 }}
               />
-              <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748B' }}>
+              <Typography variant="caption" sx={{ fontWeight: 700, color: '#545454' }}>
                 {item.label}
               </Typography>
             </Box>

@@ -1,196 +1,191 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Grid,
   Paper,
-  Button,
+  Grid,
   Typography,
-  Divider,
+  Button,
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow,
+  TableContainer,
 } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
-import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 
 import { MainLayoutTemplate } from '../components/templates/MainLayoutTemplate';
 import { KpiCard } from '../components/molecules/KpiCard';
 import { LineChart } from '../components/common/LineChart';
 import { formatINR } from '../utils/formatters';
-
 import { NotificationToast } from '../components/atoms/NotificationToast';
 
 export const Reports: React.FC = () => {
-  const [activeReportTab, setActiveReportTab] = useState<string>('Sales Summary');
   const [chartPeriod, setChartPeriod] = useState<'Day' | 'Week' | 'Month'>('Week');
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
 
-  const reportTabs = [
-    'Sales Summary',
-    'Item Sales',
-    'Category Sales',
-    'Payment Summary',
-    'Labor Report',
-    'Inventory Report',
-  ];
+  const reportChartData = {
+    Day: [
+      { label: '8 AM', value: 3100 },
+      { label: '11 AM', value: 8900 },
+      { label: '2 PM', value: 14500 },
+      { label: '5 PM', value: 9800 },
+      { label: '8 PM', value: 19500 },
+    ],
+    Week: [
+      { label: 'Mon', value: 42000 },
+      { label: 'Tue', value: 38500 },
+      { label: 'Wed', value: 51200 },
+      { label: 'Thu', value: 46800 },
+      { label: 'Fri', value: 68900 },
+      { label: 'Sat', value: 74500 },
+      { label: 'Sun', value: 61200 },
+    ],
+    Month: [
+      { label: 'Jan', value: 1250000 },
+      { label: 'Feb', value: 1420000 },
+      { label: 'Mar', value: 1380000 },
+      { label: 'Apr', value: 1650000 },
+    ],
+  };
 
-  const salesTrendData = [
-    { label: '07 Jun', value: 34000 },
-    { label: '08 Jun', value: 41000 },
-    { label: '09 Jun', value: 38500 },
-    { label: '10 Jun', value: 52000 },
-    { label: '11 Jun', value: 44820 },
-    { label: '12 Jun', value: 49000 },
-    { label: '13 Jun', value: 53000 },
+  const salesBreakdownData = [
+    { category: 'Dine-In Sales', orders: 420, revenue: formatINR(147000), avgOrder: formatINR(350) },
+    { category: 'Takeaway Orders', orders: 280, revenue: formatINR(84000), avgOrder: formatINR(300) },
+    { category: 'Delivery Orders', orders: 190, revenue: formatINR(66500), avgOrder: formatINR(350) },
   ];
 
   const handleExportCSV = () => {
-    const csvContent =
-      'data:text/csv;charset=utf-8,Date,Sales,Orders,AvgOrder\n07 Jun,34000,110,309.00\n08 Jun,41000,125,328.00\n09 Jun,38500,118,326.20\n10 Jun,52000,145,358.60\n11 Jun,44820,128,350.20\n12 Jun,49000,140,350.00\n13 Jun,53000,150,353.30';
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `nexora_sales_report_${Date.now()}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    setToastMsg(`Exported "${activeReportTab}" report as CSV successfully.`);
+    setToastMsg('Sales & Tax Report exported as CSV file.');
     setToastOpen(true);
   };
 
   return (
-    <MainLayoutTemplate title="Reports & Analytics">
+    <MainLayoutTemplate title="Financial & Sales Analytics Reports">
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-        {/* Top Controls Bar */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<CalendarTodayIcon sx={{ color: '#6366F1' }} />}
-            sx={{ borderRadius: 9999, borderColor: '#E2E8F0', color: '#0F172A', fontWeight: 600, backgroundColor: '#FFFFFF' }}
-          >
-            07 Jun 2026 - 13 Jun 2026
-          </Button>
+        {/* Top Controls */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <DateRangeIcon sx={{ color: '#06C167' }} />
+            <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Reporting Period: Current Shift / Month
+            </Typography>
+          </Box>
 
           <Button
             variant="contained"
             onClick={handleExportCSV}
             startIcon={<DownloadIcon />}
             sx={{
-              borderRadius: 9999, // Yoko Pill
+              px: 3,
+              py: 1.1,
+              borderRadius: 9999, // Uber Eats Pill Button
               fontWeight: 800,
               fontFamily: "'Plus Jakarta Sans', sans-serif",
-              background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
-              boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
+              backgroundColor: '#06C167',
+              color: '#FFFFFF',
+              boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
+              '&:hover': {
+                backgroundColor: '#049851',
+              },
             }}
           >
-            Export CSV / PDF
+            Export CSV Report
           </Button>
         </Box>
 
+        {/* 4 Financial KPI Cards */}
         <Grid container spacing={2.5}>
-          {/* Left Vertical Sub-Navigation Tabs */}
-          <Grid size={{ xs: 12, md: 3, lg: 2.5 }}>
-            <Paper elevation={1} sx={{ p: 1.5, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: 0.75 }}>
-              {reportTabs.map((tab) => {
-                const isActive = activeReportTab === tab;
-                return (
-                  <Button
-                    key={tab}
-                    fullWidth
-                    onClick={() => setActiveReportTab(tab)}
-                    sx={{
-                      justifyContent: 'flex-start',
-                      px: 2,
-                      py: 1.1,
-                      borderRadius: 9999, // Yoko Pill Tab
-                      fontWeight: isActive ? 800 : 600,
-                      fontFamily: "'Plus Jakarta Sans', sans-serif",
-                      background: isActive ? 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)' : 'transparent',
-                      color: isActive ? '#FFFFFF' : '#64748B',
-                      boxShadow: isActive ? '0 2px 10px rgba(99, 102, 241, 0.3)' : 'none',
-                      '&:hover': {
-                        background: isActive ? 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)' : '#F1F5F9',
-                        color: isActive ? '#FFFFFF' : '#0F172A',
-                      },
-                    }}
-                  >
-                    {tab}
-                  </Button>
-                );
-              })}
-            </Paper>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Gross Revenue"
+              value={formatINR(383100)}
+              change="+14.2%"
+              isPositive={true}
+              icon={<LocalAtmIcon />}
+            />
           </Grid>
-
-          {/* Right Content Body */}
-          <Grid size={{ xs: 12, md: 9, lg: 9.5 }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-              {/* Summary KPI Cards Grid */}
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <KpiCard
-                    title="Total Sales"
-                    value={formatINR(284507)}
-                    change="+12.5%"
-                    isPositive={true}
-                    icon={<AttachMoneyIcon />}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <KpiCard
-                    title="Total Orders"
-                    value="856"
-                    change="+10.2%"
-                    isPositive={true}
-                    icon={<ShoppingBagIcon />}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <KpiCard
-                    title="Average Order"
-                    value={formatINR(332.4)}
-                    change="+4.8%"
-                    isPositive={true}
-                    icon={<CreditCardIcon />}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <KpiCard
-                    title="Total Tips"
-                    value={formatINR(41255)}
-                    change="+11.2%"
-                    isPositive={true}
-                    icon={<VolunteerActivismIcon />}
-                  />
-                </Grid>
-              </Grid>
-
-              {/* Sales Trend Chart Card */}
-              <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
-                <Typography variant="h6" sx={{ fontWeight: 800, color: '#0F172A', mb: 2, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                  Sales Trend ({activeReportTab})
-                </Typography>
-                <Divider sx={{ mb: 2, borderColor: '#E2E8F0' }} />
-                <LineChart
-                  data={salesTrendData}
-                  period={chartPeriod}
-                  onPeriodChange={setChartPeriod}
-                  height={250}
-                />
-              </Paper>
-            </Box>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Net Sales (Excl Tax)"
+              value={formatINR(364857)}
+              change="+13.8%"
+              isPositive={true}
+              icon={<ReceiptLongIcon />}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Total GST Collected"
+              value={formatINR(18243)}
+              change="+14.0%"
+              isPositive={true}
+              icon={<RequestQuoteIcon />}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Total Completed Orders"
+              value="890"
+              change="+9.5%"
+              isPositive={true}
+              icon={<PointOfSaleIcon />}
+            />
           </Grid>
         </Grid>
+
+        {/* Chart Section */}
+        <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #EEEEEE' }}>
+          <LineChart
+            data={reportChartData[chartPeriod]}
+            period={chartPeriod}
+            onPeriodChange={setChartPeriod}
+            height={260}
+          />
+        </Paper>
+
+        {/* Sales Channel Breakdown Table */}
+        <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #EEEEEE' }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            Sales Channel Breakdown
+          </Typography>
+
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Fulfillment Channel</TableCell>
+                  <TableCell>Order Volume</TableCell>
+                  <TableCell>Total Revenue</TableCell>
+                  <TableCell>Avg Ticket Value</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {salesBreakdownData.map((row) => (
+                  <TableRow key={row.category} hover>
+                    <TableCell sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                      {row.category}
+                    </TableCell>
+                    <TableCell sx={{ color: '#545454' }}>{row.orders} orders</TableCell>
+                    <TableCell sx={{ fontWeight: 800, color: '#06C167', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                      {row.revenue}
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 700, color: '#000000' }}>{row.avgOrder}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
       </Box>
 
-      <NotificationToast
-        open={toastOpen}
-        message={toastMsg}
-        onClose={() => setToastOpen(false)}
-      />
+      <NotificationToast open={toastOpen} message={toastMsg} onClose={() => setToastOpen(false)} />
     </MainLayoutTemplate>
   );
 };

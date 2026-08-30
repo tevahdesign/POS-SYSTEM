@@ -65,11 +65,15 @@ export const Inventory: React.FC = () => {
             sx={{
               px: 3,
               py: 1.1,
-              borderRadius: 9999, // Yoko Pill Button
+              borderRadius: 9999, // Uber Eats Pill Button
               fontWeight: 800,
               fontFamily: "'Plus Jakarta Sans', sans-serif",
-              background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
-              boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
+              backgroundColor: '#06C167',
+              color: '#FFFFFF',
+              boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
+              '&:hover': {
+                backgroundColor: '#049851',
+              },
             }}
           >
             Add Ingredient
@@ -77,7 +81,7 @@ export const Inventory: React.FC = () => {
         </Box>
 
         {/* Ingredients Data Table */}
-        <Paper elevation={1} sx={{ borderRadius: '20px', overflow: 'hidden', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+        <Paper elevation={1} sx={{ borderRadius: '20px', overflow: 'hidden', backgroundColor: '#FFFFFF', border: '1px solid #EEEEEE' }}>
           {filteredIngredients.length === 0 ? (
             <EmptyState
               title="No ingredients found"
@@ -107,25 +111,25 @@ export const Inventory: React.FC = () => {
                         key={ing.id}
                         hover
                         sx={{
-                          backgroundColor: isLow ? '#FEE2E2' : 'transparent',
+                          backgroundColor: isLow ? '#FED7D7' : 'transparent',
                         }}
                       >
-                        <TableCell sx={{ fontWeight: 700, color: isLow ? '#B91C1C' : '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        <TableCell sx={{ fontWeight: 700, color: isLow ? '#C53030' : '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                           {ing.name}
                         </TableCell>
-                        <TableCell sx={{ color: '#64748B' }}>{ing.category}</TableCell>
-                        <TableCell sx={{ fontWeight: 800, color: isLow ? '#B91C1C' : '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        <TableCell sx={{ color: '#545454' }}>{ing.category}</TableCell>
+                        <TableCell sx={{ fontWeight: 800, color: isLow ? '#C53030' : '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                           {ing.currentStock} {ing.unit}
                         </TableCell>
-                        <TableCell sx={{ color: '#64748B' }}>{ing.unit}</TableCell>
-                        <TableCell sx={{ color: '#64748B' }}>
+                        <TableCell sx={{ color: '#545454' }}>{ing.unit}</TableCell>
+                        <TableCell sx={{ color: '#545454' }}>
                           {ing.minLevel} {ing.unit}
                         </TableCell>
                         <TableCell>
                           <StatusChip status={ing.status} />
                         </TableCell>
                         <TableCell align="right">
-                          <IconButton size="small" aria-label={`Adjust stock for ${ing.name}`} onClick={() => handleEditStock(ing)} sx={{ color: '#64748B', '&:hover': { color: '#6366F1' } }}>
+                          <IconButton size="small" aria-label={`Adjust stock for ${ing.name}`} onClick={() => handleEditStock(ing)} sx={{ color: '#545454', '&:hover': { color: '#06C167' } }}>
                             <EditIcon sx={{ fontSize: 18 }} />
                           </IconButton>
                         </TableCell>

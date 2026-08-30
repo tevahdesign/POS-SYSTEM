@@ -23,18 +23,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
         cursor: 'pointer',
         borderRadius: '16px',
         backgroundColor: '#FFFFFF',
-        border: '1px solid #E2E8F0',
-        boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+        border: '1px solid #EEEEEE',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
         transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
         '&:hover': {
           transform: 'translateY(-2px)',
-          boxShadow: '0 4px 14px rgba(15, 23, 42, 0.08)',
-          borderColor: 'rgba(99, 102, 241, 0.4)',
+          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+          borderColor: 'rgba(6, 193, 103, 0.5)',
         },
       }}
     >
       {/* Product Image Container */}
-      <Box sx={{ position: 'relative', width: '100%', pt: '65%', borderRadius: '12px', overflow: 'hidden', mb: 1.5, backgroundColor: '#F1F5F9' }}>
+      <Box sx={{ position: 'relative', width: '100%', pt: '65%', borderRadius: '12px', overflow: 'hidden', mb: 1.5, backgroundColor: '#F6F6F6' }}>
         <CardMedia
           component="img"
           image={product.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80'}
@@ -63,14 +63,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
             position: 'absolute',
             top: 8,
             right: 8,
-            backgroundColor: 'rgba(255, 255, 255, 0.85)',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
             backdropFilter: 'blur(8px)',
-            border: '1px solid #E2E8F0',
+            border: '1px solid #EEEEEE',
             p: 0.5,
-            color: '#64748B',
+            color: '#545454',
             '&:hover': {
               backgroundColor: '#FFFFFF',
-              color: '#0F172A',
+              color: '#000000',
             },
           }}
         >
@@ -85,7 +85,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
           sx={{
             fontWeight: 700,
             fontSize: '0.875rem',
-            color: '#0F172A',
+            color: '#000000',
             fontFamily: "'Plus Jakarta Sans', sans-serif",
             lineHeight: 1.3,
             mb: 1,
@@ -99,7 +99,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
         </Typography>
 
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 'auto' }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
             {formatINR(product.price)}
           </Typography>
 
@@ -111,15 +111,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
               onAddDirect(product);
             }}
             sx={{
-              background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+              backgroundColor: '#06C167',
               color: '#FFFFFF',
-              borderRadius: 9999, // Yoko Pill Button
-              width: 32,
-              height: 32,
-              boxShadow: '0 2px 8px rgba(99, 102, 241, 0.3)',
+              borderRadius: 9999, // Pill Button
+              width: 34,
+              height: 34,
+              boxShadow: '0 2px 8px rgba(6, 193, 103, 0.3)',
               transition: 'all 0.2s ease',
               '&:hover': {
-                boxShadow: '0 4px 14px rgba(99, 102, 241, 0.45)',
+                backgroundColor: '#049851',
+                boxShadow: '0 4px 14px rgba(6, 193, 103, 0.45)',
                 transform: 'scale(1.05)',
               },
             }}

@@ -55,14 +55,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           cursor: pointer;
           border-radius: var(--radius-lg);
           background: #FFFFFF;
-          border: 1px solid #E2E8F0;
-          box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+          border: 1px solid #EEEEEE;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .product-card:hover {
-          border-color: rgba(99, 102, 241, 0.4);
-          box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+          border-color: rgba(6, 193, 103, 0.5);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
           transform: translateY(-2px);
         }
 
@@ -72,7 +72,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           height: 110px;
           border-radius: var(--radius-md);
           overflow: hidden;
-          background-color: #F1F5F9;
+          background-color: #F6F6F6;
           margin-bottom: 10px;
         }
 
@@ -94,12 +94,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           width: 26px;
           height: 26px;
           border-radius: 9999px;
-          background: rgba(255, 255, 255, 0.85);
-          border: 1px solid #E2E8F0;
+          background: rgba(255, 255, 255, 0.9);
+          border: 1px solid #EEEEEE;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #64748B;
+          color: #545454;
           cursor: pointer;
           backdrop-filter: blur(8px);
           transition: all 0.2s ease;
@@ -107,7 +107,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         .product-info-btn:hover {
           background: #FFFFFF;
-          color: #0F172A;
+          color: #000000;
         }
 
         .product-details {
@@ -121,7 +121,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           font-family: 'Plus Jakarta Sans', sans-serif;
           font-size: 13.5px;
           font-weight: 700;
-          color: #0F172A;
+          color: #000000;
           line-height: 1.3;
           margin-bottom: 8px;
         }
@@ -136,26 +136,27 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           font-family: 'Plus Jakarta Sans', sans-serif;
           font-size: 14px;
           font-weight: 800;
-          color: #0F172A;
+          color: #000000;
         }
 
         .product-add-btn {
-          width: 30px;
-          height: 30px;
+          width: 32px;
+          height: 32px;
           border-radius: 9999px;
-          background: var(--yoko-primary-gradient);
+          background: var(--ubereats-green);
           color: #FFFFFF;
           border: none;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+          box-shadow: 0 2px 8px rgba(6, 193, 103, 0.3);
           transition: all 0.2s ease;
         }
 
         .product-add-btn:hover {
-          box-shadow: 0 4px 14px rgba(99, 102, 241, 0.45);
+          background: var(--ubereats-green-hover);
+          box-shadow: 0 4px 14px rgba(6, 193, 103, 0.45);
           transform: scale(1.08);
         }
       `}</style>

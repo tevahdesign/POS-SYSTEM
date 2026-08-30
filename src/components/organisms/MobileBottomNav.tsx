@@ -37,7 +37,7 @@ export const MobileBottomNav: React.FC = () => {
         zIndex: 1200,
         display: { xs: 'block', md: 'none' },
         backgroundColor: '#FFFFFF',
-        borderTop: '1px solid #E2E8F0',
+        borderTop: '1px solid #EEEEEE',
         backdropFilter: 'blur(16px)',
       }}
     >
@@ -53,17 +53,17 @@ export const MobileBottomNav: React.FC = () => {
           height: 64,
           backgroundColor: 'transparent',
           '& .MuiBottomNavigationAction-root': {
-            color: '#64748B',
+            color: '#545454',
             minWidth: 'auto',
             px: 1,
             py: 0.75,
             transition: 'all 0.2s ease',
             '&.Mui-selected': {
-              color: '#4338CA',
+              color: '#06C167',
               fontWeight: 800,
               '& .MuiSvgIcon-root': {
-                color: '#6366F1',
-                filter: 'drop-shadow(0 2px 6px rgba(99, 102, 241, 0.3))',
+                color: '#06C167',
+                filter: 'drop-shadow(0 2px 6px rgba(6, 193, 103, 0.3))',
               },
             },
           },
