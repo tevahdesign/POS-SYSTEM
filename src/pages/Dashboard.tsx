@@ -74,120 +74,6 @@ export const Dashboard: React.FC = () => {
   return (
     <MainLayoutTemplate title="Dashboard Overview">
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
-        {/* Quick Action Shortcuts (Uber Eats Pill Format) */}
-        <Grid container spacing={{ xs: 1, sm: 1.5 }}>
-          <Grid size={{ xs: 12, sm: 4 }}>
-            <Button
-              variant="contained"
-              size="medium"
-              fullWidth
-              onClick={() => navigate('/orders')}
-              startIcon={<AddCircleOutlinedIcon />}
-              sx={{
-                py: 1.2,
-                borderRadius: 9999, // Pill
-                fontWeight: 800,
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                backgroundColor: '#06C167',
-                color: '#FFFFFF',
-                boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
-                '&:hover': {
-                  backgroundColor: '#049851',
-                  boxShadow: '0 6px 20px rgba(6, 193, 103, 0.5)',
-                },
-              }}
-            >
-              New Order
-            </Button>
-          </Grid>
-          <Grid size={{ xs: 6, sm: 4 }}>
-            <Button
-              variant="outlined"
-              size="medium"
-              fullWidth
-              onClick={() => navigate('/tables')}
-              startIcon={<TableRestaurantIcon />}
-              sx={{
-                py: 1.2,
-                borderRadius: 9999,
-                fontWeight: 700,
-                color: '#000000',
-                borderColor: '#EEEEEE',
-                backgroundColor: '#FFFFFF',
-                '&:hover': {
-                  borderColor: '#06C167',
-                  backgroundColor: '#E6F9F0',
-                },
-              }}
-            >
-              Floor Plan
-            </Button>
-          </Grid>
-          <Grid size={{ xs: 6, sm: 4 }}>
-            <Button
-              variant="outlined"
-              size="medium"
-              fullWidth
-              onClick={() => navigate('/kitchen')}
-              startIcon={<SoupKitchenIcon />}
-              sx={{
-                py: 1.2,
-                borderRadius: 9999,
-                fontWeight: 700,
-                color: '#000000',
-                borderColor: '#EEEEEE',
-                backgroundColor: '#FFFFFF',
-                '&:hover': {
-                  borderColor: '#06C167',
-                  backgroundColor: '#E6F9F0',
-                },
-              }}
-            >
-              KDS Prep
-            </Button>
-          </Grid>
-        </Grid>
-
-        {/* 4 KPI Cards Grid */}
-        <Grid container spacing={{ xs: 1.25, sm: 2 }}>
-          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
-            <KpiCard
-              title="Today's Sales"
-              value={formatINR(44825)}
-              change="+12.5%"
-              isPositive={true}
-              icon={<AttachMoneyIcon />}
-            />
-          </Grid>
-          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
-            <KpiCard
-              title="Orders"
-              value="128"
-              change="+8.0%"
-              isPositive={true}
-              icon={<ShoppingBagIcon />}
-            />
-          </Grid>
-          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
-            <KpiCard
-              title="Average Order"
-              value={formatINR(350.2)}
-              change="+2.2%"
-              isPositive={true}
-              icon={<CreditCardIcon />}
-            />
-          </Grid>
-          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
-            <KpiCard
-              title="Tips"
-              value={formatINR(6207)}
-              change="+15.4%"
-              isPositive={true}
-              icon={<VolunteerActivismIcon />}
-            />
-          </Grid>
-        </Grid>
-
         {/* Sales Overview & Top Items */}
         <Grid container spacing={{ xs: 1.5, sm: 2 }}>
           <Grid size={{ xs: 12, lg: 8 }}>
@@ -248,6 +134,46 @@ export const Dashboard: React.FC = () => {
                 ))}
               </Box>
             </Paper>
+          </Grid>
+        </Grid>
+
+        {/* 4 KPI Cards Grid */}
+        <Grid container spacing={{ xs: 1.25, sm: 2 }}>
+          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Today's Sales"
+              value={formatINR(44825)}
+              change="+12.5%"
+              isPositive={true}
+              icon={<AttachMoneyIcon />}
+            />
+          </Grid>
+          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Orders"
+              value="128"
+              change="+8.0%"
+              isPositive={true}
+              icon={<ShoppingBagIcon />}
+            />
+          </Grid>
+          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Average Order"
+              value={formatINR(350.2)}
+              change="+2.2%"
+              isPositive={true}
+              icon={<CreditCardIcon />}
+            />
+          </Grid>
+          <Grid size={{ xs: 6, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Tips"
+              value={formatINR(6207)}
+              change="+15.4%"
+              isPositive={true}
+              icon={<VolunteerActivismIcon />}
+            />
           </Grid>
         </Grid>
 
