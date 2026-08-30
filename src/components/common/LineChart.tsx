@@ -16,7 +16,7 @@ export const LineChart: React.FC<LineChartProps> = ({
   data,
   period = 'Week',
   onPeriodChange,
-  height = 220
+  height = 150
 }) => {
   const [hoveredPoint, setHoveredPoint] = useState<{ point: ChartPoint; x: number; y: number } | null>(null);
 
@@ -24,7 +24,7 @@ export const LineChart: React.FC<LineChartProps> = ({
 
   const maxValue = Math.max(...data.map(d => d.value), 100);
   const minValue = Math.min(...data.map(d => d.value), 0);
-  const padding = { top: 24, right: 24, bottom: 36, left: 50 };
+  const padding = { top: 14, right: 16, bottom: 22, left: 38 };
 
   const width = 600; // viewBox SVG width
   const svgHeight = height;
@@ -53,7 +53,7 @@ export const LineChart: React.FC<LineChartProps> = ({
   return (
     <div className="line-chart-container">
       <div className="chart-header">
-        <span className="section-title" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: '#000000' }}>Sales Overview</span>
+        <span className="section-title" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: '#000000', fontSize: '13px', fontWeight: 800 }}>Sales Overview</span>
         <div className="chart-period-tabs">
           {(['Day', 'Week', 'Month'] as const).map(p => (
             <button
@@ -71,13 +71,13 @@ export const LineChart: React.FC<LineChartProps> = ({
         <svg viewBox={`0 0 ${width} ${svgHeight}`} className="line-chart-svg">
           <defs>
             <linearGradient id="uberEatsGreenGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#06C167" stopOpacity="0.25" />
+              <stop offset="0%" stopColor="#06C167" stopOpacity="0.22" />
               <stop offset="100%" stopColor="#06C167" stopOpacity="0.0" />
             </linearGradient>
           </defs>
 
           {/* Horizontal Grid lines */}
-          {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
+          {[0, 0.33, 0.66, 1].map((ratio, i) => {
             const y = padding.top + graphHeight * ratio;
             const val = Math.round(maxValue - ratio * (maxValue - minValue));
             return (
@@ -88,11 +88,12 @@ export const LineChart: React.FC<LineChartProps> = ({
                   x2={width - padding.right}
                   y2={y}
                   stroke="#EEEEEE"
-                  strokeDasharray="4 4"
+                  strokeDasharray="3 3"
+                  strokeWidth="1"
                 />
                 <text
-                  x={padding.left - 10}
-                  y={y + 4}
+                  x={padding.left - 6}
+                  y={y + 3}
                   textAnchor="end"
                   className="chart-axis-label"
                 >
@@ -105,12 +106,12 @@ export const LineChart: React.FC<LineChartProps> = ({
           {/* Area Gradient */}
           <path d={areaD} fill="url(#uberEatsGreenGradient)" />
 
-          {/* Smooth Line Path */}
+          {/* Smooth Line Path - Reduced Thin Stroke */}
           <path
             d={pathD}
             fill="none"
             stroke="#06C167"
-            strokeWidth="3"
+            strokeWidth="2"
             strokeLinecap="round"
           />
 
@@ -120,17 +121,17 @@ export const LineChart: React.FC<LineChartProps> = ({
               <circle
                 cx={pt.x}
                 cy={pt.y}
-                r="4.5"
+                r="3"
                 fill="#FFFFFF"
                 stroke="#06C167"
-                strokeWidth="2.5"
+                strokeWidth="1.5"
                 className="chart-point"
                 onMouseEnter={() => setHoveredPoint({ point: pt.data, x: pt.x, y: pt.y })}
                 onMouseLeave={() => setHoveredPoint(null)}
               />
               <text
                 x={pt.x}
-                y={svgHeight - 10}
+                y={svgHeight - 6}
                 textAnchor="middle"
                 className="chart-axis-label"
               >
@@ -159,7 +160,7 @@ export const LineChart: React.FC<LineChartProps> = ({
         .line-chart-container {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 8px;
           width: 100%;
         }
 
@@ -172,15 +173,15 @@ export const LineChart: React.FC<LineChartProps> = ({
         .chart-period-tabs {
           display: flex;
           background: #F6F6F6;
-          padding: 3px;
+          padding: 2px;
           border-radius: 9999px;
           border: 1px solid #EEEEEE;
         }
 
         .period-btn {
-          font-size: 11px;
+          font-size: 10px;
           font-weight: 700;
-          padding: 5px 14px;
+          padding: 3px 10px;
           border-radius: 9999px;
           border: none;
           background: transparent;
@@ -208,8 +209,9 @@ export const LineChart: React.FC<LineChartProps> = ({
         }
 
         .chart-axis-label {
-          font-size: 10.5px;
+          font-size: 8.5px;
           fill: #545454;
+          font-weight: 600;
           font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
@@ -219,7 +221,7 @@ export const LineChart: React.FC<LineChartProps> = ({
         }
 
         .chart-point:hover {
-          r: 6.5;
+          r: 4.5;
           fill: #06C167;
           stroke: #FFFFFF;
         }
@@ -230,9 +232,9 @@ export const LineChart: React.FC<LineChartProps> = ({
           background: #000000;
           border: 1px solid #141414;
           color: #FFFFFF;
-          padding: 6px 12px;
-          border-radius: 8px;
-          font-size: 11px;
+          padding: 4px 8px;
+          border-radius: 6px;
+          font-size: 10px;
           pointer-events: none;
           box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
           white-space: nowrap;
@@ -240,14 +242,14 @@ export const LineChart: React.FC<LineChartProps> = ({
         }
 
         .tooltip-label {
-          font-size: 10px;
+          font-size: 9px;
           color: #AFAFAF;
         }
 
         .tooltip-val {
           font-weight: 800;
           color: #06C167;
-          font-size: 12px;
+          font-size: 10.5px;
         }
       `}</style>
     </div>

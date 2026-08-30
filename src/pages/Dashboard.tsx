@@ -72,12 +72,12 @@ export const Dashboard: React.FC = () => {
     <MainLayoutTemplate title="Dashboard Overview">
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
         {/* 1st: Sales Overview Chart (Default: Today / Day) */}
-        <Paper elevation={1} sx={{ p: { xs: 1.75, sm: 2.5 }, borderRadius: '16px', backgroundColor: '#FFFFFF', border: '1px solid #EEEEEE', height: 'auto' }}>
+        <Paper elevation={1} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: '16px', backgroundColor: '#FFFFFF', border: '1px solid #EEEEEE', height: 'auto' }}>
           <LineChart
             data={chartDataByPeriod[chartPeriod]}
             period={chartPeriod}
             onPeriodChange={setChartPeriod}
-            height={210}
+            height={160}
           />
         </Paper>
 

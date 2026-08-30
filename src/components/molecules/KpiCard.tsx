@@ -1,11 +1,10 @@
 import React from 'react';
 import { Paper, Box, Typography } from '@mui/material';
-import { MetricBadge } from '../atoms/MetricBadge';
 
 export interface KpiCardProps {
   title: string;
   value: string;
-  change: string;
+  change?: string;
   isPositive?: boolean;
   subtitle?: string;
   icon?: React.ReactNode;
@@ -14,22 +13,19 @@ export interface KpiCardProps {
 export const KpiCard: React.FC<KpiCardProps> = ({
   title,
   value,
-  change,
-  isPositive = true,
-  subtitle = 'vs previous period',
   icon,
 }) => {
   return (
     <Paper
       elevation={1}
       sx={{
-        p: { xs: 1.75, sm: 2 }, // Compact padding (no huge empty white space)
+        p: { xs: 1.5, sm: 1.75 },
         borderRadius: '16px',
         backgroundColor: '#FFFFFF',
         border: '1px solid #EEEEEE',
         display: 'flex',
         flexDirection: 'column',
-        gap: 0.75,
+        gap: 0.5,
         height: 'auto', // Content-fit dynamic height
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
         transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -63,18 +59,9 @@ export const KpiCard: React.FC<KpiCardProps> = ({
         )}
       </Box>
 
-      <Typography variant="h5" sx={{ fontWeight: 800, color: '#000000', letterSpacing: '-0.02em', my: 0.25, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      <Typography variant="h5" sx={{ fontWeight: 800, color: '#000000', letterSpacing: '-0.02em', mt: 0.25, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
         {value}
       </Typography>
-
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 'auto' }}>
-        <MetricBadge change={change} isPositive={isPositive} />
-        {subtitle && (
-          <Typography variant="caption" sx={{ color: '#8E8E8E', fontWeight: 500, fontSize: '0.7rem' }}>
-            {subtitle}
-          </Typography>
-        )}
-      </Box>
     </Paper>
   );
 };
