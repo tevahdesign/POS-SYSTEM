@@ -1,13 +1,31 @@
 import React, { useState } from 'react';
-import { Header } from '../components/common/Header';
-import { KpiCard } from '../components/common/KpiCard';
+import {
+  Box,
+  Grid,
+  Paper,
+  Button,
+  Typography,
+  Divider,
+} from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+
+import { MainLayoutTemplate } from '../components/templates/MainLayoutTemplate';
+import { KpiCard } from '../components/molecules/KpiCard';
 import { LineChart } from '../components/common/LineChart';
-import { Calendar, Download, DollarSign, ShoppingBag, CreditCard, HeartHandshake } from 'lucide-react';
 import { formatINR } from '../utils/formatters';
+
+import { NotificationToast } from '../components/atoms/NotificationToast';
 
 export const Reports: React.FC = () => {
   const [activeReportTab, setActiveReportTab] = useState<string>('Sales Summary');
   const [chartPeriod, setChartPeriod] = useState<'Day' | 'Week' | 'Month'>('Week');
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
 
   const reportTabs = [
     'Sales Summary',
@@ -15,7 +33,7 @@ export const Reports: React.FC = () => {
     'Category Sales',
     'Payment Summary',
     'Labor Report',
-    'Inventory Report'
+    'Inventory Report',
   ];
 
   const salesTrendData = [
@@ -25,11 +43,12 @@ export const Reports: React.FC = () => {
     { label: '10 Jun', value: 52000 },
     { label: '11 Jun', value: 44820 },
     { label: '12 Jun', value: 49000 },
-    { label: '13 Jun', value: 53000 }
+    { label: '13 Jun', value: 53000 },
   ];
 
   const handleExportCSV = () => {
-    const csvContent = 'data:text/csv;charset=utf-8,Date,Sales,Orders,AvgOrder\n07 Jun,34000,110,309.00\n08 Jun,41000,125,328.00\n09 Jun,38500,118,326.20\n10 Jun,52000,145,358.60\n11 Jun,44820,128,350.20\n12 Jun,49000,140,350.00\n13 Jun,53000,150,353.30';
+    const csvContent =
+      'data:text/csv;charset=utf-8,Date,Sales,Orders,AvgOrder\n07 Jun,34000,110,309.00\n08 Jun,41000,125,328.00\n09 Jun,38500,118,326.20\n10 Jun,52000,145,358.60\n11 Jun,44820,128,350.20\n12 Jun,49000,140,350.00\n13 Jun,53000,150,353.30';
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
@@ -37,180 +56,141 @@ export const Reports: React.FC = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    setToastMsg(`Exported "${activeReportTab}" report as CSV successfully.`);
+    setToastOpen(true);
   };
 
   return (
-    <div className="main-content">
-      <Header title="Reports & Analytics" />
+    <MainLayoutTemplate title="Reports & Analytics">
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+        {/* Top Controls Bar */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<CalendarTodayIcon sx={{ color: '#6366F1' }} />}
+            sx={{ borderRadius: 9999, borderColor: '#E2E8F0', color: '#0F172A', fontWeight: 600, backgroundColor: '#FFFFFF' }}
+          >
+            07 Jun 2026 - 13 Jun 2026
+          </Button>
 
-      {/* Top Controls Bar */}
-      <div className="reports-top-bar">
-        <div className="reports-date-picker">
-          <Calendar size={14} className="icon-orange" />
-          <span>07 Jun 2026 - 13 Jun 2026</span>
-        </div>
+          <Button
+            variant="contained"
+            onClick={handleExportCSV}
+            startIcon={<DownloadIcon />}
+            sx={{
+              borderRadius: 9999, // Yoko Pill
+              fontWeight: 800,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+              boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
+            }}
+          >
+            Export CSV / PDF
+          </Button>
+        </Box>
 
-        <button className="btn btn-secondary" onClick={handleExportCSV}>
-          <Download size={14} /> Export CSV / PDF
-        </button>
-      </div>
+        <Grid container spacing={2.5}>
+          {/* Left Vertical Sub-Navigation Tabs */}
+          <Grid size={{ xs: 12, md: 3, lg: 2.5 }}>
+            <Paper elevation={1} sx={{ p: 1.5, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: 0.75 }}>
+              {reportTabs.map((tab) => {
+                const isActive = activeReportTab === tab;
+                return (
+                  <Button
+                    key={tab}
+                    fullWidth
+                    onClick={() => setActiveReportTab(tab)}
+                    sx={{
+                      justifyContent: 'flex-start',
+                      px: 2,
+                      py: 1.1,
+                      borderRadius: 9999, // Yoko Pill Tab
+                      fontWeight: isActive ? 800 : 600,
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      background: isActive ? 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)' : 'transparent',
+                      color: isActive ? '#FFFFFF' : '#64748B',
+                      boxShadow: isActive ? '0 2px 10px rgba(99, 102, 241, 0.3)' : 'none',
+                      '&:hover': {
+                        background: isActive ? 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)' : '#F1F5F9',
+                        color: isActive ? '#FFFFFF' : '#0F172A',
+                      },
+                    }}
+                  >
+                    {tab}
+                  </Button>
+                );
+              })}
+            </Paper>
+          </Grid>
 
-      <div className="reports-grid-layout">
-        {/* Left Vertical Sub-Navigation Tabs */}
-        <div className="pos-card reports-sidebar-tabs">
-          {reportTabs.map((tab) => (
-            <button
-              key={tab}
-              className={`report-tab-btn ${activeReportTab === tab ? 'active' : ''}`}
-              onClick={() => setActiveReportTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+          {/* Right Content Body */}
+          <Grid size={{ xs: 12, md: 9, lg: 9.5 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+              {/* Summary KPI Cards Grid */}
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <KpiCard
+                    title="Total Sales"
+                    value={formatINR(284507)}
+                    change="+12.5%"
+                    isPositive={true}
+                    icon={<AttachMoneyIcon />}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <KpiCard
+                    title="Total Orders"
+                    value="856"
+                    change="+10.2%"
+                    isPositive={true}
+                    icon={<ShoppingBagIcon />}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <KpiCard
+                    title="Average Order"
+                    value={formatINR(332.4)}
+                    change="+4.8%"
+                    isPositive={true}
+                    icon={<CreditCardIcon />}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <KpiCard
+                    title="Total Tips"
+                    value={formatINR(41255)}
+                    change="+11.2%"
+                    isPositive={true}
+                    icon={<VolunteerActivismIcon />}
+                  />
+                </Grid>
+              </Grid>
 
-        {/* Right Content Body */}
-        <div className="reports-body">
-          {/* Summary KPI Cards Grid */}
-          <div className="reports-kpi-grid">
-            <KpiCard
-              title="Total Sales"
-              value={formatINR(284507)}
-              change="+12.5%"
-              isPositive={true}
-              icon={<DollarSign size={16} />}
-            />
-            <KpiCard
-              title="Total Orders"
-              value="856"
-              change="+10.2%"
-              isPositive={true}
-              icon={<ShoppingBag size={16} />}
-            />
-            <KpiCard
-              title="Average Order"
-              value={formatINR(332.40)}
-              change="+4.8%"
-              isPositive={true}
-              icon={<CreditCard size={16} />}
-            />
-            <KpiCard
-              title="Total Tips"
-              value={formatINR(41255)}
-              change="+11.2%"
-              isPositive={true}
-              icon={<HeartHandshake size={16} />}
-            />
-          </div>
+              {/* Sales Trend Chart Card */}
+              <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: '#0F172A', mb: 2, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  Sales Trend ({activeReportTab})
+                </Typography>
+                <Divider sx={{ mb: 2, borderColor: '#E2E8F0' }} />
+                <LineChart
+                  data={salesTrendData}
+                  period={chartPeriod}
+                  onPeriodChange={setChartPeriod}
+                  height={250}
+                />
+              </Paper>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
 
-          {/* Sales Trend Chart Card */}
-          <div className="pos-card sales-trend-card">
-            <div className="card-title-bar">
-              <h3 className="section-title">Sales Trend</h3>
-            </div>
-            <LineChart
-              data={salesTrendData}
-              period={chartPeriod}
-              onPeriodChange={setChartPeriod}
-              height={240}
-            />
-          </div>
-        </div>
-      </div>
-
-      <style>{`
-        .reports-top-bar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 20px;
-        }
-
-        .reports-date-picker {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          background: #FFFFFF;
-          border: 1px solid var(--border-color);
-          padding: 6px 14px;
-          border-radius: var(--radius-sm);
-          font-size: 12px;
-          font-weight: 600;
-        }
-
-        .icon-orange {
-          color: var(--primary-orange);
-        }
-
-        .reports-grid-layout {
-          display: grid;
-          grid-template-columns: 200px 1fr;
-          gap: 16px;
-        }
-
-        .reports-sidebar-tabs {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          padding: 8px;
-          height: fit-content;
-        }
-
-        .report-tab-btn {
-          text-align: left;
-          padding: 10px 14px;
-          font-size: 13px;
-          font-weight: 500;
-          border: none;
-          background: transparent;
-          color: var(--text-secondary);
-          border-radius: var(--radius-sm);
-          cursor: pointer;
-          transition: all 0.15s ease;
-        }
-
-        .report-tab-btn:hover {
-          background: #F3F4F6;
-          color: var(--text-primary);
-        }
-
-        .report-tab-btn.active {
-          background: var(--primary-orange-light);
-          color: var(--primary-orange);
-          font-weight: 700;
-        }
-
-        .reports-body {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-
-        .reports-kpi-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 12px;
-        }
-
-        .sales-trend-card {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        @media (max-width: 1024px) {
-          .reports-grid-layout {
-            grid-template-columns: 1fr;
-          }
-          .reports-sidebar-tabs {
-            flex-direction: row;
-            overflow-x: auto;
-          }
-          .reports-kpi-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
-      `}</style>
-    </div>
+      <NotificationToast
+        open={toastOpen}
+        message={toastMsg}
+        onClose={() => setToastOpen(false)}
+      />
+    </MainLayoutTemplate>
   );
 };

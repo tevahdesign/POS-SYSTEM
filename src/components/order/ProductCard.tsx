@@ -15,7 +15,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onAddDirect
 }) => {
   return (
-    <div className="pos-card product-card pos-card-hover" onClick={() => onSelect(product)}>
+    <div className="yoko-card product-card yoko-card-hover" onClick={() => onSelect(product)}>
       <div className="product-image-container">
         <img src={product.image} alt={product.name} className="product-image" />
         <button
@@ -51,47 +51,63 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         .product-card {
           display: flex;
           flex-direction: column;
-          padding: 10px;
+          padding: 12px;
           cursor: pointer;
-          border-radius: var(--radius-md);
+          border-radius: var(--radius-lg);
+          background: #FFFFFF;
+          border: 1px solid #E2E8F0;
+          box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .product-card:hover {
+          border-color: rgba(99, 102, 241, 0.4);
+          box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+          transform: translateY(-2px);
         }
 
         .product-image-container {
           position: relative;
           width: 100%;
           height: 110px;
-          border-radius: var(--radius-sm);
+          border-radius: var(--radius-md);
           overflow: hidden;
-          background-color: #F3F4F6;
-          margin-bottom: 8px;
+          background-color: #F1F5F9;
+          margin-bottom: 10px;
         }
 
         .product-image {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: transform 0.2s ease;
+          transition: transform 0.3s ease;
         }
 
         .product-card:hover .product-image {
-          transform: scale(1.04);
+          transform: scale(1.06);
         }
 
         .product-info-btn {
           position: absolute;
           top: 6px;
           right: 6px;
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
+          width: 26px;
+          height: 26px;
+          border-radius: 9999px;
           background: rgba(255, 255, 255, 0.85);
-          border: none;
+          border: 1px solid #E2E8F0;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: var(--text-secondary);
+          color: #64748B;
           cursor: pointer;
-          backdrop-filter: blur(4px);
+          backdrop-filter: blur(8px);
+          transition: all 0.2s ease;
+        }
+
+        .product-info-btn:hover {
+          background: #FFFFFF;
+          color: #0F172A;
         }
 
         .product-details {
@@ -102,11 +118,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         }
 
         .product-title {
-          font-size: 13px;
-          font-weight: 600;
-          color: var(--text-primary);
-          line-height: 1.2;
-          margin-bottom: 6px;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 13.5px;
+          font-weight: 700;
+          color: #0F172A;
+          line-height: 1.3;
+          margin-bottom: 8px;
         }
 
         .product-bottom {
@@ -116,28 +133,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         }
 
         .product-price {
-          font-size: 13px;
-          font-weight: 700;
-          color: var(--text-primary);
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 14px;
+          font-weight: 800;
+          color: #0F172A;
         }
 
         .product-add-btn {
-          width: 28px;
-          height: 28px;
-          border-radius: 6px;
-          background: var(--primary-orange-light);
-          color: var(--primary-orange);
-          border: 1px solid var(--primary-orange-border);
+          width: 30px;
+          height: 30px;
+          border-radius: 9999px;
+          background: var(--yoko-primary-gradient);
+          color: #FFFFFF;
+          border: none;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          transition: all 0.15s ease;
+          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+          transition: all 0.2s ease;
         }
 
         .product-add-btn:hover {
-          background: var(--primary-orange);
-          color: #FFFFFF;
+          box-shadow: 0 4px 14px rgba(99, 102, 241, 0.45);
+          transform: scale(1.08);
         }
       `}</style>
     </div>

@@ -16,7 +16,7 @@ export const LineChart: React.FC<LineChartProps> = ({
   data,
   period = 'Week',
   onPeriodChange,
-  height = 200
+  height = 220
 }) => {
   const [hoveredPoint, setHoveredPoint] = useState<{ point: ChartPoint; x: number; y: number } | null>(null);
 
@@ -24,7 +24,7 @@ export const LineChart: React.FC<LineChartProps> = ({
 
   const maxValue = Math.max(...data.map(d => d.value), 100);
   const minValue = Math.min(...data.map(d => d.value), 0);
-  const padding = { top: 20, right: 20, bottom: 30, left: 45 };
+  const padding = { top: 24, right: 24, bottom: 36, left: 50 };
 
   const width = 600; // viewBox SVG width
   const svgHeight = height;
@@ -53,7 +53,7 @@ export const LineChart: React.FC<LineChartProps> = ({
   return (
     <div className="line-chart-container">
       <div className="chart-header">
-        <span className="section-title">Sales Overview</span>
+        <span className="section-title" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: '#0F172A' }}>Sales Overview</span>
         <div className="chart-period-tabs">
           {(['Day', 'Week', 'Month'] as const).map(p => (
             <button
@@ -70,9 +70,9 @@ export const LineChart: React.FC<LineChartProps> = ({
       <div className="chart-svg-wrapper">
         <svg viewBox={`0 0 ${width} ${svgHeight}`} className="line-chart-svg">
           <defs>
-            <linearGradient id="orangeGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#F97316" stopOpacity="0.2" />
-              <stop offset="100%" stopColor="#F97316" stopOpacity="0.0" />
+            <linearGradient id="yokoIndigoLightGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#6366F1" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#6366F1" stopOpacity="0.0" />
             </linearGradient>
           </defs>
 
@@ -87,11 +87,11 @@ export const LineChart: React.FC<LineChartProps> = ({
                   y1={y}
                   x2={width - padding.right}
                   y2={y}
-                  stroke="#EAEAEA"
+                  stroke="#E2E8F0"
                   strokeDasharray="4 4"
                 />
                 <text
-                  x={padding.left - 8}
+                  x={padding.left - 10}
                   y={y + 4}
                   textAnchor="end"
                   className="chart-axis-label"
@@ -103,14 +103,14 @@ export const LineChart: React.FC<LineChartProps> = ({
           })}
 
           {/* Area Gradient */}
-          <path d={areaD} fill="url(#orangeGradient)" />
+          <path d={areaD} fill="url(#yokoIndigoLightGradient)" />
 
           {/* Smooth Line Path */}
           <path
             d={pathD}
             fill="none"
-            stroke="#F97316"
-            strokeWidth="2.5"
+            stroke="#6366F1"
+            strokeWidth="3"
             strokeLinecap="round"
           />
 
@@ -120,10 +120,10 @@ export const LineChart: React.FC<LineChartProps> = ({
               <circle
                 cx={pt.x}
                 cy={pt.y}
-                r="4"
+                r="4.5"
                 fill="#FFFFFF"
-                stroke="#F97316"
-                strokeWidth="2"
+                stroke="#6366F1"
+                strokeWidth="2.5"
                 className="chart-point"
                 onMouseEnter={() => setHoveredPoint({ point: pt.data, x: pt.x, y: pt.y })}
                 onMouseLeave={() => setHoveredPoint(null)}
@@ -159,7 +159,7 @@ export const LineChart: React.FC<LineChartProps> = ({
         .line-chart-container {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 16px;
           width: 100%;
         }
 
@@ -171,28 +171,29 @@ export const LineChart: React.FC<LineChartProps> = ({
 
         .chart-period-tabs {
           display: flex;
-          background: #F3F4F6;
-          padding: 2px;
-          border-radius: 6px;
+          background: #F1F5F9;
+          padding: 3px;
+          border-radius: 9999px;
+          border: 1px solid #E2E8F0;
         }
 
         .period-btn {
           font-size: 11px;
-          font-weight: 500;
-          padding: 4px 10px;
-          border-radius: 4px;
+          font-weight: 600;
+          padding: 5px 12px;
+          border-radius: 9999px;
           border: none;
           background: transparent;
-          color: var(--text-secondary);
+          color: #64748B;
           cursor: pointer;
-          transition: all 0.15s ease;
+          transition: all 0.2s ease;
         }
 
         .period-btn.active {
-          background: #FFFFFF;
-          color: var(--primary-orange);
-          font-weight: 600;
-          box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+          background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+          color: #FFFFFF;
+          font-weight: 700;
+          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
         }
 
         .chart-svg-wrapper {
@@ -207,43 +208,46 @@ export const LineChart: React.FC<LineChartProps> = ({
         }
 
         .chart-axis-label {
-          font-size: 10px;
-          fill: #9CA3AF;
-          font-family: var(--font-family);
+          font-size: 10.5px;
+          fill: #64748B;
+          font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .chart-point {
           cursor: pointer;
-          transition: r 0.15s ease;
+          transition: all 0.2s ease;
         }
 
         .chart-point:hover {
-          r: 6;
-          fill: var(--primary-orange);
+          r: 6.5;
+          fill: #6366F1;
+          stroke: #FFFFFF;
         }
 
         .chart-tooltip {
           position: absolute;
-          transform: translate(-50%, -120%);
-          background: #1F2937;
+          transform: translate(-50%, -125%);
+          background: #0F172A;
+          border: 1px solid #1E293B;
           color: #FFFFFF;
-          padding: 4px 8px;
-          border-radius: 6px;
+          padding: 6px 12px;
+          border-radius: 8px;
           font-size: 11px;
           pointer-events: none;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          box-shadow: 0 10px 25px rgba(15,23,42,0.15);
           white-space: nowrap;
           z-index: 10;
         }
 
         .tooltip-label {
           font-size: 10px;
-          color: #9CA3AF;
+          color: #94A3B8;
         }
 
         .tooltip-val {
-          font-weight: 700;
-          color: var(--primary-orange);
+          font-weight: 800;
+          color: #818CF8;
+          font-size: 12px;
         }
       `}</style>
     </div>

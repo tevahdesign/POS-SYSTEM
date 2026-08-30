@@ -1,11 +1,28 @@
 import React, { useState } from 'react';
-import { Header } from '../components/common/Header';
-import { StatusBadge } from '../components/common/StatusBadge';
-import { AuditModal } from '../components/reconciliation/AuditModal';
+import {
+  Box,
+  Grid,
+  Paper,
+  Typography,
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow,
+  TableContainer,
+  Chip,
+} from '@mui/material';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+
+import { MainLayoutTemplate } from '../components/templates/MainLayoutTemplate';
+import { StatusChip } from '../components/atoms/StatusChip';
+import { CategoryTab } from '../components/atoms/CategoryTab';
+import { AuditModal } from '../components/organisms/Modals/AuditModal';
 import { usePosStore } from '../store/posStore';
 import { PaymentTransaction } from '../types/pos';
-import { Calendar, AlertCircle } from 'lucide-react';
 import { formatINR } from '../utils/formatters';
+
+import { EmptyState } from '../components/atoms/EmptyState';
 
 export const PaymentsReconciliation: React.FC = () => {
   const { payments } = usePosStore();
@@ -23,175 +40,139 @@ export const PaymentsReconciliation: React.FC = () => {
   };
 
   return (
-    <div className="main-content">
-      <Header title="Payments & Reconciliation" />
+    <MainLayoutTemplate title="Payments & Reconciliation">
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+        {/* Navigation Tabs & Date */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            {(['Payments', 'Reconciliation'] as const).map((tab) => (
+              <CategoryTab
+                key={tab}
+                label={tab}
+                active={activeTab === tab}
+                onClick={() => setActiveTab(tab)}
+              />
+            ))}
+          </Box>
 
-      {/* Primary Navigation Tabs */}
-      <div className="nav-tabs">
-        {(['Payments', 'Reconciliation'] as const).map((tab) => (
-          <button
-            key={tab}
-            className={`tab-item ${activeTab === tab ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab)}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              p: 1,
+              px: 2,
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #E2E8F0',
+              borderRadius: 9999, // Yoko Pill Badge
+              fontWeight: 700,
+              fontSize: '0.8125rem',
+              color: '#0F172A',
+              boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+            }}
           >
-            {tab}
-          </button>
-        ))}
-      </div>
+            <CalendarTodayIcon sx={{ fontSize: 16, color: '#6366F1' }} />
+            <span>15 Jun 2026</span>
+          </Box>
+        </Box>
 
-      {/* Date Bar */}
-      <div className="reconcile-date-bar">
-        <div className="date-badge">
-          <Calendar size={14} className="icon-orange" />
-          <span>15 Jun 2026</span>
-        </div>
-      </div>
+        {/* Reconciliation Summary Cards */}
+        <Grid container spacing={2.5}>
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', textAlign: 'center' }}>
+              <Typography variant="caption" sx={{ color: '#64748B', fontWeight: 600 }}>
+                POS Sales
+              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: 800, mt: 0.5, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                {formatINR(posSalesTotal)}
+              </Typography>
+            </Paper>
+          </Grid>
 
-      {/* Reconciliation Summary Cards */}
-      <div className="reconcile-summary-grid">
-        <div className="pos-card recon-card">
-          <span className="recon-card-title">POS Sales</span>
-          <span className="recon-card-value">{formatINR(posSalesTotal)}</span>
-        </div>
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', textAlign: 'center' }}>
+              <Typography variant="caption" sx={{ color: '#64748B', fontWeight: 600 }}>
+                Bank Deposits
+              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: 800, mt: 0.5, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                {formatINR(bankDepositsTotal)}
+              </Typography>
+            </Paper>
+          </Grid>
 
-        <div className="pos-card recon-card">
-          <span className="recon-card-title">Bank Deposits</span>
-          <span className="recon-card-value">{formatINR(bankDepositsTotal)}</span>
-        </div>
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', textAlign: 'center' }}>
+              <Typography variant="caption" sx={{ color: '#64748B', fontWeight: 600 }}>
+                Difference
+              </Typography>
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 800,
+                  mt: 0.5,
+                  color: totalDifference < 0 ? '#B91C1C' : '#047857',
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                }}
+              >
+                {formatINR(Math.abs(totalDifference))}
+              </Typography>
+            </Paper>
+          </Grid>
+        </Grid>
 
-        <div className="pos-card recon-card diff-card">
-          <span className="recon-card-title">Difference</span>
-          <span className={`recon-card-value ${totalDifference < 0 ? 'text-red' : 'text-green'}`}>
-            {formatINR(Math.abs(totalDifference))}
-          </span>
-        </div>
-      </div>
+        {/* Transactions Table */}
+        <Paper elevation={1} sx={{ borderRadius: '20px', overflow: 'hidden', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+          <Box sx={{ p: 2.5, borderBottom: '1px solid #E2E8F0' }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Transactions Log
+            </Typography>
+          </Box>
 
-      {/* Transactions Table */}
-      <div className="pos-card p-0">
-        <div className="table-header-title">
-          <h3 className="section-title">Transactions Log</h3>
-        </div>
+          {payments.length === 0 ? (
+            <EmptyState title="No transactions logged" description="Completed transactions and bank reconciliations will appear here." />
+          ) : (
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Payment ID</TableCell>
+                    <TableCell>Method</TableCell>
+                    <TableCell>POS Amount</TableCell>
+                    <TableCell>Bank Amount</TableCell>
+                    <TableCell>Status</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {payments.map((tx) => (
+                    <TableRow
+                      key={tx.id}
+                      hover
+                      onClick={() => handleTxClick(tx)}
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      <TableCell sx={{ fontWeight: 800, color: '#4338CA' }}>{tx.paymentId}</TableCell>
+                      <TableCell>
+                        <Chip label={tx.method} size="small" sx={{ backgroundColor: '#EEF2FF', color: '#4338CA', fontWeight: 700, borderRadius: 9999 }} />
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 800, color: '#0F172A' }}>{formatINR(tx.posAmount)}</TableCell>
+                      <TableCell sx={{ fontWeight: 800, color: '#0F172A' }}>{formatINR(tx.bankAmount)}</TableCell>
+                      <TableCell>
+                        <StatusChip status={tx.status} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </Paper>
 
-        <div className="pos-table-container">
-          <table className="pos-table">
-            <thead>
-              <tr>
-                <th>Payment ID</th>
-                <th>Method</th>
-                <th>POS Amount</th>
-                <th>Bank Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {payments.map((tx) => (
-                <tr key={tx.id} className="clickable-row" onClick={() => handleTxClick(tx)}>
-                  <td className="font-semibold">{tx.paymentId}</td>
-                  <td>
-                    <span className="method-pill">{tx.method}</span>
-                  </td>
-                  <td className="font-semibold">{formatINR(tx.posAmount)}</td>
-                  <td className="font-semibold">{formatINR(tx.bankAmount)}</td>
-                  <td>
-                    <StatusBadge status={tx.status} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <AuditModal
-        isOpen={auditModalOpen}
-        onClose={() => setAuditModalOpen(false)}
-        transaction={selectedTx}
-      />
-
-      <style>{`
-        .reconcile-date-bar {
-          display: flex;
-          align-items: center;
-          margin-bottom: 16px;
-        }
-
-        .date-badge {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          background: #FFFFFF;
-          border: 1px solid var(--border-color);
-          padding: 6px 12px;
-          border-radius: var(--radius-sm);
-          font-size: 12px;
-          font-weight: 600;
-        }
-
-        .icon-orange {
-          color: var(--primary-orange);
-        }
-
-        .reconcile-summary-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
-          margin-bottom: 20px;
-        }
-
-        .recon-card {
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          text-align: center;
-          padding: 20px;
-        }
-
-        .recon-card-title {
-          font-size: 12px;
-          color: var(--text-secondary);
-          font-weight: 500;
-        }
-
-        .recon-card-value {
-          font-size: 22px;
-          font-weight: 800;
-          color: var(--text-primary);
-        }
-
-        .text-red {
-          color: #DC2626;
-        }
-
-        .text-green {
-          color: var(--status-success);
-        }
-
-        .table-header-title {
-          padding: 14px 16px;
-          border-bottom: 1px solid var(--border-color);
-        }
-
-        .method-pill {
-          background: #F3F4F6;
-          padding: 2px 8px;
-          border-radius: 4px;
-          font-size: 11px;
-          font-weight: 600;
-        }
-
-        .clickable-row {
-          cursor: pointer;
-        }
-
-        .p-0 { padding: 0 !important; }
-
-        @media (max-width: 768px) {
-          .reconcile-summary-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
-    </div>
+        <AuditModal
+          isOpen={auditModalOpen}
+          onClose={() => setAuditModalOpen(false)}
+          transaction={selectedTx}
+        />
+      </Box>
+    </MainLayoutTemplate>
   );
 };

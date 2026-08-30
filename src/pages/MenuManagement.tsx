@@ -1,237 +1,236 @@
 import React, { useState } from 'react';
-import { Header } from '../components/common/Header';
-import { AddEditItemModal } from '../components/menu/AddEditItemModal';
+import {
+  Box,
+  Paper,
+  Button,
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow,
+  TableContainer,
+  IconButton,
+  Avatar,
+  Chip,
+  Typography,
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
+
+import { MainLayoutTemplate } from '../components/templates/MainLayoutTemplate';
+import { SearchInput } from '../components/atoms/SearchInput';
+import { CategoryTab } from '../components/atoms/CategoryTab';
+import { AddEditItemModal } from '../components/organisms/Modals/AddEditItemModal';
 import { usePosStore, posStore } from '../store/posStore';
 import { Product } from '../types/pos';
-import { Plus, Search, Edit2, Trash2 } from 'lucide-react';
 import { formatINR } from '../utils/formatters';
+
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { NotificationToast } from '../components/atoms/NotificationToast';
+import { EmptyState } from '../components/atoms/EmptyState';
 
 export const MenuManagement: React.FC = () => {
   const { products } = usePosStore();
-  const [activeTab, setActiveTab] = useState<'Items' | 'Modifiers' | 'Categories' | 'Combo Meals'>('Items');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const filteredProducts = products.filter(p =>
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.category.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
+
+  const categories = ['All', ...Array.from(new Set(products.map((p) => p.category)))];
+
+  const filteredProducts = products.filter((p) => {
+    const matchesCat = selectedCategory === 'All' || p.category === selectedCategory;
+    const matchesSearch =
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.category.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCat && matchesSearch;
+  });
 
   const handleEdit = (product: Product) => {
-    setEditingProduct(product);
+    setSelectedProduct(product);
     setIsModalOpen(true);
-  };
-
-  const handleDelete = (productId: string) => {
-    if (confirm('Are you sure you want to delete this menu item?')) {
-      posStore.deleteProduct(productId);
-    }
   };
 
   const handleAddNew = () => {
-    setEditingProduct(null);
+    setSelectedProduct(null);
     setIsModalOpen(true);
   };
 
+  const handleConfirmDelete = () => {
+    if (deleteTarget) {
+      posStore.deleteProduct(deleteTarget.id);
+      setToastMsg(`Deleted "${deleteTarget.name}" from catalog`);
+      setToastOpen(true);
+      setDeleteTarget(null);
+    }
+  };
+
   return (
-    <div className="main-content">
-      <Header title="Menu Management" />
+    <MainLayoutTemplate title="Menu & Catalog Management">
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+        {/* Top Controls Bar */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+          <Box sx={{ flex: 1, maxWidth: 400 }}>
+            <SearchInput
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search catalog items..."
+            />
+          </Box>
 
-      {/* Primary Sub-Navigation Tabs matching reference */}
-      <div className="nav-tabs">
-        {(['Items', 'Modifiers', 'Categories', 'Combo Meals'] as const).map((tab) => (
-          <button
-            key={tab}
-            className={`tab-item ${activeTab === tab ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab)}
+          <Button
+            variant="contained"
+            onClick={handleAddNew}
+            startIcon={<AddIcon />}
+            sx={{
+              px: 3,
+              py: 1.1,
+              borderRadius: 9999, // Yoko Pill Button
+              fontWeight: 800,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+              boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
+            }}
           >
-            {tab}
-          </button>
-        ))}
-      </div>
+            Add New Menu Item
+          </Button>
+        </Box>
 
-      {/* Top Search Bar & Add Button */}
-      <div className="menu-action-bar">
-        <div className="search-bar-wrapper flex-1">
-          <Search size={16} className="search-icon" />
-          <input
-            type="text"
-            className="input-field search-input"
-            placeholder="Search menu items..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+        {/* Category Tabs */}
+        <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: 0.5 }}>
+          {categories.map((cat) => (
+            <CategoryTab
+              key={cat}
+              label={cat}
+              active={selectedCategory === cat}
+              onClick={() => setSelectedCategory(cat)}
+            />
+          ))}
+        </Box>
 
-        <button className="btn btn-primary" onClick={handleAddNew}>
-          <Plus size={16} /> + Add Item
-        </button>
-      </div>
+        {/* Menu Catalog Table */}
+        <Paper elevation={1} sx={{ borderRadius: '20px', overflow: 'hidden', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+          {filteredProducts.length === 0 ? (
+            <EmptyState
+              title="No menu items match criteria"
+              description={`No catalog item matches "${searchQuery}" in ${selectedCategory}.`}
+              actionLabel="Clear Filters"
+              onAction={() => {
+                setSearchQuery('');
+                setSelectedCategory('All');
+              }}
+            />
+          ) : (
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Product Item</TableCell>
+                    <TableCell>Category</TableCell>
+                    <TableCell>Price</TableCell>
+                    <TableCell>Preparation Time</TableCell>
+                    <TableCell>Stock Alert</TableCell>
+                    <TableCell align="right">Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredProducts.map((product) => (
+                    <TableRow key={product.id} hover>
+                      <TableCell>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          <Avatar
+                            src={product.image}
+                            alt={product.name}
+                            variant="rounded"
+                            sx={{ width: 44, height: 44, borderRadius: '12px' }}
+                          />
+                          <Box>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                              {product.name}
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: '#64748B' }}>
+                              {product.description || 'No description provided'}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </TableCell>
 
-      {/* Catalog Table */}
-      <div className="pos-card p-0">
-        <div className="pos-table-container">
-          <table className="pos-table">
-            <thead>
-              <tr>
-                <th>Item Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th style={{ textAlign: 'right' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.map((product) => (
-                <tr key={product.id}>
-                  <td>
-                    <div className="menu-item-cell">
-                      <img src={product.image} alt={product.name} className="menu-thumb" />
-                      <div className="menu-item-info">
-                        <span className="font-semibold">{product.name}</span>
-                        {product.description && (
-                          <span className="muted-text text-truncate">{product.description}</span>
-                        )}
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <span className="category-badge-chip">{product.category}</span>
-                  </td>
-                  <td className="font-semibold">{formatINR(product.price)}</td>
-                  <td>
-                    <span className={`badge ${product.isAvailable ? 'badge-success' : 'badge-error'}`}>
-                      {product.isAvailable ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="action-buttons-group">
-                      <button
-                        className="table-action-btn"
-                        onClick={() => handleEdit(product)}
-                        title="Edit item"
-                      >
-                        <Edit2 size={14} />
-                      </button>
-                      <button
-                        className="table-action-btn delete"
-                        onClick={() => handleDelete(product.id)}
-                        title="Delete item"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                      <TableCell>
+                        <Chip
+                          label={product.category}
+                          size="small"
+                          sx={{ backgroundColor: '#EEF2FF', fontWeight: 700, color: '#4338CA', borderRadius: 9999 }}
+                        />
+                      </TableCell>
 
-      {/* Add / Edit Modal */}
-      <AddEditItemModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        productToEdit={editingProduct}
-      />
+                      <TableCell sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        {formatINR(product.price)}
+                      </TableCell>
 
-      <style>{`
-        .menu-action-bar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-          margin-bottom: 16px;
-        }
+                      <TableCell sx={{ color: '#64748B' }}>
+                        {product.preparationTime || '10'} mins
+                      </TableCell>
 
-        .flex-1 { flex: 1; }
+                      <TableCell>
+                        <Chip
+                          label={product.isAvailable !== false ? 'In Stock' : 'Out of Stock'}
+                          size="small"
+                          sx={{
+                            backgroundColor: product.isAvailable !== false ? '#ECFDF5' : '#FEE2E2',
+                            color: product.isAvailable !== false ? '#047857' : '#B91C1C',
+                            fontWeight: 700,
+                            borderRadius: 9999,
+                          }}
+                        />
+                      </TableCell>
 
-        .search-bar-wrapper {
-          position: relative;
-        }
+                      <TableCell align="right">
+                        <IconButton size="small" aria-label={`Edit ${product.name}`} onClick={() => handleEdit(product)} sx={{ color: '#64748B', '&:hover': { color: '#6366F1' } }}>
+                          <EditIcon sx={{ fontSize: 18 }} />
+                        </IconButton>
+                        <IconButton size="small" aria-label={`Delete ${product.name}`} onClick={() => setDeleteTarget(product)} sx={{ color: '#F43F5E', '&:hover': { color: '#DC2626' } }}>
+                          <DeleteOutlineIcon sx={{ fontSize: 18 }} />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </Paper>
 
-        .search-icon {
-          position: absolute;
-          left: 12px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: var(--text-muted);
-        }
+        <AddEditItemModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          productToEdit={selectedProduct}
+        />
 
-        .search-input {
-          padding-left: 36px;
-        }
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={Boolean(deleteTarget)} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
+          <DialogTitle sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Confirm Item Deletion</DialogTitle>
+          <DialogContent>
+            <Typography variant="body2" sx={{ color: '#64748B' }}>
+              Are you sure you want to delete <strong>"{deleteTarget?.name}"</strong> from your POS catalog?
+            </Typography>
+          </DialogContent>
+          <DialogActions sx={{ p: 2 }}>
+            <Button onClick={() => setDeleteTarget(null)} sx={{ borderRadius: 9999, color: '#64748B' }}>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmDelete} variant="contained" color="error" sx={{ borderRadius: 9999 }}>
+              Delete Item
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
 
-        .menu-item-cell {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .menu-thumb {
-          width: 36px;
-          height: 36px;
-          border-radius: 6px;
-          object-fit: cover;
-        }
-
-        .menu-item-info {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .text-truncate {
-          max-width: 240px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .category-badge-chip {
-          background: #F3F4F6;
-          color: var(--text-primary);
-          padding: 2px 8px;
-          border-radius: 4px;
-          font-size: 11px;
-          font-weight: 500;
-        }
-
-        .action-buttons-group {
-          display: flex;
-          align-items: center;
-          justify-content: flex-end;
-          gap: 6px;
-        }
-
-        .table-action-btn {
-          width: 28px;
-          height: 28px;
-          border-radius: 4px;
-          border: 1px solid var(--border-color);
-          background: #FFFFFF;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-secondary);
-          cursor: pointer;
-          transition: all 0.15s ease;
-        }
-
-        .table-action-btn:hover {
-          border-color: var(--primary-orange);
-          color: var(--primary-orange);
-        }
-
-        .table-action-btn.delete:hover {
-          border-color: #EF4444;
-          color: #EF4444;
-          background: #FEE2E2;
-        }
-
-        .p-0 { padding: 0 !important; }
-      `}</style>
-    </div>
+      <NotificationToast open={toastOpen} message={toastMsg} onClose={() => setToastOpen(false)} />
+    </MainLayoutTemplate>
   );
 };

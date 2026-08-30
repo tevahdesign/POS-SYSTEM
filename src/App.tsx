@@ -1,8 +1,12 @@
 import React from 'react';
 import { BrowserRouter, useLocation } from 'react-router-dom';
-import { Sidebar } from './components/common/Sidebar';
-import { MobileBottomNav } from './components/common/MobileBottomNav';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { posTheme } from './theme/theme';
+import { AppSidebar } from './components/organisms/AppSidebar';
+import { MobileBottomNav } from './components/organisms/MobileBottomNav';
 import { AppRoutes } from './routes';
+import { Box } from '@mui/material';
 
 const AppLayout: React.FC = () => {
   const location = useLocation();
@@ -13,24 +17,38 @@ const AppLayout: React.FC = () => {
   }
 
   return (
-    <div className="app-container">
-      {/* Fixed Desktop Sidebar */}
-      <Sidebar />
+    <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: 'background.default' }}>
+      {/* Desktop Sidebar Organism */}
+      <AppSidebar />
 
-      {/* Dynamic Page Main Content */}
-      <AppRoutes />
+      {/* Main Content Area */}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          minWidth: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          pb: { xs: 8, md: 0 },
+        }}
+      >
+        <AppRoutes />
+      </Box>
 
-      {/* Mobile Fixed Bottom Navigation */}
+      {/* Mobile Bottom Navigation Organism */}
       <MobileBottomNav />
-    </div>
+    </Box>
   );
 };
 
 export const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <AppLayout />
-    </BrowserRouter>
+    <ThemeProvider theme={posTheme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <AppLayout />
+      </BrowserRouter>
+    </ThemeProvider>
   );
 };
 

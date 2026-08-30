@@ -1,13 +1,33 @@
 import React, { useState } from 'react';
-import { Header } from '../components/common/Header';
+import {
+  Box,
+  Grid,
+  Paper,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Typography,
+  Divider,
+} from '@mui/material';
+import SaveIcon from '@mui/icons-material/Save';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+
+import { MainLayoutTemplate } from '../components/templates/MainLayoutTemplate';
 import { usePosStore, posStore } from '../store/posStore';
-import { Save, Check, RotateCcw } from 'lucide-react';
+
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { NotificationToast } from '../components/atoms/NotificationToast';
 
 export const Settings: React.FC = () => {
   const { settings } = usePosStore();
   const [activeCategory, setActiveCategory] = useState<string>('General');
   const [formData, setFormData] = useState({ ...settings });
-  const [isSaved, setIsSaved] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
 
   const categories = [
     'General',
@@ -18,276 +38,242 @@ export const Settings: React.FC = () => {
     'Users & Permissions',
     'Notifications',
     'Backup & Restore',
-    'Integrations'
+    'Integrations',
   ];
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     posStore.updateSettings(formData);
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
+    setToastMsg('Settings updated successfully!');
+    setToastOpen(true);
   };
 
-  const handleResetData = () => {
-    if (confirm('Are you sure you want to reset all POS data back to factory seed defaults?')) {
-      posStore.resetAllState();
-      alert('POS system reset to initial demo state!');
-      window.location.reload();
-    }
+  const handleConfirmResetData = () => {
+    posStore.resetAllState();
+    setResetDialogOpen(false);
+    window.location.reload();
   };
 
   return (
-    <div className="main-content">
-      <Header title="Settings" />
-
-      <div className="settings-layout">
+    <MainLayoutTemplate title="Settings">
+      <Grid container spacing={2.5}>
         {/* Left Sub-Navigation Sidebar */}
-        <div className="pos-card settings-sidebar-card">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              className={`settings-cat-btn ${activeCategory === cat ? 'active' : ''}`}
-              onClick={() => setActiveCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Right Form Card matching reference exactly */}
-        <div className="pos-card settings-form-card">
-          <div className="card-title-bar">
-            <h3 className="section-title">{activeCategory} Settings</h3>
-            {isSaved && (
-              <span className="save-success-tag">
-                <Check size={14} /> Changes saved successfully!
-              </span>
-            )}
-          </div>
-
-          <form onSubmit={handleSave} className="settings-form-body">
-            <div className="form-group">
-              <label className="form-label">Restaurant Name</label>
-              <input
-                type="text"
-                className="input-field"
-                value={formData.restaurantName}
-                onChange={(e) => setFormData({ ...formData, restaurantName: e.target.value })}
-              />
-            </div>
-
-            <div className="form-row">
-              <div className="form-group flex-1">
-                <label className="form-label">Currency</label>
-                <select
-                  className="input-field"
-                  value={formData.currency}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    const sym = val.includes('INR') ? '₹' : val.includes('EUR') ? '€' : val.includes('GBP') ? '£' : '$';
-                    setFormData({ ...formData, currency: val, currencySymbol: sym });
+        <Grid size={{ xs: 12, md: 3, lg: 2.5 }}>
+          <Paper elevation={1} sx={{ p: 1.5, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: 0.75 }}>
+            {categories.map((cat) => {
+              const isActive = activeCategory === cat;
+              return (
+                <Button
+                  key={cat}
+                  fullWidth
+                  onClick={() => setActiveCategory(cat)}
+                  sx={{
+                    justifyContent: 'flex-start',
+                    px: 2,
+                    py: 1.1,
+                    borderRadius: 9999, // Yoko Pill Tab
+                    fontWeight: isActive ? 800 : 600,
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    background: isActive ? 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)' : 'transparent',
+                    color: isActive ? '#FFFFFF' : '#64748B',
+                    boxShadow: isActive ? '0 2px 10px rgba(99, 102, 241, 0.3)' : 'none',
+                    '&:hover': {
+                      background: isActive ? 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)' : '#F1F5F9',
+                      color: isActive ? '#FFFFFF' : '#0F172A',
+                    },
                   }}
                 >
-                  <option value="INR (₹)">INR (₹)</option>
-                  <option value="USD ($)">USD ($)</option>
-                  <option value="EUR (€)">EUR (€)</option>
-                  <option value="GBP (£)">GBP (£)</option>
-                </select>
-              </div>
+                  {cat}
+                </Button>
+              );
+            })}
+          </Paper>
+        </Grid>
 
-              <div className="form-group flex-1">
-                <label className="form-label">Time Zone</label>
-                <select
-                  className="input-field"
-                  value={formData.timezone}
-                  onChange={(e) => setFormData({ ...formData, timezone: e.target.value })}
-                >
-                  <option value="(UTC-05:00) Eastern Time">(UTC-05:00) Eastern Time</option>
-                  <option value="(UTC-08:00) Pacific Time">(UTC-08:00) Pacific Time</option>
-                  <option value="(UTC+00:00) London">(UTC+00:00) London</option>
-                </select>
-              </div>
-            </div>
+        {/* Right Form Card */}
+        <Grid size={{ xs: 12, md: 9, lg: 9.5 }}>
+          <Paper elevation={1} sx={{ p: 4, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                {activeCategory} Settings
+              </Typography>
+            </Box>
 
-            <div className="form-row">
-              <div className="form-group flex-1">
-                <label className="form-label">Date Format</label>
-                <select
-                  className="input-field"
-                  value={formData.datePattern}
-                  onChange={(e) => setFormData({ ...formData, datePattern: e.target.value })}
-                >
-                  <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                  <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                  <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                </select>
-              </div>
+            <Divider sx={{ mb: 3, borderColor: '#E2E8F0' }} />
 
-              <div className="form-group flex-1">
-                <label className="form-label">Time Format</label>
-                <select
-                  className="input-field"
-                  value={formData.timeFormat}
-                  onChange={(e) => setFormData({ ...formData, timeFormat: e.target.value as any })}
-                >
-                  <option value="12 Hour">12 Hour</option>
-                  <option value="24 Hour">24 Hour</option>
-                </select>
-              </div>
-            </div>
+            <form onSubmit={handleSave}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, maxWidth: 540 }}>
+                <TextField
+                  fullWidth
+                  label="Restaurant Name"
+                  value={formData.restaurantName}
+                  onChange={(e) => setFormData({ ...formData, restaurantName: e.target.value })}
+                />
 
-            <div className="form-group">
-              <label className="form-label">Language</label>
-              <select
-                className="input-field"
-                value={formData.language}
-                onChange={(e) => setFormData({ ...formData, language: e.target.value })}
-              >
-                <option value="English">English</option>
-                <option value="Spanish">Spanish</option>
-                <option value="French">French</option>
-              </select>
-            </div>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel sx={{ color: '#64748B' }}>Currency</InputLabel>
+                      <Select
+                        value={formData.currency}
+                        label="Currency"
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const sym = val.includes('INR')
+                            ? '₹'
+                            : val.includes('EUR')
+                            ? '€'
+                            : val.includes('GBP')
+                            ? '£'
+                            : '$';
+                          setFormData({ ...formData, currency: val, currencySymbol: sym });
+                        }}
+                        sx={{ borderRadius: '12px', backgroundColor: '#FFFFFF', color: '#0F172A' }}
+                      >
+                        <MenuItem value="INR (₹)">INR (₹)</MenuItem>
+                        <MenuItem value="USD ($)">USD ($)</MenuItem>
+                        <MenuItem value="EUR (€)">EUR (€)</MenuItem>
+                        <MenuItem value="GBP (£)">GBP (£)</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
 
-            <div className="form-group">
-              <label className="form-label">Default Tax Rate (%)</label>
-              <input
-                type="number"
-                step="0.1"
-                className="input-field"
-                value={formData.taxRate}
-                onChange={(e) => setFormData({ ...formData, taxRate: parseFloat(e.target.value) || 0 })}
-              />
-            </div>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel sx={{ color: '#64748B' }}>Time Zone</InputLabel>
+                      <Select
+                        value={formData.timezone}
+                        label="Time Zone"
+                        onChange={(e) => setFormData({ ...formData, timezone: e.target.value })}
+                        sx={{ borderRadius: '12px', backgroundColor: '#FFFFFF', color: '#0F172A' }}
+                      >
+                        <MenuItem value="(UTC-05:00) Eastern Time">(UTC-05:00) Eastern Time</MenuItem>
+                        <MenuItem value="(UTC-08:00) Pacific Time">(UTC-08:00) Pacific Time</MenuItem>
+                        <MenuItem value="(UTC+00:00) London">(UTC+00:00) London</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
 
-            <div className="form-actions-bar">
-              <button
-                type="button"
-                className="btn btn-secondary text-danger"
-                onClick={handleResetData}
-              >
-                <RotateCcw size={14} /> Factory Reset Demo State
-              </button>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel sx={{ color: '#64748B' }}>Date Format</InputLabel>
+                      <Select
+                        value={formData.datePattern}
+                        label="Date Format"
+                        onChange={(e) => setFormData({ ...formData, datePattern: e.target.value })}
+                        sx={{ borderRadius: '12px', backgroundColor: '#FFFFFF', color: '#0F172A' }}
+                      >
+                        <MenuItem value="MM/DD/YYYY">MM/DD/YYYY</MenuItem>
+                        <MenuItem value="DD/MM/YYYY">DD/MM/YYYY</MenuItem>
+                        <MenuItem value="YYYY-MM-DD">YYYY-MM-DD</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
 
-              <button type="submit" className="btn btn-primary">
-                <Save size={16} /> Save Changes
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel sx={{ color: '#64748B' }}>Time Format</InputLabel>
+                      <Select
+                        value={formData.timeFormat}
+                        label="Time Format"
+                        onChange={(e) =>
+                          setFormData({ ...formData, timeFormat: e.target.value as any })
+                        }
+                        sx={{ borderRadius: '12px', backgroundColor: '#FFFFFF', color: '#0F172A' }}
+                      >
+                        <MenuItem value="12 Hour">12 Hour</MenuItem>
+                        <MenuItem value="24 Hour">24 Hour</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
 
-      <style>{`
-        .settings-layout {
-          display: grid;
-          grid-template-columns: 220px 1fr;
-          gap: 16px;
-        }
+                <FormControl fullWidth size="small">
+                  <InputLabel sx={{ color: '#64748B' }}>Language</InputLabel>
+                  <Select
+                    value={formData.language}
+                    label="Language"
+                    onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+                    sx={{ borderRadius: '12px', backgroundColor: '#FFFFFF', color: '#0F172A' }}
+                  >
+                    <MenuItem value="English">English</MenuItem>
+                    <MenuItem value="Spanish">Spanish</MenuItem>
+                    <MenuItem value="French">French</MenuItem>
+                  </Select>
+                </FormControl>
 
-        .settings-sidebar-card {
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-          padding: 8px;
-          height: fit-content;
-        }
+                <TextField
+                  fullWidth
+                  type="number"
+                  slotProps={{ htmlInput: { step: '0.1' } }}
+                  label="Default Tax Rate (%)"
+                  value={formData.taxRate}
+                  onChange={(e) =>
+                    setFormData({ ...formData, taxRate: parseFloat(e.target.value) || 0 })
+                  }
+                />
 
-        .settings-cat-btn {
-          text-align: left;
-          padding: 10px 14px;
-          font-size: 13px;
-          font-weight: 500;
-          border: none;
-          background: transparent;
-          color: var(--text-secondary);
-          border-radius: var(--radius-sm);
-          cursor: pointer;
-          transition: all 0.15s ease;
-        }
+                <Divider sx={{ my: 1, borderColor: '#E2E8F0' }} />
 
-        .settings-cat-btn:hover {
-          background: #F3F4F6;
-          color: var(--text-primary);
-        }
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => setResetDialogOpen(true)}
+                    startIcon={<RestartAltIcon />}
+                    sx={{ borderRadius: 9999 }}
+                  >
+                    Factory Reset Demo State
+                  </Button>
 
-        .settings-cat-btn.active {
-          background: var(--primary-orange-light);
-          color: var(--primary-orange);
-          font-weight: 700;
-        }
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    size="large"
+                    startIcon={<SaveIcon />}
+                    sx={{
+                      px: 3.5,
+                      borderRadius: 9999, // Yoko Pill Button
+                      fontWeight: 800,
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+                      boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
+                    }}
+                  >
+                    Save Changes
+                  </Button>
+                </Box>
+              </Box>
+            </form>
+          </Paper>
+        </Grid>
+      </Grid>
 
-        .settings-form-card {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
+      {/* Reset Confirmation Dialog */}
+      <Dialog open={resetDialogOpen} onClose={() => setResetDialogOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Confirm Factory Reset</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ color: '#64748B' }}>
+            Are you sure you want to reset all POS data back to factory seed defaults? This will erase custom products, orders, and settings.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={() => setResetDialogOpen(false)} sx={{ borderRadius: 9999, color: '#64748B' }}>
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmResetData} variant="contained" color="error" sx={{ borderRadius: 9999 }}>
+            Reset All Data
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-        .card-title-bar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding-bottom: 12px;
-          border-bottom: 1px solid var(--border-color);
-        }
-
-        .save-success-tag {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          font-size: 12px;
-          color: var(--status-success);
-          font-weight: 600;
-        }
-
-        .settings-form-body {
-          display: flex;
-          flex-direction: column;
-          gap: 14px;
-          max-width: 540px;
-        }
-
-        .form-group {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .form-label {
-          font-size: 12px;
-          font-weight: 600;
-          color: var(--text-primary);
-        }
-
-        .form-row {
-          display: flex;
-          gap: 12px;
-        }
-
-        .flex-1 { flex: 1; }
-
-        .form-actions-bar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding-top: 14px;
-          border-top: 1px solid var(--border-color);
-          margin-top: 10px;
-        }
-
-        .text-danger {
-          color: #DC2626;
-        }
-
-        @media (max-width: 900px) {
-          .settings-layout {
-            grid-template-columns: 1fr;
-          }
-          .settings-sidebar-card {
-            flex-direction: row;
-            overflow-x: auto;
-          }
-        }
-      `}</style>
-    </div>
+      <NotificationToast
+        open={toastOpen}
+        message={toastMsg}
+        onClose={() => setToastOpen(false)}
+      />
+    </MainLayoutTemplate>
   );
 };

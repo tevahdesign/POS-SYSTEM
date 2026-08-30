@@ -1,11 +1,34 @@
 import React, { useState } from 'react';
-import { Header } from '../components/common/Header';
-import { KpiCard } from '../components/common/KpiCard';
-import { LineChart } from '../components/common/LineChart';
-import { StatusBadge } from '../components/common/StatusBadge';
-import { usePosStore } from '../store/posStore';
-import { DollarSign, ShoppingBag, CreditCard, HeartHandshake, AlertTriangle, ChevronRight, PlusCircle, Grid, UtensilsCrossed } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Grid,
+  Paper,
+  Box,
+  Typography,
+  Button,
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow,
+  TableContainer,
+  Divider,
+} from '@mui/material';
+import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
+import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
+import SoupKitchenIcon from '@mui/icons-material/SoupKitchen';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+
+import { MainLayoutTemplate } from '../components/templates/MainLayoutTemplate';
+import { KpiCard } from '../components/molecules/KpiCard';
+import { StatusChip } from '../components/atoms/StatusChip';
+import { LineChart } from '../components/common/LineChart';
+import { usePosStore } from '../store/posStore';
 import { formatINR } from '../utils/formatters';
 
 export const Dashboard: React.FC = () => {
@@ -13,7 +36,6 @@ export const Dashboard: React.FC = () => {
   const { orders, alerts } = usePosStore();
   const [chartPeriod, setChartPeriod] = useState<'Day' | 'Week' | 'Month'>('Week');
 
-  // Dynamic Chart Data based on selected period
   const chartDataByPeriod = {
     Day: [
       { label: '8 AM', value: 2400 },
@@ -22,7 +44,7 @@ export const Dashboard: React.FC = () => {
       { label: '2 PM', value: 9200 },
       { label: '4 PM', value: 6400 },
       { label: '6 PM', value: 14500 },
-      { label: '8 PM', value: 18200 }
+      { label: '8 PM', value: 18200 },
     ],
     Week: [
       { label: '07 Jun', value: 31000 },
@@ -31,14 +53,14 @@ export const Dashboard: React.FC = () => {
       { label: '10 Jun', value: 51000 },
       { label: '11 Jun', value: 44820 },
       { label: '12 Jun', value: 49000 },
-      { label: '13 Jun', value: 53000 }
+      { label: '13 Jun', value: 53000 },
     ],
     Month: [
       { label: 'Week 1', value: 245000 },
       { label: 'Week 2', value: 289000 },
       { label: 'Week 3', value: 312000 },
-      { label: 'Week 4', value: 298000 }
-    ]
+      { label: 'Week 4', value: 298000 },
+    ],
   };
 
   const topItems = [
@@ -46,447 +68,286 @@ export const Dashboard: React.FC = () => {
     { name: 'Alfredo Pasta', amount: formatINR(10528), qty: '32 sold' },
     { name: 'Caesar Salad', amount: formatINR(9160), qty: '40 sold' },
     { name: 'BBQ Burger', amount: formatINR(6975), qty: '25 sold' },
-    { name: 'Choco Lava Cake', amount: formatINR(6265), qty: '35 sold' }
+    { name: 'Choco Lava Cake', amount: formatINR(6265), qty: '35 sold' },
   ];
 
   return (
-    <div className="main-content">
-      <Header title="Dashboard Overview" />
+    <MainLayoutTemplate title="Dashboard Overview">
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        {/* Quick Action Shortcuts (Yoko Pill Format) */}
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Button
+              variant="contained"
+              size="large"
+              fullWidth
+              onClick={() => navigate('/orders')}
+              startIcon={<AddCircleOutlinedIcon />}
+              sx={{
+                py: 1.5,
+                borderRadius: 9999, // Yoko Pill
+                fontWeight: 800,
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+                boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
+                '&:hover': {
+                  boxShadow: '0 6px 20px rgba(99, 102, 241, 0.5)',
+                },
+              }}
+            >
+              New Order
+            </Button>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Button
+              variant="outlined"
+              size="large"
+              fullWidth
+              onClick={() => navigate('/tables')}
+              startIcon={<TableRestaurantIcon />}
+              sx={{
+                py: 1.5,
+                borderRadius: 9999,
+                fontWeight: 700,
+                color: '#0F172A',
+                borderColor: '#E2E8F0',
+                backgroundColor: '#FFFFFF',
+                '&:hover': {
+                  borderColor: '#6366F1',
+                  backgroundColor: '#EEF2FF',
+                },
+              }}
+            >
+              Floor Plan
+            </Button>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Button
+              variant="outlined"
+              size="large"
+              fullWidth
+              onClick={() => navigate('/kitchen')}
+              startIcon={<SoupKitchenIcon />}
+              sx={{
+                py: 1.5,
+                borderRadius: 9999,
+                fontWeight: 700,
+                color: '#0F172A',
+                borderColor: '#E2E8F0',
+                backgroundColor: '#FFFFFF',
+                '&:hover': {
+                  borderColor: '#6366F1',
+                  backgroundColor: '#EEF2FF',
+                },
+              }}
+            >
+              KDS Prep
+            </Button>
+          </Grid>
+        </Grid>
 
-      {/* Waiter & Staff Quick Action Shortcuts */}
-      <div className="waiter-shortcuts-row">
-        <button className="shortcut-btn primary" onClick={() => navigate('/orders')}>
-          <PlusCircle size={18} />
-          <span>New Order</span>
-        </button>
-        <button className="shortcut-btn" onClick={() => navigate('/tables')}>
-          <Grid size={18} />
-          <span>Floor Plan</span>
-        </button>
-        <button className="shortcut-btn" onClick={() => navigate('/kitchen')}>
-          <UtensilsCrossed size={18} />
-          <span>KDS Prep</span>
-        </button>
-      </div>
+        {/* 4 KPI Cards Grid */}
+        <Grid container spacing={2.5}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Today's Sales"
+              value={formatINR(44825)}
+              change="+12.5%"
+              isPositive={true}
+              icon={<AttachMoneyIcon />}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Orders"
+              value="128"
+              change="+8.0%"
+              isPositive={true}
+              icon={<ShoppingBagIcon />}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Average Order"
+              value={formatINR(350.2)}
+              change="+2.2%"
+              isPositive={true}
+              icon={<CreditCardIcon />}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <KpiCard
+              title="Tips"
+              value={formatINR(6207)}
+              change="+15.4%"
+              isPositive={true}
+              icon={<VolunteerActivismIcon />}
+            />
+          </Grid>
+        </Grid>
 
-      {/* 4 KPI Cards Grid */}
-      <div className="kpi-grid">
-        <KpiCard
-          title="Today's Sales"
-          value={formatINR(44825)}
-          change="+12.5%"
-          isPositive={true}
-          icon={<DollarSign size={18} />}
-        />
-        <KpiCard
-          title="Orders"
-          value="128"
-          change="+8.0%"
-          isPositive={true}
-          icon={<ShoppingBag size={18} />}
-        />
-        <KpiCard
-          title="Average Order"
-          value={formatINR(350.20)}
-          change="+2.2%"
-          isPositive={true}
-          icon={<CreditCard size={18} />}
-        />
-        <KpiCard
-          title="Tips"
-          value={formatINR(6207)}
-          change="+15.4%"
-          isPositive={true}
-          icon={<HeartHandshake size={18} />}
-        />
-      </div>
+        {/* Sales Overview & Top Items */}
+        <Grid container spacing={2.5}>
+          <Grid size={{ xs: 12, lg: 8 }}>
+            <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', height: '100%' }}>
+              <LineChart
+                data={chartDataByPeriod[chartPeriod]}
+                period={chartPeriod}
+                onPeriodChange={setChartPeriod}
+                height={230}
+              />
+            </Paper>
+          </Grid>
 
-      {/* Middle Row: Sales Overview & Top Items */}
-      <div className="dashboard-middle-row">
-        <div className="pos-card sales-overview-card">
-          <LineChart
-            data={chartDataByPeriod[chartPeriod]}
-            period={chartPeriod}
-            onPeriodChange={setChartPeriod}
-            height={220}
-          />
-        </div>
+          <Grid size={{ xs: 12, lg: 4 }}>
+            <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', height: '100%' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  Top Selling Items
+                </Typography>
+                <Button size="small" onClick={() => navigate('/menu')} sx={{ color: '#6366F1', fontWeight: 700 }}>
+                  View all
+                </Button>
+              </Box>
 
-        <div className="pos-card top-items-card">
-          <div className="top-items-header">
-            <h3 className="section-title">Top Selling Items</h3>
-            <button className="link-btn" onClick={() => navigate('/menu')}>
-              View all
-            </button>
-          </div>
-          <div className="top-items-list">
-            {topItems.map((item, idx) => (
-              <div key={idx} className="top-item-row">
-                <span className="top-item-index">{idx + 1}</span>
-                <div className="top-item-info">
-                  <span className="top-item-name">{item.name}</span>
-                  <span className="top-item-qty">{item.qty}</span>
-                </div>
-                <span className="top-item-amount">{item.amount}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+              <Divider sx={{ mb: 2, borderColor: '#E2E8F0' }} />
 
-      {/* Bottom Row: Recent Orders Table & Alerts */}
-      <div className="dashboard-bottom-row">
-        <div className="pos-card recent-orders-card">
-          <div className="card-title-bar">
-            <h3 className="section-title">Recent Orders</h3>
-            <button className="link-btn" onClick={() => navigate('/orders')}>
-              View all orders
-            </button>
-          </div>
-
-          <div className="pos-table-container">
-            <table className="pos-table">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Order Type</th>
-                  <th>Table / Customer</th>
-                  <th>Time</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.slice(0, 5).map((order) => (
-                  <tr key={order.id} className="clickable-row" onClick={() => navigate('/orders')}>
-                    <td className="font-semibold">{order.orderNumber}</td>
-                    <td>{order.type}</td>
-                    <td>{order.tableName || order.customerName}</td>
-                    <td className="secondary-text">{order.createdAt}</td>
-                    <td className="font-semibold">{formatINR(order.total)}</td>
-                    <td>
-                      <StatusBadge status={order.status} />
-                    </td>
-                  </tr>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                {topItems.map((item, idx) => (
+                  <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1, borderBottom: '1px solid #F1F5F9' }}>
+                    <Box
+                      sx={{
+                        width: 26,
+                        height: 26,
+                        borderRadius: 9999,
+                        backgroundColor: '#EEF2FF',
+                        color: '#4338CA',
+                        fontSize: '0.75rem',
+                        fontWeight: 800,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {idx + 1}
+                    </Box>
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: '0.8125rem', color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }} noWrap>
+                        {item.name}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#64748B' }}>
+                        {item.qty}
+                      </Typography>
+                    </Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                      {item.amount}
+                    </Typography>
+                  </Box>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </Box>
+            </Paper>
+          </Grid>
+        </Grid>
 
-        <div className="pos-card alerts-card">
-          <div className="card-title-bar">
-            <h3 className="section-title">Alerts</h3>
-            <button className="link-btn" onClick={() => navigate('/inventory')}>
-              View all alerts
-            </button>
-          </div>
+        {/* Recent Orders Table & Alerts */}
+        <Grid container spacing={2.5}>
+          <Grid size={{ xs: 12, lg: 8 }}>
+            <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  Recent Orders
+                </Typography>
+                <Button size="small" onClick={() => navigate('/orders')} sx={{ color: '#6366F1', fontWeight: 700 }}>
+                  View all orders
+                </Button>
+              </Box>
 
-          <div className="alerts-list">
-            {alerts.map((alert) => (
-              <div
-                key={alert.id}
-                className="alert-box-item"
-                onClick={() => navigate(alert.type === 'stock' ? '/inventory' : '/tables')}
-              >
-                <div className="alert-badge-icon">
-                  <AlertTriangle size={16} />
-                </div>
-                <div className="alert-box-content">
-                  <div className="alert-box-title">{alert.title}</div>
-                  <div className="alert-box-sub">{alert.subtitle}</div>
-                </div>
-                <ChevronRight size={14} className="alert-box-arrow" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Order ID</TableCell>
+                      <TableCell>Order Type</TableCell>
+                      <TableCell>Table / Customer</TableCell>
+                      <TableCell>Time</TableCell>
+                      <TableCell>Amount</TableCell>
+                      <TableCell>Status</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {orders.slice(0, 5).map((order) => (
+                      <TableRow
+                        key={order.id}
+                        hover
+                        onClick={() => navigate('/orders')}
+                        sx={{ cursor: 'pointer' }}
+                      >
+                        <TableCell sx={{ fontWeight: 800, color: '#4338CA' }}>{order.orderNumber}</TableCell>
+                        <TableCell>{order.type}</TableCell>
+                        <TableCell>{order.tableName || order.customerName}</TableCell>
+                        <TableCell sx={{ color: '#64748B' }}>{order.createdAt}</TableCell>
+                        <TableCell sx={{ fontWeight: 800, color: '#0F172A' }}>{formatINR(order.total)}</TableCell>
+                        <TableCell>
+                          <StatusChip status={order.status} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          </Grid>
 
-      <style>{`
-        .kpi-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 16px;
-          margin-bottom: 20px;
-        }
+          <Grid size={{ xs: 12, lg: 4 }}>
+            <Paper elevation={1} sx={{ p: 3, borderRadius: '20px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  Active Alerts
+                </Typography>
+                <Button size="small" onClick={() => navigate('/inventory')} sx={{ color: '#6366F1', fontWeight: 700 }}>
+                  View inventory
+                </Button>
+              </Box>
 
-        .dashboard-middle-row {
-          display: grid;
-          grid-template-columns: 2fr 1fr;
-          gap: 16px;
-          margin-bottom: 20px;
-        }
-
-        .sales-overview-card {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .top-items-card {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .top-items-header, .card-title-bar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding-bottom: 8px;
-          border-bottom: 1px solid var(--border-color);
-        }
-
-        .link-btn {
-          background: transparent;
-          border: none;
-          color: var(--primary-orange);
-          font-size: 12px;
-          font-weight: 600;
-          cursor: pointer;
-        }
-        .link-btn:hover {
-          text-decoration: underline;
-        }
-
-        .top-items-list {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-
-        .top-item-row {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 6px 0;
-          border-bottom: 1px solid var(--border-light);
-        }
-
-        .top-item-row:last-child {
-          border-bottom: none;
-        }
-
-        .top-item-index {
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: #F3F4F6;
-          color: var(--text-secondary);
-          font-size: 11px;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .top-item-info {
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-        }
-
-        .top-item-name {
-          font-weight: 600;
-          font-size: 12px;
-        }
-
-        .top-item-qty {
-          font-size: 11px;
-          color: var(--text-muted);
-        }
-
-        .top-item-amount {
-          font-weight: 700;
-          font-size: 12px;
-          color: var(--text-primary);
-        }
-
-        .dashboard-bottom-row {
-          display: grid;
-          grid-template-columns: 2fr 1fr;
-          gap: 16px;
-        }
-
-        .recent-orders-card {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .clickable-row {
-          cursor: pointer;
-        }
-
-        .alerts-card {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .alerts-list {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-
-        .alert-box-item {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 10px;
-          border-radius: var(--radius-sm);
-          background: #FFFBEB;
-          border: 1px solid #FDE68A;
-          cursor: pointer;
-          transition: border-color 0.15s ease;
-        }
-
-        .alert-box-item:hover {
-          border-color: var(--primary-orange);
-        }
-
-        .alert-badge-icon {
-          color: #D97706;
-        }
-
-        .alert-box-content {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .alert-box-title {
-          font-weight: 600;
-          font-size: 12px;
-          color: var(--text-primary);
-        }
-
-        .alert-box-sub {
-          font-size: 11px;
-          color: var(--text-secondary);
-        }
-
-        .alert-box-arrow {
-          color: var(--text-muted);
-        }
-
-        .store-status-banner {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 16px 20px;
-          border-radius: var(--radius-md);
-          margin-bottom: 20px;
-          transition: all 0.2s ease;
-        }
-
-        .store-status-banner.is-open {
-          background: #ECFDF5;
-          border: 1px solid #A7F3D0;
-          color: #065F46;
-        }
-
-        .store-status-banner.is-closed {
-          background: #FEF2F2;
-          border: 1px solid #FCA5A5;
-          color: #991B1B;
-        }
-
-        .banner-info {
-          display: flex;
-          align-items: center;
-          gap: 14px;
-        }
-
-        .banner-title {
-          font-size: 14px;
-          font-weight: 600;
-        }
-
-        .banner-sub {
-          font-size: 12px;
-          opacity: 0.85;
-          margin-top: 2px;
-        }
-
-        .store-toggle-action {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-weight: 700;
-          flex-shrink: 0;
-        }
-
-        .btn-danger {
-          background-color: #EF4444;
-          color: #FFFFFF;
-          border: none;
-        }
-        .btn-danger:hover {
-          background-color: #DC2626;
-        }
-
-        .waiter-shortcuts-row {
-          display: flex;
-          gap: 12px;
-          margin-bottom: 20px;
-        }
-
-        .shortcut-btn {
-          flex: 1;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          padding: 12px;
-          border-radius: var(--radius-md);
-          border: 1px solid var(--border-color);
-          background: #FFFFFF;
-          color: var(--text-primary);
-          font-weight: 700;
-          font-size: 13px;
-          cursor: pointer;
-          transition: all 0.15s ease;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-        }
-
-        .shortcut-btn.primary {
-          background: var(--primary-orange);
-          color: #FFFFFF;
-          border-color: var(--primary-orange);
-        }
-
-        .shortcut-btn:hover {
-          transform: translateY(-1px);
-        }
-
-        @media (max-width: 1024px) {
-          .kpi-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          .dashboard-middle-row, .dashboard-bottom-row {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        @media (max-width: 640px) {
-          .waiter-shortcuts-row {
-            flex-direction: row;
-            gap: 8px;
-          }
-          .shortcut-btn {
-            font-size: 11px;
-            padding: 10px 6px;
-            flex-direction: column;
-            gap: 4px;
-          }
-          .kpi-grid {
-            grid-template-columns: repeat(2, 1fr);
-            display: grid;
-          }
-        }
-      `}</style>
-    </div>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                {alerts.map((alert) => (
+                  <Paper
+                    key={alert.id}
+                    elevation={0}
+                    onClick={() => navigate(alert.type === 'stock' ? '/inventory' : '/tables')}
+                    sx={{
+                      p: 1.75,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                      borderRadius: '14px',
+                      backgroundColor: '#FEF3C7',
+                      border: '1px solid #FDE68A',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        borderColor: '#F59E0B',
+                        transform: 'translateY(-1px)',
+                      },
+                    }}
+                  >
+                    <WarningAmberIcon sx={{ color: '#B45309', fontSize: 22 }} />
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: '0.8125rem', color: '#0F172A', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        {alert.title}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#B45309', fontWeight: 600 }}>
+                        {alert.subtitle}
+                      </Typography>
+                    </Box>
+                    <ChevronRightIcon sx={{ color: '#B45309', fontSize: 20 }} />
+                  </Paper>
+                ))}
+              </Box>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Box>
+    </MainLayoutTemplate>
   );
 };
