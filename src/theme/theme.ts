@@ -62,55 +62,73 @@ export const posTheme = createTheme({
     ].join(','),
     h1: {
       fontWeight: 800,
-      fontSize: '2.25rem',
+      fontSize: '1.75rem',
       lineHeight: 1.2,
-      letterSpacing: '-0.03em',
+      letterSpacing: '-0.025em',
+      '@media (max-width:600px)': {
+        fontSize: '1.35rem',
+      },
     },
     h2: {
       fontWeight: 800,
-      fontSize: '1.75rem',
+      fontSize: '1.4rem',
       lineHeight: 1.25,
-      letterSpacing: '-0.025em',
+      letterSpacing: '-0.02em',
+      '@media (max-width:600px)': {
+        fontSize: '1.2rem',
+      },
     },
     h3: {
       fontWeight: 700,
-      fontSize: '1.35rem',
+      fontSize: '1.2rem',
       lineHeight: 1.3,
-      letterSpacing: '-0.02em',
+      letterSpacing: '-0.015em',
+      '@media (max-width:600px)': {
+        fontSize: '1.05rem',
+      },
     },
     h4: {
       fontWeight: 700,
-      fontSize: '1.15rem',
+      fontSize: '1.05rem',
       lineHeight: 1.35,
-      letterSpacing: '-0.015em',
+      letterSpacing: '-0.01em',
+      '@media (max-width:600px)': {
+        fontSize: '0.95rem',
+      },
     },
     h5: {
       fontWeight: 700,
-      fontSize: '1rem',
+      fontSize: '0.95rem',
       lineHeight: 1.4,
+      '@media (max-width:600px)': {
+        fontSize: '0.875rem',
+      },
     },
     h6: {
       fontWeight: 700,
-      fontSize: '0.875rem',
+      fontSize: '0.84rem',
       lineHeight: 1.4,
+      '@media (max-width:600px)': {
+        fontSize: '0.8rem',
+      },
     },
     subtitle1: {
-      fontSize: '0.9375rem',
+      fontSize: '0.875rem',
       fontWeight: 600,
       lineHeight: 1.4,
     },
     subtitle2: {
-      fontSize: '0.8125rem',
+      fontSize: '0.78rem',
       fontWeight: 600,
       lineHeight: 1.4,
     },
     body1: {
-      fontSize: '0.875rem',
-      lineHeight: 1.5,
+      fontSize: '0.8125rem',
+      lineHeight: 1.45,
     },
     body2: {
-      fontSize: '0.8125rem',
-      lineHeight: 1.5,
+      fontSize: '0.75rem',
+      lineHeight: 1.45,
     },
     button: {
       textTransform: 'none',
@@ -138,8 +156,14 @@ export const posTheme = createTheme({
           borderRadius: 9999, // Uber Eats Pill Style
           fontWeight: 700,
           boxShadow: 'none',
-          padding: '8px 22px',
+          padding: '6px 18px',
+          minHeight: 38,
           transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+          '@media (max-width:600px)': {
+            minHeight: 44, // Mobile touch target size
+            padding: '8px 14px',
+            fontSize: '0.78rem',
+          },
           '&:hover': {
             transform: 'translateY(-1px)',
             boxShadow: '0 4px 14px rgba(6, 193, 103, 0.3)',
@@ -180,6 +204,7 @@ export const posTheme = createTheme({
           borderRadius: 16,
           backgroundColor: '#FFFFFF',
           border: '1px solid #EEEEEE',
+          height: 'auto', // Content-fit dynamic height
         },
         elevation1: {
           boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.04)',
@@ -199,6 +224,7 @@ export const posTheme = createTheme({
           border: '1px solid #EEEEEE',
           boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.04)',
           borderRadius: 16,
+          height: 'auto', // Content-fit dynamic card sizing
           transition: 'all 0.2s ease-in-out',
           '&:hover': {
             borderColor: 'rgba(6, 193, 103, 0.5)',
@@ -210,7 +236,8 @@ export const posTheme = createTheme({
       styleOverrides: {
         root: {
           fontWeight: 700,
-          fontSize: '0.75rem',
+          fontSize: '0.72rem',
+          height: 24,
           borderRadius: 9999, // Pill Badge
         },
       },
@@ -229,14 +256,22 @@ export const posTheme = createTheme({
           color: '#545454',
           backgroundColor: '#F6F6F6',
           borderBottom: '1px solid #EEEEEE',
-          fontSize: '0.75rem',
+          fontSize: '0.72rem',
           textTransform: 'uppercase',
-          letterSpacing: '0.05em',
+          letterSpacing: '0.04em',
+          padding: '8px 12px',
+          '@media (max-width:600px)': {
+            padding: '6px 8px',
+          },
         },
         body: {
-          fontSize: '0.875rem',
+          fontSize: '0.8rem',
           borderBottom: '1px solid #F6F6F6',
           color: '#000000',
+          padding: '8px 12px',
+          '@media (max-width:600px)': {
+            padding: '6px 8px',
+          },
         },
       },
     },
@@ -250,6 +285,7 @@ export const posTheme = createTheme({
         root: {
           borderRadius: 9999, // Uber Eats Pill Inputs
           backgroundColor: '#FFFFFF',
+          fontSize: '0.8125rem',
           '& fieldset': {
             borderColor: '#EEEEEE',
           },
@@ -266,10 +302,11 @@ export const posTheme = createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: {
-          borderRadius: 24,
+          borderRadius: 20,
           backgroundColor: '#FFFFFF',
           boxShadow: '0px 20px 40px -10px rgba(0, 0, 0, 0.15)',
           border: '1px solid #EEEEEE',
+          padding: 0,
         },
       },
     },
@@ -279,9 +316,9 @@ export const posTheme = createTheme({
           borderRadius: 8,
           backgroundColor: '#000000',
           color: '#FFFFFF',
-          fontSize: '0.75rem',
+          fontSize: '0.72rem',
           fontWeight: 600,
-          padding: '6px 12px',
+          padding: '4px 10px',
         },
         arrow: {
           color: '#000000',

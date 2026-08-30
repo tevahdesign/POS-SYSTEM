@@ -66,21 +66,21 @@ export const FloorPlanGrid: React.FC<FloorPlanGridProps> = ({
     <Paper
       elevation={2}
       sx={{
-        p: 3,
-        borderRadius: '20px',
+        p: { xs: 2, sm: 2.5 },
+        borderRadius: '16px',
         backgroundColor: '#FFFFFF',
         border: '1px solid #EEEEEE',
-        minHeight: 520,
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+        height: 'auto', // Content-fit dynamic height (No minHeight: 520)
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
         <Typography variant="h6" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           Floor Layout Overview ({tables.length} Tables)
         </Typography>
       </Box>
 
-      <Grid container spacing={2.5}>
+      <Grid container spacing={{ xs: 1.5, sm: 2 }}>
         {tables.map((table) => {
           const isSelected = selectedTableId === table.id;
           const style = getStatusStyle(table.status);
@@ -91,34 +91,34 @@ export const FloorPlanGrid: React.FC<FloorPlanGridProps> = ({
                 elevation={isSelected ? 4 : 1}
                 onClick={() => onSelectTable(table.id)}
                 sx={{
-                  p: 2,
-                  borderRadius: '18px',
+                  p: 1.5,
+                  borderRadius: '14px',
                   backgroundColor: style.bg,
                   border: isSelected ? '2.5px solid #06C167' : style.border,
                   cursor: 'pointer',
-                  boxShadow: isSelected ? '0 0 20px rgba(6, 193, 103, 0.3)' : style.glow,
+                  boxShadow: isSelected ? '0 0 16px rgba(6, 193, 103, 0.3)' : style.glow,
                   transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                   position: 'relative',
                   transform: isSelected ? 'scale(1.02)' : 'none',
                   '&:hover': {
                     transform: 'translateY(-2px) scale(1.02)',
-                    boxShadow: '0 8px 25px rgba(0, 0, 0, 0.08)',
+                    boxShadow: '0 6px 20px rgba(0, 0, 0, 0.08)',
                   },
                 }}
               >
                 {/* Header Table Name & Status Badge */}
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.85rem' }}>
                     {table.tableName || `Table ${table.number}`}
                   </Typography>
                   <Box
                     sx={{
-                      px: 1.25,
-                      py: 0.25,
+                      px: 1,
+                      py: 0.2,
                       borderRadius: 9999,
                       backgroundColor: style.chipBg,
                       color: style.chipColor,
-                      fontSize: '0.7rem',
+                      fontSize: '0.65rem',
                       fontWeight: 800,
                     }}
                   >
@@ -127,27 +127,27 @@ export const FloorPlanGrid: React.FC<FloorPlanGridProps> = ({
                 </Box>
 
                 {/* Table Metrics */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#545454' }}>
-                    <PeopleIcon sx={{ fontSize: 16 }} />
-                    <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: '#545454' }}>
+                    <PeopleIcon sx={{ fontSize: 14 }} />
+                    <Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.72rem' }}>
                       {table.guestCount ? `${table.guestCount}/${table.seats} Guests` : `${table.seats} Seats`}
                     </Typography>
                   </Box>
 
                   {table.status === 'Occupied' && (
                     <>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#545454' }}>
-                        <AccessTimeIcon sx={{ fontSize: 16 }} />
-                        <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: '#545454' }}>
+                        <AccessTimeIcon sx={{ fontSize: 14 }} />
+                        <Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.72rem' }}>
                           {table.startTime || 'Started'}
                         </Typography>
                       </Box>
 
                       {table.totalAmount !== undefined && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: '#06C167', pt: 0.5 }}>
-                          <AttachMoneyIcon sx={{ fontSize: 16 }} />
-                          <Typography variant="subtitle2" sx={{ fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: '#06C167', pt: 0.25 }}>
+                          <AttachMoneyIcon sx={{ fontSize: 14 }} />
+                          <Typography variant="subtitle2" sx={{ fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.8rem' }}>
                             {formatINR(table.totalAmount)}
                           </Typography>
                         </Box>

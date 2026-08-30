@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   Chip,
-  Checkbox,
   Button,
   Divider,
 } from '@mui/material';
@@ -55,13 +54,13 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
     <Paper
       elevation={2}
       sx={{
-        borderRadius: '18px',
+        borderRadius: '16px',
         overflow: 'hidden',
         backgroundColor: '#FFFFFF',
         border: `2px solid ${getBorderColor()}`,
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
+        height: 'auto', // Content-fit dynamic height
         boxShadow: isUrgent ? '0 4px 16px rgba(229, 62, 62, 0.2)' : '0 2px 8px rgba(0, 0, 0, 0.04)',
         transition: 'all 0.2s ease',
       }}
@@ -69,7 +68,7 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
       {/* Header */}
       <Box
         sx={{
-          p: 1.75,
+          p: 1.25,
           backgroundColor: getHeaderBg(),
           borderBottom: '1px solid #EEEEEE',
           display: 'flex',
@@ -78,17 +77,17 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
         }}
       >
         <Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: getHeaderColor(), fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          <Typography variant="subtitle2" sx={{ fontWeight: 800, color: getHeaderColor(), fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.85rem' }}>
             {ticket.orderNumber}
           </Typography>
-          <Typography variant="caption" sx={{ color: ticket.status === 'In-Progress' ? '#CCCCCC' : '#545454', display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 600 }}>
-            <TableRestaurantIcon sx={{ fontSize: 14 }} /> {ticket.tableName || 'Takeaway'}
+          <Typography variant="caption" sx={{ color: ticket.status === 'In-Progress' ? '#CCCCCC' : '#545454', display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 600, fontSize: '0.7rem' }}>
+            <TableRestaurantIcon sx={{ fontSize: 13 }} /> {ticket.tableName || 'Takeaway'}
           </Typography>
         </Box>
 
         {/* Timer Chip Badge */}
         <Chip
-          icon={isUrgent ? <PriorityHighIcon sx={{ fontSize: '14px !important', color: '#C53030' }} /> : <AccessTimeIcon sx={{ fontSize: '14px !important' }} />}
+          icon={isUrgent ? <PriorityHighIcon sx={{ fontSize: '13px !important', color: '#C53030' }} /> : <AccessTimeIcon sx={{ fontSize: '13px !important' }} />}
           label={`${elapsedMinutes}m`}
           size="small"
           sx={{
@@ -97,12 +96,14 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
             fontWeight: 800,
             border: `1px solid ${isUrgent ? '#FEB2B2' : ticket.status === 'In-Progress' ? '#333333' : '#A3E9C5'}`,
             borderRadius: 9999,
+            height: 22,
+            fontSize: '0.68rem',
           }}
         />
       </Box>
 
       {/* Item List */}
-      <Box sx={{ p: 1.75, flex: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <Box sx={{ p: 1.25, flex: 1, display: 'flex', flexDirection: 'column', gap: 0.75 }}>
         {ticket.items.map((item, idx) => (
           <Box
             key={idx}
@@ -110,22 +111,22 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
               display: 'flex',
               alignItems: 'flex-start',
               gap: 1,
-              p: 0.75,
-              borderRadius: '10px',
+              p: 0.6,
+              borderRadius: '8px',
               backgroundColor: '#FAFAFA',
             }}
           >
             <Box sx={{ flex: 1 }}>
-              <Typography variant="body2" sx={{ fontWeight: 700, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              <Typography variant="body2" sx={{ fontWeight: 700, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.78rem' }}>
                 {item.quantity}x {item.name}
               </Typography>
               {item.modifiers && item.modifiers.length > 0 && (
-                <Typography variant="caption" sx={{ color: '#06C167', display: 'block', fontSize: '0.7rem' }}>
+                <Typography variant="caption" sx={{ color: '#06C167', display: 'block', fontSize: '0.65rem' }}>
                   + {item.modifiers.join(', ')}
                 </Typography>
               )}
               {item.notes && (
-                <Typography variant="caption" sx={{ color: '#C05621', fontWeight: 600, display: 'block' }}>
+                <Typography variant="caption" sx={{ color: '#C05621', fontWeight: 600, display: 'block', fontSize: '0.65rem' }}>
                   Note: {item.notes}
                 </Typography>
               )}
@@ -137,7 +138,7 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
       <Divider sx={{ borderColor: '#EEEEEE' }} />
 
       {/* Footer Action Button */}
-      <Box sx={{ p: 1.5 }}>
+      <Box sx={{ p: 1 }}>
         <Button
           fullWidth
           variant="contained"
@@ -145,10 +146,11 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
           onClick={handleAdvanceStatus}
           startIcon={ticket.status === 'Ready' ? <CheckCircleIcon /> : undefined}
           sx={{
-            py: 1,
+            py: 0.75,
             borderRadius: 9999, // Uber Eats Pill Button
             fontWeight: 800,
-            fontSize: '0.8125rem',
+            fontSize: '0.75rem',
+            minHeight: 34,
             fontFamily: "'Plus Jakarta Sans', sans-serif",
             backgroundColor:
               ticket.status === 'New'
@@ -168,9 +170,9 @@ export const KdsTicketCard: React.FC<KdsTicketCardProps> = ({ ticket }) => {
           }}
         >
           {ticket.status === 'New'
-            ? 'Start Preparation'
+            ? 'Start Prep'
             : ticket.status === 'In-Progress'
-            ? 'Mark Order Ready'
+            ? 'Mark Ready'
             : 'Ticket Ready'}
         </Button>
       </Box>

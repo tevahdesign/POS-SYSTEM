@@ -39,20 +39,20 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        mb: 3,
-        pb: 1.5,
+        mb: 2,
+        pb: 1.25,
         borderBottom: '1px solid #EEEEEE',
       }}
     >
       {/* Page Title & Search Bar */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.5, sm: 3 } }}>
         <Typography
           variant="h4"
           sx={{
             fontWeight: 800,
             color: '#000000',
-            fontSize: { xs: '1.25rem', sm: '1.5rem' },
-            letterSpacing: '-0.025em',
+            fontSize: { xs: '1.1rem', sm: '1.35rem' },
+            letterSpacing: '-0.02em',
             fontFamily: "'Plus Jakarta Sans', sans-serif",
           }}
         >
@@ -65,13 +65,13 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
             display: { xs: 'none', md: 'flex' },
             alignItems: 'center',
             gap: 1.5,
-            px: 2,
-            py: 0.75,
+            px: 1.75,
+            py: 0.5,
             borderRadius: 9999, // Pill style
             backgroundColor: '#FFFFFF',
             border: '1px solid #EEEEEE',
             color: '#545454',
-            fontSize: '0.8125rem',
+            fontSize: '0.78rem',
             cursor: 'pointer',
             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
             transition: 'all 0.2s ease',
@@ -81,15 +81,15 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
             },
           }}
         >
-          <SearchIcon sx={{ fontSize: 18, color: '#06C167' }} />
+          <SearchIcon sx={{ fontSize: 16, color: '#06C167' }} />
           <span>Quick search...</span>
           <Box
             sx={{
-              px: 1,
-              py: 0.2,
+              px: 0.75,
+              py: 0.1,
               borderRadius: '6px',
               backgroundColor: '#F6F6F6',
-              fontSize: '0.7rem',
+              fontSize: '0.65rem',
               fontWeight: 700,
               color: '#545454',
               border: '1px solid #EEEEEE',
@@ -101,7 +101,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
       </Box>
 
       {/* Header Actions & Profile */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.75, sm: 1.5 } }}>
         {/* Date Selector Badge */}
         <DateSelectorBadge />
 
@@ -110,9 +110,9 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
           aria-label={`Notifications (${alerts.length})`}
           onClick={handleOpenAlerts}
           sx={{
-            width: 42,
-            height: 42,
-            borderRadius: 9999, // Pill
+            width: { xs: 36, sm: 40 },
+            height: { xs: 36, sm: 40 },
+            borderRadius: 9999,
             backgroundColor: '#FFFFFF',
             border: '1px solid #EEEEEE',
             color: '#000000',
@@ -125,7 +125,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
           }}
         >
           <Badge badgeContent={alerts.length} color="primary" variant="dot">
-            <NotificationsIcon sx={{ color: '#545454', fontSize: 20 }} />
+            <NotificationsIcon sx={{ color: '#545454', fontSize: { xs: 18, sm: 20 } }} />
           </Badge>
         </IconButton>
 
@@ -139,10 +139,10 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
           slotProps={{
             paper: {
               sx: {
-                width: 360,
-                p: 2.5,
-                borderRadius: '20px',
-                mt: 1.5,
+                width: { xs: 300, sm: 340 },
+                p: 2,
+                borderRadius: '16px',
+                mt: 1,
                 boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.12)',
                 border: '1px solid #EEEEEE',
                 backgroundColor: '#FFFFFF',
@@ -150,7 +150,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
             },
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#000000' }}>
               Active Notifications ({alerts.length})
             </Typography>
@@ -158,8 +158,8 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
               Dismiss
             </Button>
           </Box>
-          <Divider sx={{ mb: 1.5, borderColor: '#EEEEEE' }} />
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, maxHeight: 320, overflowY: 'auto' }}>
+          <Divider sx={{ mb: 1, borderColor: '#EEEEEE' }} />
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, maxHeight: 300, overflowY: 'auto' }}>
             {alerts.length === 0 ? (
               <Typography variant="caption" sx={{ color: '#545454', textAlign: 'center', py: 2 }}>
                 No active notifications

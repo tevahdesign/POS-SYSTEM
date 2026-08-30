@@ -51,23 +51,23 @@ export const TableDetailDrawer: React.FC<TableDetailDrawerProps> = ({ table }) =
       <Paper
         elevation={2}
         sx={{
-          p: 3,
-          borderRadius: '20px',
+          p: 2.5,
+          borderRadius: '16px',
           backgroundColor: '#FFFFFF',
           border: '1px solid #EEEEEE',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: 520,
           textAlign: 'center',
+          py: 5,
         }}
       >
-        <TableRestaurantIcon sx={{ fontSize: 48, color: '#9E9E9E', mb: 1.5 }} />
-        <Typography variant="h6" sx={{ fontWeight: 800, color: '#000000' }}>
+        <TableRestaurantIcon sx={{ fontSize: 40, color: '#9E9E9E', mb: 1 }} />
+        <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#000000' }}>
           No Table Selected
         </Typography>
-        <Typography variant="body2" sx={{ color: '#545454', maxWidth: 220, mt: 0.5 }}>
+        <Typography variant="caption" sx={{ color: '#545454', maxWidth: 220, mt: 0.5 }}>
           Click on any table card in the floor plan layout to manage seating, orders, and servers.
         </Typography>
       </Paper>
@@ -105,20 +105,20 @@ export const TableDetailDrawer: React.FC<TableDetailDrawerProps> = ({ table }) =
     <Paper
       elevation={2}
       sx={{
-        p: 3,
-        borderRadius: '20px',
+        p: 2.5,
+        borderRadius: '16px',
         backgroundColor: '#FFFFFF',
         border: '1px solid #EEEEEE',
         display: 'flex',
         flexDirection: 'column',
-        gap: 2.5,
-        minHeight: 520,
+        gap: 2,
+        height: 'auto', // Content-fit dynamic height
       }}
     >
       {/* Header */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box>
-          <Typography variant="h5" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
             {tableNameStr}
           </Typography>
           <Typography variant="caption" sx={{ color: '#545454' }}>
@@ -131,46 +131,46 @@ export const TableDetailDrawer: React.FC<TableDetailDrawerProps> = ({ table }) =
       <Divider sx={{ borderColor: '#EEEEEE' }} />
 
       {/* Info Grid */}
-      <Grid container spacing={1.5}>
+      <Grid container spacing={1.25}>
         <Grid size={6}>
-          <Paper elevation={0} sx={{ p: 1.5, backgroundColor: '#FAFAFA', border: '1px solid #EEEEEE', borderRadius: '12px' }}>
-            <Typography variant="caption" sx={{ color: '#545454', display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 600 }}>
-              <AccessTimeIcon sx={{ fontSize: 14 }} /> Started
+          <Paper elevation={0} sx={{ p: 1.25, backgroundColor: '#FAFAFA', border: '1px solid #EEEEEE', borderRadius: '10px' }}>
+            <Typography variant="caption" sx={{ color: '#545454', display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 600, fontSize: '0.7rem' }}>
+              <AccessTimeIcon sx={{ fontSize: 13 }} /> Started
             </Typography>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 0.25, color: '#000000' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 0.25, color: '#000000', fontSize: '0.78rem' }}>
               {table.startTime || 'Not started'}
             </Typography>
           </Paper>
         </Grid>
 
         <Grid size={6}>
-          <Paper elevation={0} sx={{ p: 1.5, backgroundColor: '#FAFAFA', border: '1px solid #EEEEEE', borderRadius: '12px' }}>
-            <Typography variant="caption" sx={{ color: '#545454', display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 600 }}>
-              <PeopleIcon sx={{ fontSize: 14 }} /> Guests
+          <Paper elevation={0} sx={{ p: 1.25, backgroundColor: '#FAFAFA', border: '1px solid #EEEEEE', borderRadius: '10px' }}>
+            <Typography variant="caption" sx={{ color: '#545454', display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 600, fontSize: '0.7rem' }}>
+              <PeopleIcon sx={{ fontSize: 13 }} /> Guests
             </Typography>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 0.25, color: '#000000' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 0.25, color: '#000000', fontSize: '0.78rem' }}>
               {table.guestCount || table.seats} Guests
             </Typography>
           </Paper>
         </Grid>
 
         <Grid size={6}>
-          <Paper elevation={0} sx={{ p: 1.5, backgroundColor: '#FAFAFA', border: '1px solid #EEEEEE', borderRadius: '12px' }}>
-            <Typography variant="caption" sx={{ color: '#545454', display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 600 }}>
-              <PersonIcon sx={{ fontSize: 14 }} /> Server
+          <Paper elevation={0} sx={{ p: 1.25, backgroundColor: '#FAFAFA', border: '1px solid #EEEEEE', borderRadius: '10px' }}>
+            <Typography variant="caption" sx={{ color: '#545454', display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 600, fontSize: '0.7rem' }}>
+              <PersonIcon sx={{ fontSize: 13 }} /> Server
             </Typography>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 0.25, color: '#000000' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 0.25, color: '#000000', fontSize: '0.78rem' }}>
               {table.serverName || 'Unassigned'}
             </Typography>
           </Paper>
         </Grid>
 
         <Grid size={6}>
-          <Paper elevation={0} sx={{ p: 1.5, backgroundColor: '#FAFAFA', border: '1px solid #EEEEEE', borderRadius: '12px' }}>
-            <Typography variant="caption" sx={{ color: '#545454', display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 600 }}>
-              <AttachMoneyIcon sx={{ fontSize: 14 }} /> Order Total
+          <Paper elevation={0} sx={{ p: 1.25, backgroundColor: '#FAFAFA', border: '1px solid #EEEEEE', borderRadius: '10px' }}>
+            <Typography variant="caption" sx={{ color: '#545454', display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 600, fontSize: '0.7rem' }}>
+              <AttachMoneyIcon sx={{ fontSize: 13 }} /> Order Total
             </Typography>
-            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#06C167', mt: 0.25, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#06C167', mt: 0.25, fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.82rem' }}>
               {formatINR(table.totalAmount || linkedOrder?.total || 0)}
             </Typography>
           </Paper>
@@ -178,14 +178,14 @@ export const TableDetailDrawer: React.FC<TableDetailDrawerProps> = ({ table }) =
       </Grid>
 
       {/* Action Buttons */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mt: 'auto' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25, mt: 1 }}>
         <Button
           variant="contained"
-          size="large"
+          size="medium"
           onClick={handleOpenOrderEntry}
           startIcon={<AddCircleOutlinedIcon />}
           sx={{
-            py: 1.25,
+            py: 1,
             borderRadius: 9999, // Uber Eats Pill Button
             fontWeight: 800,
             fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -204,6 +204,7 @@ export const TableDetailDrawer: React.FC<TableDetailDrawerProps> = ({ table }) =
           <Button
             variant="outlined"
             fullWidth
+            size="small"
             onClick={() => setAssignDialogOpen(true)}
             startIcon={<PersonIcon />}
             sx={{ borderRadius: 9999, color: '#000000', borderColor: '#EEEEEE' }}
@@ -214,6 +215,7 @@ export const TableDetailDrawer: React.FC<TableDetailDrawerProps> = ({ table }) =
           <Button
             variant="outlined"
             fullWidth
+            size="small"
             disabled={table.status !== 'Occupied'}
             onClick={handleConfirmPauseOrder}
             startIcon={<SwapHorizIcon />}

@@ -23,14 +23,14 @@ export const KpiCard: React.FC<KpiCardProps> = ({
     <Paper
       elevation={1}
       sx={{
-        p: 2.5,
+        p: { xs: 1.75, sm: 2 }, // Compact padding (no huge empty white space)
         borderRadius: '16px',
         backgroundColor: '#FFFFFF',
         border: '1px solid #EEEEEE',
         display: 'flex',
         flexDirection: 'column',
-        gap: 1,
-        height: '100%',
+        gap: 0.75,
+        height: 'auto', // Content-fit dynamic height
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
         transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
         '&:hover': {
@@ -41,7 +41,7 @@ export const KpiCard: React.FC<KpiCardProps> = ({
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="subtitle2" sx={{ color: '#545454', fontWeight: 600, fontSize: '0.8125rem', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+        <Typography variant="subtitle2" sx={{ color: '#545454', fontWeight: 600, fontSize: '0.78rem', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           {title}
         </Typography>
         {icon && (
@@ -51,8 +51,8 @@ export const KpiCard: React.FC<KpiCardProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 38,
-              height: 38,
+              width: 32,
+              height: 32,
               borderRadius: 9999, // Uber Eats Pill
               backgroundColor: '#E6F9F0',
               border: '1px solid #A3E9C5',
@@ -63,14 +63,14 @@ export const KpiCard: React.FC<KpiCardProps> = ({
         )}
       </Box>
 
-      <Typography variant="h4" sx={{ fontWeight: 800, color: '#000000', letterSpacing: '-0.025em', my: 0.5, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      <Typography variant="h5" sx={{ fontWeight: 800, color: '#000000', letterSpacing: '-0.02em', my: 0.25, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
         {value}
       </Typography>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 'auto' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 'auto' }}>
         <MetricBadge change={change} isPositive={isPositive} />
         {subtitle && (
-          <Typography variant="caption" sx={{ color: '#8E8E8E', fontWeight: 500, fontSize: '0.75rem' }}>
+          <Typography variant="caption" sx={{ color: '#8E8E8E', fontWeight: 500, fontSize: '0.7rem' }}>
             {subtitle}
           </Typography>
         )}

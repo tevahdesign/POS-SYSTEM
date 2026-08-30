@@ -16,12 +16,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
     <Card
       onClick={() => onSelect(product)}
       sx={{
-        p: 1.75,
+        p: 1.25, // Compact 10px padding
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
+        height: 'auto', // Content-fit dynamic height
         cursor: 'pointer',
-        borderRadius: '16px',
+        borderRadius: '14px',
         backgroundColor: '#FFFFFF',
         border: '1px solid #EEEEEE',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
@@ -34,7 +34,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
       }}
     >
       {/* Product Image Container */}
-      <Box sx={{ position: 'relative', width: '100%', pt: '65%', borderRadius: '12px', overflow: 'hidden', mb: 1.5, backgroundColor: '#F6F6F6' }}>
+      <Box sx={{ position: 'relative', width: '100%', pt: '50%', borderRadius: '10px', overflow: 'hidden', mb: 1, backgroundColor: '#F6F6F6' }}>
         <CardMedia
           component="img"
           image={product.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80'}
@@ -61,12 +61,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
           }}
           sx={{
             position: 'absolute',
-            top: 8,
-            right: 8,
+            top: 6,
+            right: 6,
             backgroundColor: 'rgba(255, 255, 255, 0.9)',
             backdropFilter: 'blur(8px)',
             border: '1px solid #EEEEEE',
-            p: 0.5,
+            p: 0.4,
             color: '#545454',
             '&:hover': {
               backgroundColor: '#FFFFFF',
@@ -74,7 +74,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
             },
           }}
         >
-          <InfoOutlinedIcon sx={{ fontSize: 16 }} />
+          <InfoOutlinedIcon sx={{ fontSize: 14 }} />
         </IconButton>
       </Box>
 
@@ -84,13 +84,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
           variant="subtitle2"
           sx={{
             fontWeight: 700,
-            fontSize: '0.875rem',
+            fontSize: '0.8125rem',
             color: '#000000',
             fontFamily: "'Plus Jakarta Sans', sans-serif",
-            lineHeight: 1.3,
-            mb: 1,
+            lineHeight: 1.25,
+            mb: 0.75,
             display: '-webkit-box',
-            WebkitLineClamp: 2,
+            WebkitLineClamp: 1,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
           }}
@@ -99,7 +99,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
         </Typography>
 
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 'auto' }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.85rem' }}>
             {formatINR(product.price)}
           </Typography>
 
@@ -114,8 +114,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
               backgroundColor: '#06C167',
               color: '#FFFFFF',
               borderRadius: 9999, // Pill Button
-              width: 34,
-              height: 34,
+              width: 30,
+              height: 30,
               boxShadow: '0 2px 8px rgba(6, 193, 103, 0.3)',
               transition: 'all 0.2s ease',
               '&:hover': {
@@ -125,7 +125,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
               },
             }}
           >
-            <AddIcon sx={{ fontSize: 18 }} />
+            <AddIcon sx={{ fontSize: 16 }} />
           </IconButton>
         </Box>
       </Box>

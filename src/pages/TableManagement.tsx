@@ -33,11 +33,11 @@ export const TableManagement: React.FC = () => {
 
   return (
     <MainLayoutTemplate title="Table & Seating Management">
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
         {/* Top Controls Bar */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1.5 }}>
           {/* Status Filters */}
-          <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: 0.5 }}>
+          <Box sx={{ display: 'flex', gap: 0.75, overflowX: 'auto', pb: 0.5 }}>
             {statusCategories.map((status) => {
               const count =
                 status === 'All'
@@ -60,18 +60,18 @@ export const TableManagement: React.FC = () => {
         <Paper
           elevation={1}
           sx={{
-            p: 1.75,
-            px: 3,
+            p: 1.25,
+            px: 2.5,
             borderRadius: 9999, // Pill style
             backgroundColor: '#FFFFFF',
             border: '1px solid #EEEEEE',
             display: 'flex',
             alignItems: 'center',
-            gap: 3,
+            gap: { xs: 1.5, sm: 2.5 },
             flexWrap: 'wrap',
           }}
         >
-          <Typography variant="caption" sx={{ fontWeight: 800, color: '#000000', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <Typography variant="caption" sx={{ fontWeight: 800, color: '#000000', textTransform: 'uppercase', letterSpacing: '0.04em', fontSize: '0.7rem' }}>
             Table Legend:
           </Typography>
 
@@ -81,17 +81,17 @@ export const TableManagement: React.FC = () => {
             { label: 'Reserved', color: '#F59E0B', bg: '#FEF3C7' },
             { label: 'Paused / Dirty', color: '#E53E3E', bg: '#FED7D7' },
           ].map((item) => (
-            <Box key={item.label} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box key={item.label} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
               <Box
                 sx={{
-                  width: 10,
-                  height: 10,
+                  width: 8,
+                  height: 8,
                   borderRadius: 9999,
                   backgroundColor: item.color,
                   boxShadow: `0 0 6px ${item.color}`,
                 }}
               />
-              <Typography variant="caption" sx={{ fontWeight: 700, color: '#545454' }}>
+              <Typography variant="caption" sx={{ fontWeight: 700, color: '#545454', fontSize: '0.72rem' }}>
                 {item.label}
               </Typography>
             </Box>
@@ -99,7 +99,7 @@ export const TableManagement: React.FC = () => {
         </Paper>
 
         {/* Layout Grid: Floor Plan Graphic + Table Detail Drawer */}
-        <Grid container spacing={2.5}>
+        <Grid container spacing={{ xs: 1.5, sm: 2 }}>
           <Grid size={{ xs: 12, md: 7, lg: 8 }}>
             <FloorPlanGrid
               tables={filteredTables}

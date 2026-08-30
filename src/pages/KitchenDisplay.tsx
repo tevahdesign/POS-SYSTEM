@@ -30,11 +30,11 @@ export const KitchenDisplay: React.FC = () => {
 
   return (
     <MainLayoutTemplate title="Kitchen Display System (KDS)">
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
         {/* Top Controls Bar */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1.5 }}>
           {/* Status Filter Tabs */}
-          <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: 0.5 }}>
+          <Box sx={{ display: 'flex', gap: 0.75, overflowX: 'auto', pb: 0.5 }}>
             {statusCategories.map((status) => {
               const count =
                 status === 'All'
@@ -56,7 +56,7 @@ export const KitchenDisplay: React.FC = () => {
             variant="outlined"
             color="warning"
             onClick={() => setIsStockModalOpen(true)}
-            startIcon={<WarningAmberIcon />}
+            startIcon={<WarningAmberIcon sx={{ fontSize: 18 }} />}
             sx={{
               borderRadius: 9999,
               fontWeight: 700,
@@ -64,6 +64,8 @@ export const KitchenDisplay: React.FC = () => {
               backgroundColor: '#FEEBC8',
               borderColor: '#FBD38D',
               color: '#C05621',
+              py: 0.75,
+              fontSize: '0.78rem',
               '&:hover': {
                 backgroundColor: '#FBD38D',
               },
@@ -77,27 +79,29 @@ export const KitchenDisplay: React.FC = () => {
         <Paper
           elevation={1}
           sx={{
-            p: 2,
-            borderRadius: '16px',
+            p: 1.5,
+            borderRadius: '14px',
             backgroundColor: '#FFFFFF',
             border: '1px solid #EEEEEE',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 1,
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <SoupKitchenIcon sx={{ color: '#06C167' }} />
-            <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+            <SoupKitchenIcon sx={{ color: '#06C167', fontSize: 20 }} />
+            <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.875rem' }}>
               Active Prep Stream ({filteredTickets.length} Orders Pending)
             </Typography>
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600 }}>
+            <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600, fontSize: '0.72rem' }}>
               Avg Prep Time: <strong>12 mins</strong>
             </Typography>
-            <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600 }}>
+            <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600, fontSize: '0.72rem' }}>
               Urgent Tickets (&gt;15m): <strong>{kitchenTickets.filter((t) => (Date.now() - t.timestamp) / 60000 > 15 && t.status !== 'Ready').length}</strong>
             </Typography>
           </Box>
@@ -110,7 +114,7 @@ export const KitchenDisplay: React.FC = () => {
             description="Active kitchen tickets dispatched from POS order entry will stream here in real-time."
           />
         ) : (
-          <Grid container spacing={2.5}>
+          <Grid container spacing={{ xs: 1.5, sm: 2 }}>
             {filteredTickets.map((ticket) => (
               <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={ticket.id}>
                 <KdsTicketCard ticket={ticket} />

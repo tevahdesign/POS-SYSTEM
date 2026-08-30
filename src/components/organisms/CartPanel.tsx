@@ -70,40 +70,40 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
     <Paper
       elevation={2}
       sx={{
-        p: 2.5,
-        borderRadius: '20px',
+        p: { xs: 1.5, sm: 2 },
+        borderRadius: '16px',
         backgroundColor: '#FFFFFF',
         border: '1px solid #EEEEEE',
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
+        height: 'auto', // Content-fit dynamic height
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
       }}
     >
       {/* Top Order Type Pill Tabs */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
         {onReturnToCatalog && (
-          <IconButton onClick={onReturnToCatalog} sx={{ display: { xs: 'flex', md: 'none' }, color: '#000000', mr: 1 }}>
-            <ArrowBackIcon />
+          <IconButton onClick={onReturnToCatalog} sx={{ display: { xs: 'flex', md: 'none' }, color: '#000000', mr: 1, p: 0.5 }}>
+            <ArrowBackIcon sx={{ fontSize: 18 }} />
           </IconButton>
         )}
-        <Typography variant="h6" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+        <Typography variant="h6" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.95rem' }}>
           Current Order ({totalItemCount})
         </Typography>
 
         {cart.length > 0 && (
-          <IconButton size="small" onClick={handleClearCart} sx={{ color: '#E53E3E' }}>
-            <DeleteOutlineIcon sx={{ fontSize: 20 }} />
+          <IconButton size="small" onClick={handleClearCart} sx={{ color: '#E53E3E', p: 0.5 }}>
+            <DeleteOutlineIcon sx={{ fontSize: 18 }} />
           </IconButton>
         )}
       </Box>
 
       {/* Order Type Selector Pills */}
-      <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+      <Box sx={{ display: 'flex', gap: 0.75, mb: 1.5 }}>
         {[
-          { type: 'Dine In' as OrderType, label: 'Dine-In', icon: <TableRestaurantIcon sx={{ fontSize: 16 }} /> },
-          { type: 'Takeaway' as OrderType, label: 'Takeout', icon: <LocalTakeoutIcon sx={{ fontSize: 16 }} /> },
-          { type: 'Delivery' as OrderType, label: 'Delivery', icon: <DeliveryDiningIcon sx={{ fontSize: 16 }} /> },
+          { type: 'Dine In' as OrderType, label: 'Dine-In', icon: <TableRestaurantIcon sx={{ fontSize: 14 }} /> },
+          { type: 'Takeaway' as OrderType, label: 'Takeout', icon: <LocalTakeoutIcon sx={{ fontSize: 14 }} /> },
+          { type: 'Delivery' as OrderType, label: 'Delivery', icon: <DeliveryDiningIcon sx={{ fontSize: 14 }} /> },
         ].map((item) => {
           const isActive = activeOrderType === item.type;
           return (
@@ -115,9 +115,11 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
               startIcon={item.icon}
               sx={{
                 borderRadius: 9999, // Uber Eats Pill Tab
-                py: 0.75,
+                py: 0.5,
+                px: 1,
                 fontWeight: 700,
-                fontSize: '0.75rem',
+                fontSize: '0.72rem',
+                minHeight: 32,
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
                 background: isActive ? '#000000' : '#F6F6F6',
                 color: isActive ? '#FFFFFF' : '#545454',
@@ -137,18 +139,18 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
 
       {/* Linked Table Header Badge */}
       {activeOrderType === 'Dine In' && (
-        <Box sx={{ mb: 2, p: 1.25, borderRadius: '12px', backgroundColor: '#E6F9F0', border: '1px solid #A3E9C5', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="caption" sx={{ color: '#06C167', fontWeight: 700 }}>
+        <Box sx={{ mb: 1.5, p: 1, borderRadius: '10px', backgroundColor: '#E6F9F0', border: '1px solid #A3E9C5', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="caption" sx={{ color: '#06C167', fontWeight: 700, fontSize: '0.72rem' }}>
             Table: <strong>{activeTable ? (activeTable.tableName || `Table ${activeTable.number}`) : (selectedTableName || 'Unassigned Table')}</strong>
           </Typography>
-          <Chip label="Dine-In Active" size="small" sx={{ backgroundColor: '#06C167', color: '#FFFFFF', fontWeight: 700 }} />
+          <Chip label="Dine-In Active" size="small" sx={{ backgroundColor: '#06C167', color: '#FFFFFF', fontWeight: 700, height: 20, fontSize: '0.65rem' }} />
         </Box>
       )}
 
-      <Divider sx={{ mb: 2, borderColor: '#EEEEEE' }} />
+      <Divider sx={{ mb: 1.5, borderColor: '#EEEEEE' }} />
 
       {/* Cart Items Scroll Container */}
-      <Box sx={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1.5, pr: 0.5 }}>
+      <Box sx={{ maxH: 340, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1, pr: 0.5 }}>
         {cart.length === 0 ? (
           <EmptyState
             title="Cart is Empty"
@@ -160,8 +162,8 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
               key={item.id}
               elevation={0}
               sx={{
-                p: 1.5,
-                borderRadius: '14px',
+                p: 1.25,
+                borderRadius: '12px',
                 backgroundColor: '#FAFAFA',
                 border: '1px solid #EEEEEE',
                 display: 'flex',
@@ -170,34 +172,34 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
               }}
             >
               <Box sx={{ minWidth: 0, flex: 1, mr: 1 }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: '0.8125rem', color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }} noWrap>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: '0.78rem', color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }} noWrap>
                   {item.product.name}
                 </Typography>
-                <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600 }}>
+                <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600, fontSize: '0.7rem' }}>
                   {formatINR(item.product.price)} each
                 </Typography>
                 {item.selectedModifiers.length > 0 && (
-                  <Typography variant="caption" sx={{ color: '#06C167', display: 'block', fontSize: '0.7rem' }}>
+                  <Typography variant="caption" sx={{ color: '#06C167', display: 'block', fontSize: '0.65rem' }}>
                     + {item.selectedModifiers.map((m) => m.name).join(', ')}
                   </Typography>
                 )}
               </Box>
 
               {/* Quantity Adjuster */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <IconButton size="small" onClick={() => handleQuantityChange(item.id, -1)} sx={{ color: '#545454', border: '1px solid #EEEEEE', p: 0.5, borderRadius: 9999 }}>
-                  <RemoveIcon sx={{ fontSize: 14 }} />
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <IconButton size="small" onClick={() => handleQuantityChange(item.id, -1)} sx={{ color: '#545454', border: '1px solid #EEEEEE', p: 0.3, borderRadius: 9999 }}>
+                  <RemoveIcon sx={{ fontSize: 13 }} />
                 </IconButton>
 
-                <Typography variant="subtitle2" sx={{ fontWeight: 800, minWidth: 20, textAlign: 'center', color: '#000000' }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 800, minWidth: 16, textAlign: 'center', color: '#000000', fontSize: '0.78rem' }}>
                   {item.quantity}
                 </Typography>
 
-                <IconButton size="small" onClick={() => handleQuantityChange(item.id, 1)} sx={{ color: '#06C167', border: '1px solid #A3E9C5', backgroundColor: '#E6F9F0', p: 0.5, borderRadius: 9999 }}>
-                  <AddIcon sx={{ fontSize: 14 }} />
+                <IconButton size="small" onClick={() => handleQuantityChange(item.id, 1)} sx={{ color: '#06C167', border: '1px solid #A3E9C5', backgroundColor: '#E6F9F0', p: 0.3, borderRadius: 9999 }}>
+                  <AddIcon sx={{ fontSize: 13 }} />
                 </IconButton>
 
-                <Typography variant="subtitle2" sx={{ fontWeight: 800, minWidth: 60, textAlign: 'right', color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 800, minWidth: 54, textAlign: 'right', color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.78rem' }}>
                   {formatINR(item.itemTotal)}
                 </Typography>
               </Box>
@@ -206,23 +208,23 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
         )}
       </Box>
 
-      <Divider sx={{ my: 2, borderColor: '#EEEEEE' }} />
+      <Divider sx={{ my: 1.5, borderColor: '#EEEEEE' }} />
 
       {/* Totals & Submit */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75, mb: 1.5 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600 }}>Subtotal</Typography>
-          <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#000000' }}>{formatINR(subtotal)}</Typography>
+          <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#000000', fontSize: '0.78rem' }}>{formatINR(subtotal)}</Typography>
         </Box>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600 }}>Tax ({settings.taxRate}%)</Typography>
-          <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#000000' }}>{formatINR(taxTotal)}</Typography>
+          <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#000000', fontSize: '0.78rem' }}>{formatINR(taxTotal)}</Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 1, borderTop: '1px stroke #EEEEEE' }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Total</Typography>
-          <Typography variant="h5" sx={{ fontWeight: 800, color: '#06C167', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 0.75, borderTop: '1px stroke #EEEEEE' }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.875rem' }}>Total</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: '#06C167', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
             {formatINR(grandTotal)}
           </Typography>
         </Box>
@@ -230,18 +232,19 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
 
       <Button
         variant="contained"
-        size="large"
+        size="medium"
         fullWidth
         disabled={cart.length === 0}
         onClick={() => setCheckoutDialogOpen(true)}
         startIcon={<ShoppingCartCheckoutIcon />}
         sx={{
-          py: 1.5,
+          py: 1.1,
           borderRadius: 9999, // Uber Eats Pill Button
           fontWeight: 800,
           fontFamily: "'Plus Jakarta Sans', sans-serif",
           backgroundColor: '#06C167',
           color: '#FFFFFF',
+          fontSize: '0.8125rem',
           boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
           '&:hover': {
             backgroundColor: '#049851',

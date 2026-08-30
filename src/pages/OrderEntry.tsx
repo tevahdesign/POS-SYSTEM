@@ -49,12 +49,12 @@ export const OrderEntry: React.FC = () => {
   return (
     <MainLayoutTemplate title="Order Entry">
       {/* Mobile Tab Switcher Toggle */}
-      <Box sx={{ display: { xs: 'flex', md: 'none' }, mb: 2, gap: 1 }}>
+      <Box sx={{ display: { xs: 'flex', md: 'none' }, mb: 1.5, gap: 1 }}>
         <Button
           fullWidth
           variant={activeTabMobile === 'catalog' ? 'contained' : 'outlined'}
           onClick={() => setActiveTabMobile('catalog')}
-          sx={{ borderRadius: 9999, fontWeight: 700, backgroundColor: activeTabMobile === 'catalog' ? '#000000' : 'transparent' }}
+          sx={{ borderRadius: 9999, fontWeight: 700, minHeight: 40, backgroundColor: activeTabMobile === 'catalog' ? '#000000' : 'transparent' }}
         >
           Catalog ({filteredProducts.length})
         </Button>
@@ -63,13 +63,13 @@ export const OrderEntry: React.FC = () => {
           variant={activeTabMobile === 'cart' ? 'contained' : 'outlined'}
           onClick={() => setActiveTabMobile('cart')}
           startIcon={<ShoppingBagIcon />}
-          sx={{ borderRadius: 9999, fontWeight: 700, backgroundColor: activeTabMobile === 'cart' ? '#000000' : 'transparent' }}
+          sx={{ borderRadius: 9999, fontWeight: 700, minHeight: 40, backgroundColor: activeTabMobile === 'cart' ? '#000000' : 'transparent' }}
         >
           Cart ({cart.reduce((acc, item) => acc + item.quantity, 0)})
         </Button>
       </Box>
 
-      <Grid container spacing={2.5} sx={{ minHeight: 'calc(100vh - 140px)' }}>
+      <Grid container spacing={{ xs: 1.5, sm: 2 }} sx={{ height: 'auto' }}>
         {/* Left Section: Catalog & Search */}
         <Grid
           size={{ xs: 12, md: 7, lg: 8 }}
@@ -77,7 +77,7 @@ export const OrderEntry: React.FC = () => {
             display: { xs: activeTabMobile === 'catalog' ? 'block' : 'none', md: 'block' },
           }}
         >
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
             <SearchInput
               value={searchQuery}
               onChange={setSearchQuery}
@@ -85,7 +85,7 @@ export const OrderEntry: React.FC = () => {
             />
 
             {/* Category Tabs */}
-            <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: 0.5 }}>
+            <Box sx={{ display: 'flex', gap: 0.75, overflowX: 'auto', pb: 0.5 }}>
               {categories.map((cat) => (
                 <CategoryTab
                   key={cat}
@@ -108,7 +108,7 @@ export const OrderEntry: React.FC = () => {
                 }}
               />
             ) : (
-              <Grid container spacing={2}>
+              <Grid container spacing={{ xs: 1.25, sm: 1.5 }}>
                 {filteredProducts.map((product) => (
                   <Grid size={{ xs: 6, sm: 4, md: 4, lg: 3 }} key={product.id}>
                     <ProductCard
@@ -128,7 +128,7 @@ export const OrderEntry: React.FC = () => {
           size={{ xs: 12, md: 5, lg: 4 }}
           sx={{
             display: { xs: activeTabMobile === 'cart' ? 'block' : 'none', md: 'block' },
-            height: '100%',
+            height: 'auto',
           }}
         >
           <CartPanel onReturnToCatalog={() => setActiveTabMobile('catalog')} />

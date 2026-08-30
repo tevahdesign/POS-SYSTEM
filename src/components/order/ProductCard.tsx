@@ -26,7 +26,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           }}
           title="View product details & modifiers"
         >
-          <Info size={14} />
+          <Info size={13} />
         </button>
       </div>
 
@@ -42,7 +42,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             }}
             title="Quick add to order"
           >
-            <Plus size={16} />
+            <Plus size={15} />
           </button>
         </div>
       </div>
@@ -51,13 +51,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         .product-card {
           display: flex;
           flex-direction: column;
-          padding: 12px;
+          padding: 10px;
           cursor: pointer;
-          border-radius: var(--radius-lg);
+          border-radius: var(--radius-md);
           background: #FFFFFF;
           border: 1px solid #EEEEEE;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          height: auto;
         }
 
         .product-card:hover {
@@ -69,11 +70,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         .product-image-container {
           position: relative;
           width: 100%;
-          height: 110px;
-          border-radius: var(--radius-md);
+          height: 95px;
+          border-radius: var(--radius-sm);
           overflow: hidden;
           background-color: #F6F6F6;
-          margin-bottom: 10px;
+          margin-bottom: 8px;
         }
 
         .product-image {
@@ -89,10 +90,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         .product-info-btn {
           position: absolute;
-          top: 6px;
-          right: 6px;
-          width: 26px;
-          height: 26px;
+          top: 5px;
+          right: 5px;
+          width: 24px;
+          height: 24px;
           border-radius: 9999px;
           background: rgba(255, 255, 255, 0.9);
           border: 1px solid #EEEEEE;
@@ -119,11 +120,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         .product-title {
           font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 13.5px;
+          font-size: 12.5px;
           font-weight: 700;
           color: #000000;
-          line-height: 1.3;
-          margin-bottom: 8px;
+          line-height: 1.25;
+          margin-bottom: 6px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .product-bottom {
@@ -134,14 +138,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         .product-price {
           font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 800;
           color: #000000;
         }
 
         .product-add-btn {
-          width: 32px;
-          height: 32px;
+          width: 28px;
+          height: 28px;
           border-radius: 9999px;
           background: var(--ubereats-green);
           color: #FFFFFF;
