@@ -32,6 +32,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+
 import { MainLayoutTemplate } from '../components/templates/MainLayoutTemplate';
 import { SearchInput } from '../components/atoms/SearchInput';
 import { CategoryTab } from '../components/atoms/CategoryTab';
@@ -41,19 +43,20 @@ import { CartPanel } from '../components/organisms/CartPanel';
 import { KpiCard } from '../components/molecules/KpiCard';
 import { StatusChip } from '../components/atoms/StatusChip';
 import { usePosStore, posStore } from '../store/posStore';
-import { Product, Order, OrderStatus } from '../types/pos';
+import { Product, Order, TableItem } from '../types/pos';
 import { ModifierModal } from '../components/organisms/Modals/ModifierModal';
 import { QuantityModal } from '../components/organisms/Modals/QuantityModal';
+import { GuestSelectModal } from '../components/organisms/Modals/GuestSelectModal';
+import { BillMenuModal } from '../components/organisms/Modals/BillMenuModal';
+import { KeyboardAlphabetFilter } from '../components/atoms/KeyboardAlphabetFilter';
 import { NotificationToast } from '../components/atoms/NotificationToast';
 import { formatINR } from '../utils/formatters';
 
 export const OrderEntry: React.FC = () => {
   const { products, cart, orders, tables, selectedTableId, selectedTableName } = usePosStore();
 
-  // Top level view mode: 'orders_list' (Default) vs 'catalog_cart' (When Table Selected)
-  const [viewMode, setViewMode] = useState<'orders_list' | 'catalog_cart'>(
-    selectedTableId ? 'catalog_cart' : 'orders_list'
-  );
+  // Top level view mode: Always default to 'orders_list' so order details show only initially
+  const [viewMode, setViewMode] = useState<'orders_list' | 'catalog_cart'>('orders_list');
 
   // Date Filter State
   const [dateFilter, setDateFilter] = useState<'Today' | 'Yesterday' | 'This Week' | 'Custom'>('Today');
@@ -75,12 +78,15 @@ export const OrderEntry: React.FC = () => {
   const [tableSelectDialogOpen, setTableSelectDialogOpen] = useState<boolean>(false);
   const [selectedOrderDetails, setSelectedOrderDetails] = useState<Order | null>(null);
 
+  // Guest & Bill Modals
+  const [guestModalOpen, setGuestModalOpen] = useState<boolean>(false);
+  const [selectedTableForGuest, setSelectedTableForGuest] = useState<TableItem | null>(null);
+  const [billModalOpen, setBillModalOpen] = useState<boolean>(false);
+  const [selectedOrderForBill, setSelectedOrderForBill] = useState<Order | null>(null);
+
   // Toast
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
-
-  // Individual Alphabet Buttons list
-  const alphabetList = ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
 
   // Date Filter Logic
   const getFilteredOrders = () => {
@@ -301,12 +307,26 @@ export const OrderEntry: React.FC = () => {
                             <IconButton size="small" onClick={() => setSelectedOrderDetails(order)} title="View Receipt / Details">
                               <VisibilityIcon fontSize="small" sx={{ color: '#545454' }} />
                             </IconButton>
+                            {order.status !== 'Completed' && (
+                              <Button
+                                size="small"
+                                onClick={() => {
+                                  setSelectedOrderForBill(order);
+                                  setBillModalOpen(true);
+                                }}
+                                startIcon={<ReceiptLongIcon sx={{ fontSize: 14 }} />}
+                                sx={{ ml: 0.75, borderRadius: 9999, fontWeight: 700, color: '#000000', borderColor: '#000000', fontSize: '0.7rem' }}
+                                variant="outlined"
+                              >
+                                Bill Menu
+                              </Button>
+                            )}
                             {order.tableId && order.status !== 'Completed' && (
                               <Button
                                 size="small"
                                 onClick={() => handleReopenOrderForTable(order)}
                                 startIcon={<AddShoppingCartIcon sx={{ fontSize: 14 }} />}
-                                sx={{ ml: 1, borderRadius: 9999, fontWeight: 700, color: '#06C167', fontSize: '0.7rem' }}
+                                sx={{ ml: 0.75, borderRadius: 9999, fontWeight: 700, color: '#06C167', fontSize: '0.7rem' }}
                               >
                                 Add Round 2
                               </Button>
@@ -396,33 +416,11 @@ export const OrderEntry: React.FC = () => {
                     placeholder="Search menu items..."
                   />
 
-                  {/* A-Z Alphabet Quick Jump Filter Strip */}
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, overflowX: 'auto', pb: 0.5 }}>
-                    <Typography variant="caption" sx={{ color: '#545454', fontWeight: 800, fontSize: '0.68rem', mr: 0.5, textTransform: 'uppercase', flexShrink: 0 }}>
-                      A-Z:
-                    </Typography>
-                    {alphabetList.map((letter) => (
-                      <Button
-                        key={letter}
-                        size="small"
-                        onClick={() => setAlphabetFilter(letter)}
-                        sx={{
-                          minWidth: 28,
-                          height: 28,
-                          p: 0,
-                          borderRadius: 9999,
-                          fontWeight: 800,
-                          fontSize: '0.72rem',
-                          backgroundColor: alphabetFilter === letter ? '#06C167' : '#F6F6F6',
-                          color: alphabetFilter === letter ? '#FFFFFF' : '#545454',
-                          border: '1px solid #EEEEEE',
-                          flexShrink: 0,
-                        }}
-                      >
-                        {letter}
-                      </Button>
-                    ))}
-                  </Box>
+                  {/* Multi-Row Alphabetical ABCD Keyboard Grid Filter */}
+                  <KeyboardAlphabetFilter
+                    selectedLetter={alphabetFilter}
+                    onSelectLetter={setAlphabetFilter}
+                  />
 
                   {/* Category Tabs */}
                   <Box sx={{ display: 'flex', gap: 0.75, overflowX: 'auto', pb: 0.5 }}>
@@ -577,6 +575,42 @@ export const OrderEntry: React.FC = () => {
             <Button onClick={() => setSelectedOrderDetails(null)} sx={{ borderRadius: 9999 }}>Close</Button>
           </DialogActions>
         </Dialog>
+
+        {/* Guest Seat Selector Modal */}
+        <GuestSelectModal
+          isOpen={guestModalOpen}
+          onClose={() => setGuestModalOpen(false)}
+          table={selectedTableForGuest}
+          linkedOrder={orders.find((o) => o.tableId === selectedTableForGuest?.id && !o.isPaid)}
+          onSelectGuest={(seatNum) => {
+            if (selectedTableForGuest) {
+              posStore.setSelectedTable(selectedTableForGuest.id, selectedTableForGuest.tableName || `Table ${selectedTableForGuest.number}`);
+              posStore.setSelectedSeat(seatNum);
+              posStore.setOrderType('Dine In');
+              setViewMode('catalog_cart');
+              setToastMsg(`Selected Guest #${seatNum} for ${selectedTableForGuest.tableName || 'Table'}. Catalog open for ordering.`);
+              setToastOpen(true);
+            }
+          }}
+          onOpenBillMenu={(tbl) => {
+            const ord = orders.find((o) => o.tableId === tbl.id && !o.isPaid);
+            if (ord) {
+              setSelectedOrderForBill(ord);
+              setBillModalOpen(true);
+            }
+          }}
+        />
+
+        {/* Bill Menu & Pre-Bill Edit Modal */}
+        <BillMenuModal
+          isOpen={billModalOpen}
+          onClose={() => setBillModalOpen(false)}
+          order={selectedOrderForBill}
+          onOrderCompleted={() => {
+            setToastMsg(`Order ${selectedOrderForBill?.orderNumber} bill finalized and moved to completed!`);
+            setToastOpen(true);
+          }}
+        />
 
         <NotificationToast open={toastOpen} message={toastMsg} onClose={() => setToastOpen(false)} />
       </Box>

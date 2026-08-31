@@ -20,6 +20,7 @@ import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
 import LocalTakeoutIcon from '@mui/icons-material/LocalShipping';
 import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import PauseCircleOutlinedIcon from '@mui/icons-material/PauseCircleOutlined';
 import PlayCircleOutlinedIcon from '@mui/icons-material/PlayCircleOutlined';
@@ -29,20 +30,27 @@ import { formatINR } from '../../utils/formatters';
 import { OrderType } from '../../types/pos';
 import { EmptyState } from '../atoms/EmptyState';
 import { NotificationToast } from '../atoms/NotificationToast';
+import { BillMenuModal } from './Modals/BillMenuModal';
 
 interface CartPanelProps {
   onReturnToCatalog?: () => void;
 }
 
 export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
-  const { cart, activeOrderType, selectedTableId, selectedTableName, tables, settings } = usePosStore();
+  const { cart, activeOrderType, selectedTableId, selectedTableName, selectedSeatNumber, tables, orders, settings } = usePosStore();
   const [checkoutDialogOpen, setCheckoutDialogOpen] = useState(false);
+  const [billModalOpen, setBillModalOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
-  const [activeSeatTab, setActiveSeatTab] = useState<number>(1);
+  const [activeSeatTab, setActiveSeatTab] = useState<number>(selectedSeatNumber || 1);
 
   const activeTable = tables.find((t) => t.id === selectedTableId);
   const isTablePaused = activeTable?.isPaused;
+
+  // Active table order
+  const activeOrder = orders.find((o) => (o.tableId === selectedTableId || o.tableName === selectedTableName) && !o.isPaid);
+
+  const seatList = Array.from({ length: activeTable?.seats || 4 }, (_, i) => i + 1);
 
   const handleOrderTypeChange = (type: OrderType) => {
     posStore.setOrderType(type);
@@ -182,11 +190,14 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
           <Typography variant="caption" sx={{ fontWeight: 800, color: '#545454', fontSize: '0.68rem', textTransform: 'uppercase' }}>
             Seat:
           </Typography>
-          {[1, 2, 3, 4].map((seat) => (
+          {seatList.map((seat) => (
             <Button
               key={seat}
               size="small"
-              onClick={() => setActiveSeatTab(seat)}
+              onClick={() => {
+                setActiveSeatTab(seat);
+                posStore.setSelectedSeat(seat);
+              }}
               sx={{
                 minWidth: 32,
                 height: 26,
@@ -355,77 +366,131 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
         </Box>
       </Box>
 
-      {/* Action Buttons: Send to Kitchen & Pause/Resume Order */}
-      <Box sx={{ display: 'flex', gap: 1 }}>
-        {isTablePaused ? (
-          <Button
-            variant="contained"
-            size="medium"
-            fullWidth
-            onClick={handleResumeOrder}
-            startIcon={<PlayCircleOutlinedIcon />}
-            sx={{
-              py: 1.1,
-              borderRadius: 9999,
-              fontWeight: 800,
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              backgroundColor: '#F59E0B',
-              color: '#FFFFFF',
-              fontSize: '0.8125rem',
-              '&:hover': { backgroundColor: '#D97706' },
-            }}
-          >
-            Resume Order ▶️
-          </Button>
-        ) : (
-          <>
-            <Button
-              variant="outlined"
-              size="medium"
-              disabled={cart.length === 0}
-              onClick={handlePauseOrder}
-              startIcon={<PauseCircleOutlinedIcon />}
-              sx={{
-                borderRadius: 9999,
-                fontWeight: 700,
-                minWidth: 100,
-                color: '#D97706',
-                borderColor: '#FBD38D',
-                backgroundColor: '#FEF3C7',
-                fontSize: '0.75rem',
-                '&:hover': { backgroundColor: '#FDE68A', borderColor: '#F59E0B' },
-              }}
-            >
-              Pause
-            </Button>
-
+      {/* Action Buttons: Send to Kitchen, Bill Menu & Pause/Resume Order */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          {isTablePaused ? (
             <Button
               variant="contained"
               size="medium"
               fullWidth
-              disabled={cart.length === 0 || unsentItems.length === 0}
-              onClick={() => setCheckoutDialogOpen(true)}
-              startIcon={<ShoppingCartCheckoutIcon />}
+              onClick={handleResumeOrder}
+              startIcon={<PlayCircleOutlinedIcon />}
               sx={{
                 py: 1.1,
                 borderRadius: 9999,
                 fontWeight: 800,
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
-                backgroundColor: '#06C167',
+                backgroundColor: '#F59E0B',
                 color: '#FFFFFF',
                 fontSize: '0.8125rem',
-                boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
-                '&:hover': {
-                  backgroundColor: '#049851',
-                  boxShadow: '0 6px 20px rgba(6, 193, 103, 0.5)',
-                },
+                '&:hover': { backgroundColor: '#D97706' },
               }}
             >
-              {sentItems.length > 0 ? `Send Round 2 (${formatINR(unsentSubtotal)})` : `Send Kitchen (${formatINR(grandTotal)})`}
+              Resume Order ▶️
             </Button>
-          </>
-        )}
+          ) : (
+            <>
+              <Button
+                variant="outlined"
+                size="medium"
+                disabled={cart.length === 0}
+                onClick={handlePauseOrder}
+                startIcon={<PauseCircleOutlinedIcon />}
+                sx={{
+                  borderRadius: 9999,
+                  fontWeight: 700,
+                  minWidth: 84,
+                  color: '#D97706',
+                  borderColor: '#FBD38D',
+                  backgroundColor: '#FEF3C7',
+                  fontSize: '0.75rem',
+                  '&:hover': { backgroundColor: '#FDE68A', borderColor: '#F59E0B' },
+                }}
+              >
+                Pause
+              </Button>
+
+              <Button
+                variant="contained"
+                size="medium"
+                fullWidth
+                disabled={cart.length === 0 || unsentItems.length === 0}
+                onClick={() => setCheckoutDialogOpen(true)}
+                startIcon={<ShoppingCartCheckoutIcon />}
+                sx={{
+                  py: 1.1,
+                  borderRadius: 9999,
+                  fontWeight: 800,
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  backgroundColor: '#06C167',
+                  color: '#FFFFFF',
+                  fontSize: '0.8125rem',
+                  boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
+                  '&:hover': {
+                    backgroundColor: '#049851',
+                    boxShadow: '0 6px 20px rgba(6, 193, 103, 0.5)',
+                  },
+                }}
+              >
+                {sentItems.length > 0 ? `Send Round 2 (${formatINR(unsentSubtotal)})` : `Send Kitchen (${formatINR(grandTotal)})`}
+              </Button>
+            </>
+          )}
+        </Box>
+
+        {/* Bill Menu & Print Bill Action */}
+        <Button
+          fullWidth
+          variant="outlined"
+          size="medium"
+          disabled={!activeOrder && cart.length === 0}
+          onClick={() => setBillModalOpen(true)}
+          startIcon={<ReceiptLongIcon />}
+          sx={{
+            py: 0.85,
+            borderRadius: 9999,
+            fontWeight: 800,
+            color: '#000000',
+            borderColor: '#000000',
+            fontSize: '0.8rem',
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            '&:hover': { backgroundColor: '#F6F6F6' },
+          }}
+        >
+          📄 View / Edit Bill Menu & Print Bill
+        </Button>
       </Box>
+
+      {/* Bill Menu Modal */}
+      <BillMenuModal
+        isOpen={billModalOpen}
+        onClose={() => setBillModalOpen(false)}
+        order={
+          activeOrder || {
+            id: 'temp-' + Date.now(),
+            orderNumber: '#Draft',
+            type: activeOrderType,
+            tableId: selectedTableId,
+            tableName: selectedTableName || 'Current Order',
+            items: cart,
+            subtotal,
+            tax: taxTotal,
+            discount: 0,
+            total: grandTotal,
+            status: 'Preparing',
+            createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            timestamp: Date.now(),
+            staffId: '1',
+            staffName: 'Staff',
+            isPaid: false,
+          }
+        }
+        onOrderCompleted={() => {
+          setToastMsg('Bill printed and order moved to completed bills!');
+          setToastOpen(true);
+        }}
+      />
 
       {/* Checkout Dialog */}
       <Dialog open={checkoutDialogOpen} onClose={() => setCheckoutDialogOpen(false)} maxWidth="xs" fullWidth>

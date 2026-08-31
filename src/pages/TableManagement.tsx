@@ -6,17 +6,35 @@ import {
   Typography,
   Grid,
 } from '@mui/material';
+import LocalTakeoutIcon from '@mui/icons-material/LocalShipping';
+import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
+import { useNavigate } from 'react-router-dom';
 
 import { MainLayoutTemplate } from '../components/templates/MainLayoutTemplate';
 import { FloorPlanGrid } from '../components/organisms/FloorPlanGrid';
 import { TableDetailDrawer } from '../components/organisms/TableDetailDrawer';
 import { CategoryTab } from '../components/atoms/CategoryTab';
-import { usePosStore } from '../store/posStore';
+import { usePosStore, posStore } from '../store/posStore';
+import { GuestSelectModal } from '../components/organisms/Modals/GuestSelectModal';
+import { BillMenuModal } from '../components/organisms/Modals/BillMenuModal';
+import { TableItem, Order } from '../types/pos';
+import { NotificationToast } from '../components/atoms/NotificationToast';
 
 export const TableManagement: React.FC = () => {
-  const { tables, selectedTableId: storeSelectedTableId } = usePosStore();
+  const navigate = useNavigate();
+  const { tables, orders, selectedTableId: storeSelectedTableId } = usePosStore();
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('All');
   const [selectedTableId, setSelectedTableId] = useState<string | null>(storeSelectedTableId || null);
+
+  // Guest & Bill Modals state
+  const [guestModalOpen, setGuestModalOpen] = useState(false);
+  const [guestTable, setGuestTable] = useState<TableItem | null>(null);
+  const [billModalOpen, setBillModalOpen] = useState(false);
+  const [billOrder, setBillOrder] = useState<Order | null>(null);
+
+  // Toast
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
 
   const statusCategories = ['All', 'Available', 'Occupied', 'Reserved', 'Paused'];
 
@@ -27,6 +45,20 @@ export const TableManagement: React.FC = () => {
 
   const handleSelectTable = (tableId: string) => {
     setSelectedTableId(tableId);
+    const targetTable = tables.find((t) => t.id === tableId);
+    if (targetTable) {
+      setGuestTable(targetTable);
+      setGuestModalOpen(true);
+    }
+  };
+
+  const handleStartStandaloneOrder = (type: 'Takeaway' | 'Delivery') => {
+    posStore.setOrderType(type);
+    setToastMsg(`Started standalone ${type} order!`);
+    setToastOpen(true);
+    setTimeout(() => {
+      navigate('/orders');
+    }, 150);
   };
 
   const activeSelectedTable = tables.find((t) => t.id === selectedTableId) || null;
@@ -34,7 +66,7 @@ export const TableManagement: React.FC = () => {
   return (
     <MainLayoutTemplate title="Table & Seating Management">
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
-        {/* Top Controls Bar */}
+        {/* Top Controls & Standalone Takeaway/Delivery Bar */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1.5 }}>
           {/* Status Filters */}
           <Box sx={{ display: 'flex', gap: 0.75, overflowX: 'auto', pb: 0.5 }}>
@@ -53,6 +85,50 @@ export const TableManagement: React.FC = () => {
                 />
               );
             })}
+          </Box>
+
+          {/* Standalone Takeaway and Delivery Order Buttons (No Table Needed) */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => handleStartStandaloneOrder('Takeaway')}
+              startIcon={<LocalTakeoutIcon />}
+              sx={{
+                borderRadius: 9999,
+                fontWeight: 800,
+                py: 0.75,
+                px: 2,
+                backgroundColor: '#000000',
+                color: '#FFFFFF',
+                fontSize: '0.78rem',
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                '&:hover': { backgroundColor: '#242424' },
+              }}
+            >
+              🛍️ Takeaway Order
+            </Button>
+
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => handleStartStandaloneOrder('Delivery')}
+              startIcon={<DeliveryDiningIcon />}
+              sx={{
+                borderRadius: 9999,
+                fontWeight: 800,
+                py: 0.75,
+                px: 2,
+                backgroundColor: '#06C167',
+                color: '#FFFFFF',
+                fontSize: '0.78rem',
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
+                '&:hover': { backgroundColor: '#049851' },
+              }}
+            >
+              🛵 Delivery Order
+            </Button>
           </Box>
         </Box>
 
@@ -113,6 +189,42 @@ export const TableManagement: React.FC = () => {
             <TableDetailDrawer table={activeSelectedTable} />
           </Grid>
         </Grid>
+
+        {/* Table Guest Capacity Selection Modal */}
+        <GuestSelectModal
+          isOpen={guestModalOpen}
+          onClose={() => setGuestModalOpen(false)}
+          table={guestTable}
+          linkedOrder={orders.find((o) => o.tableId === guestTable?.id && !o.isPaid)}
+          onSelectGuest={(seatNum) => {
+            if (guestTable) {
+              posStore.setSelectedTable(guestTable.id, guestTable.tableName || `Table ${guestTable.number}`);
+              posStore.setSelectedSeat(seatNum);
+              posStore.setOrderType('Dine In');
+              navigate('/orders');
+            }
+          }}
+          onOpenBillMenu={(tbl) => {
+            const ord = orders.find((o) => o.tableId === tbl.id && !o.isPaid);
+            if (ord) {
+              setBillOrder(ord);
+              setBillModalOpen(true);
+            }
+          }}
+        />
+
+        {/* Bill Menu Modal */}
+        <BillMenuModal
+          isOpen={billModalOpen}
+          onClose={() => setBillModalOpen(false)}
+          order={billOrder}
+          onOrderCompleted={() => {
+            setToastMsg(`Bill printed and order completed!`);
+            setToastOpen(true);
+          }}
+        />
+
+        <NotificationToast open={toastOpen} message={toastMsg} onClose={() => setToastOpen(false)} />
       </Box>
     </MainLayoutTemplate>
   );

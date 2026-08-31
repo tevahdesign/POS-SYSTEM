@@ -36,6 +36,7 @@ interface AppState {
   activeOrderType: OrderType;
   selectedTableId?: string;
   selectedTableName?: string;
+  selectedSeatNumber?: number;
   customerName?: string;
   cart: CartItem[];
   heldOrders: Order[];
@@ -65,6 +66,7 @@ const getInitialState = (): AppState => {
     activeOrderType: 'Dine In',
     selectedTableId: 't5',
     selectedTableName: 'Table 5',
+    selectedSeatNumber: 1,
     customerName: 'Dine-in Guest',
     cart: [
       {
@@ -72,21 +74,24 @@ const getInitialState = (): AppState => {
         product: INITIAL_PRODUCTS[0],
         quantity: 1,
         selectedModifiers: [{ id: 'opt4', name: 'Extra Cheese', price: 2.00 }],
-        itemTotal: 14.99
+        itemTotal: 14.99,
+        seatNumber: 1
       },
       {
         id: 'c2',
         product: INITIAL_PRODUCTS[2],
         quantity: 1,
         selectedModifiers: [],
-        itemTotal: 13.99
+        itemTotal: 13.99,
+        seatNumber: 2
       },
       {
         id: 'c3',
         product: INITIAL_PRODUCTS[7],
         quantity: 1,
         selectedModifiers: [],
-        itemTotal: 2.49
+        itemTotal: 2.49,
+        seatNumber: 1
       }
     ],
     heldOrders: [],
@@ -134,6 +139,7 @@ export const posStore = {
     if (type !== 'Dine In') {
       currentState.selectedTableId = undefined;
       currentState.selectedTableName = undefined;
+      currentState.selectedSeatNumber = undefined;
     }
     saveState();
   },
@@ -141,6 +147,14 @@ export const posStore = {
   setSelectedTable: (tableId?: string, tableName?: string) => {
     currentState.selectedTableId = tableId;
     currentState.selectedTableName = tableName;
+    if (!tableId) {
+      currentState.selectedSeatNumber = undefined;
+    }
+    saveState();
+  },
+
+  setSelectedSeat: (seatNumber?: number) => {
+    currentState.selectedSeatNumber = seatNumber;
     saveState();
   },
 
@@ -523,7 +537,47 @@ export const posStore = {
       currentState.payments = [newPayment, ...currentState.payments];
     }
 
+    // Clear active cart if matching this table order
+    if (targetOrder && targetOrder.tableId === currentState.selectedTableId) {
+      currentState.cart = [];
+      currentState.selectedTableId = undefined;
+      currentState.selectedTableName = undefined;
+      currentState.selectedSeatNumber = undefined;
+    }
+
     saveState();
+  },
+
+  updateOrderPreBill: (orderId: string, updatedItems: CartItem[], discount: number = 0) => {
+    const subtotal = updatedItems.reduce((sum, i) => sum + i.itemTotal, 0);
+    const tax = Number((subtotal * (currentState.settings.taxRate / 100)).toFixed(2));
+    const total = Math.max(0, Number((subtotal + tax - discount).toFixed(2)));
+
+    currentState.orders = currentState.orders.map(o => {
+      if (o.id === orderId) {
+        return {
+          ...o,
+          items: updatedItems,
+          subtotal,
+          tax,
+          discount,
+          total
+        };
+      }
+      return o;
+    });
+
+    // Also sync active cart if current table matches
+    const targetOrder = currentState.orders.find(o => o.id === orderId);
+    if (targetOrder && targetOrder.tableId && targetOrder.tableId === currentState.selectedTableId) {
+      currentState.cart = updatedItems;
+    }
+
+    saveState();
+  },
+
+  completeAndPrintOrder: (orderId: string, method: PaymentMethod) => {
+    posStore.payOrder(orderId, method);
   },
 
   // Table Management Actions
