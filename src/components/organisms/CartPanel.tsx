@@ -21,6 +21,8 @@ import LocalTakeoutIcon from '@mui/icons-material/LocalShipping';
 import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import PauseCircleOutlinedIcon from '@mui/icons-material/PauseCircleOutlined';
+import PlayCircleOutlinedIcon from '@mui/icons-material/PlayCircleOutlined';
 
 import { usePosStore, posStore } from '../../store/posStore';
 import { formatINR } from '../../utils/formatters';
@@ -37,8 +39,10 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
   const [checkoutDialogOpen, setCheckoutDialogOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
+  const [activeSeatTab, setActiveSeatTab] = useState<number>(1);
 
   const activeTable = tables.find((t) => t.id === selectedTableId);
+  const isTablePaused = activeTable?.isPaused;
 
   const handleOrderTypeChange = (type: OrderType) => {
     posStore.setOrderType(type);
@@ -50,6 +54,21 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
 
   const handleClearCart = () => {
     posStore.clearCart();
+  };
+
+  const handlePauseOrder = () => {
+    if (cart.length === 0 && !selectedTableId) return;
+    posStore.pauseTableOrder(selectedTableId);
+    setToastMsg(`Order for ${selectedTableName || 'Table'} has been paused ⏸️`);
+    setToastOpen(true);
+  };
+
+  const handleResumeOrder = () => {
+    if (selectedTableId) {
+      posStore.reopenTableOrder(selectedTableId);
+      setToastMsg(`Resumed order for ${selectedTableName || 'Table'} ▶️`);
+      setToastOpen(true);
+    }
   };
 
   const handleCompleteOrder = () => {
@@ -74,7 +93,6 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
   const taxTotal = Number((subtotal * (settings.taxRate / 100)).toFixed(2));
   const grandTotal = Number((subtotal + taxTotal).toFixed(2));
   const totalItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
   const unsentSubtotal = unsentItems.reduce((sum, item) => sum + item.itemTotal, 0);
 
   return (
@@ -150,11 +168,40 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
 
       {/* Linked Table Header Badge */}
       {activeOrderType === 'Dine In' && (
-        <Box sx={{ mb: 1.5, p: 1, borderRadius: '10px', backgroundColor: '#E6F9F0', border: '1px solid #A3E9C5', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="caption" sx={{ color: '#06C167', fontWeight: 700, fontSize: '0.72rem' }}>
+        <Box sx={{ mb: 1.5, p: 1, borderRadius: '10px', backgroundColor: isTablePaused ? '#FEF3C7' : '#E6F9F0', border: `1px solid ${isTablePaused ? '#F59E0B' : '#A3E9C5'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="caption" sx={{ color: isTablePaused ? '#B45309' : '#06C167', fontWeight: 700, fontSize: '0.72rem' }}>
             Table: <strong>{activeTable ? (activeTable.tableName || `Table ${activeTable.number}`) : (selectedTableName || 'Unassigned Table')}</strong>
           </Typography>
-          <Chip label="Dine-In Active" size="small" sx={{ backgroundColor: '#06C167', color: '#FFFFFF', fontWeight: 700, height: 20, fontSize: '0.65rem' }} />
+          <Chip label={isTablePaused ? '⏸️ Order Paused' : 'Dine-In Active'} size="small" sx={{ backgroundColor: isTablePaused ? '#F59E0B' : '#06C167', color: '#FFFFFF', fontWeight: 700, height: 20, fontSize: '0.65rem' }} />
+        </Box>
+      )}
+
+      {/* Guest / Seat Tag Selector Bar for Multi-Customer Table Ordering */}
+      {activeOrderType === 'Dine In' && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 1.5, pb: 0.5, overflowX: 'auto' }}>
+          <Typography variant="caption" sx={{ fontWeight: 800, color: '#545454', fontSize: '0.68rem', textTransform: 'uppercase' }}>
+            Seat:
+          </Typography>
+          {[1, 2, 3, 4].map((seat) => (
+            <Button
+              key={seat}
+              size="small"
+              onClick={() => setActiveSeatTab(seat)}
+              sx={{
+                minWidth: 32,
+                height: 26,
+                px: 1,
+                borderRadius: 9999,
+                fontWeight: 800,
+                fontSize: '0.68rem',
+                backgroundColor: activeSeatTab === seat ? '#000000' : '#F6F6F6',
+                color: activeSeatTab === seat ? '#FFFFFF' : '#545454',
+                border: '1px solid #EEEEEE',
+              }}
+            >
+              Guest #{seat}
+            </Button>
+          ))}
         </Box>
       )}
 
@@ -243,7 +290,7 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
             {sentItems.length > 0 && (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: unsentItems.length > 0 ? 1.5 : 0 }}>
                 <Typography variant="caption" sx={{ fontWeight: 800, color: '#545454', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  🔒 Sent to Kitchen (In-Prep)
+                  🔒 Sent to Kitchen (Round 1)
                 </Typography>
                 {sentItems.map((item) => (
                   <Paper
@@ -308,30 +355,77 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
         </Box>
       </Box>
 
-      <Button
-        variant="contained"
-        size="medium"
-        fullWidth
-        disabled={cart.length === 0 || unsentItems.length === 0}
-        onClick={() => setCheckoutDialogOpen(true)}
-        startIcon={<ShoppingCartCheckoutIcon />}
-        sx={{
-          py: 1.1,
-          borderRadius: 9999,
-          fontWeight: 800,
-          fontFamily: "'Plus Jakarta Sans', sans-serif",
-          backgroundColor: '#06C167',
-          color: '#FFFFFF',
-          fontSize: '0.8125rem',
-          boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
-          '&:hover': {
-            backgroundColor: '#049851',
-            boxShadow: '0 6px 20px rgba(6, 193, 103, 0.5)',
-          },
-        }}
-      >
-        {sentItems.length > 0 ? `Send Round 2 Add-On (${formatINR(unsentSubtotal)})` : `Send Order to Kitchen (${formatINR(grandTotal)})`}
-      </Button>
+      {/* Action Buttons: Send to Kitchen & Pause/Resume Order */}
+      <Box sx={{ display: 'flex', gap: 1 }}>
+        {isTablePaused ? (
+          <Button
+            variant="contained"
+            size="medium"
+            fullWidth
+            onClick={handleResumeOrder}
+            startIcon={<PlayCircleOutlinedIcon />}
+            sx={{
+              py: 1.1,
+              borderRadius: 9999,
+              fontWeight: 800,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              backgroundColor: '#F59E0B',
+              color: '#FFFFFF',
+              fontSize: '0.8125rem',
+              '&:hover': { backgroundColor: '#D97706' },
+            }}
+          >
+            Resume Order ▶️
+          </Button>
+        ) : (
+          <>
+            <Button
+              variant="outlined"
+              size="medium"
+              disabled={cart.length === 0}
+              onClick={handlePauseOrder}
+              startIcon={<PauseCircleOutlinedIcon />}
+              sx={{
+                borderRadius: 9999,
+                fontWeight: 700,
+                minWidth: 100,
+                color: '#D97706',
+                borderColor: '#FBD38D',
+                backgroundColor: '#FEF3C7',
+                fontSize: '0.75rem',
+                '&:hover': { backgroundColor: '#FDE68A', borderColor: '#F59E0B' },
+              }}
+            >
+              Pause
+            </Button>
+
+            <Button
+              variant="contained"
+              size="medium"
+              fullWidth
+              disabled={cart.length === 0 || unsentItems.length === 0}
+              onClick={() => setCheckoutDialogOpen(true)}
+              startIcon={<ShoppingCartCheckoutIcon />}
+              sx={{
+                py: 1.1,
+                borderRadius: 9999,
+                fontWeight: 800,
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                backgroundColor: '#06C167',
+                color: '#FFFFFF',
+                fontSize: '0.8125rem',
+                boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
+                '&:hover': {
+                  backgroundColor: '#049851',
+                  boxShadow: '0 6px 20px rgba(6, 193, 103, 0.5)',
+                },
+              }}
+            >
+              {sentItems.length > 0 ? `Send Round 2 (${formatINR(unsentSubtotal)})` : `Send Kitchen (${formatINR(grandTotal)})`}
+            </Button>
+          </>
+        )}
+      </Box>
 
       {/* Checkout Dialog */}
       <Dialog open={checkoutDialogOpen} onClose={() => setCheckoutDialogOpen(false)} maxWidth="xs" fullWidth>

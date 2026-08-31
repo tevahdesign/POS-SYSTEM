@@ -176,29 +176,6 @@ export const QuantityModal: React.FC<QuantityModalProps> = ({
             </Box>
           </Box>
 
-          {/* Quick Select Buttons */}
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            {[1, 2, 3, 5, 10].map((num) => (
-              <Button
-                key={num}
-                variant={quantity === num ? 'contained' : 'outlined'}
-                onClick={() => setQuantity(num)}
-                sx={{
-                  borderRadius: 9999,
-                  minWidth: 38,
-                  height: 32,
-                  fontWeight: 700,
-                  fontSize: '0.75rem',
-                  backgroundColor: quantity === num ? '#06C167' : 'transparent',
-                  color: quantity === num ? '#FFFFFF' : '#000000',
-                  borderColor: '#EEEEEE',
-                }}
-              >
-                {num}x
-              </Button>
-            ))}
-          </Box>
-
           {/* Special Instructions Note */}
           <TextField
             fullWidth

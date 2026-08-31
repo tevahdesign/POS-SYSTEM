@@ -79,18 +79,8 @@ export const OrderEntry: React.FC = () => {
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
 
-  // Alphabet Filter Range Definitions
-  const alphabetRanges = [
-    { label: 'All', value: 'All' },
-    { label: 'A - C', regex: /^[A-C]/i },
-    { label: 'D - F', regex: /^[D-F]/i },
-    { label: 'G - I', regex: /^[G-I]/i },
-    { label: 'J - L', regex: /^[J-L]/i },
-    { label: 'M - O', regex: /^[M-O]/i },
-    { label: 'P - R', regex: /^[P-R]/i },
-    { label: 'S - U', regex: /^[S-U]/i },
-    { label: 'V - Z', regex: /^[V-Z]/i },
-  ];
+  // Individual Alphabet Buttons list
+  const alphabetList = ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
 
   // Date Filter Logic
   const getFilteredOrders = () => {
@@ -128,10 +118,7 @@ export const OrderEntry: React.FC = () => {
 
     let matchesAlpha = true;
     if (alphabetFilter !== 'All') {
-      const targetRange = alphabetRanges.find((r) => r.label === alphabetFilter);
-      if (targetRange && targetRange.regex) {
-        matchesAlpha = targetRange.regex.test(p.name);
-      }
+      matchesAlpha = p.name.toUpperCase().startsWith(alphabetFilter);
     }
 
     return matchesCat && matchesSearch && matchesAlpha;
@@ -411,27 +398,28 @@ export const OrderEntry: React.FC = () => {
 
                   {/* A-Z Alphabet Quick Jump Filter Strip */}
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, overflowX: 'auto', pb: 0.5 }}>
-                    <Typography variant="caption" sx={{ color: '#545454', fontWeight: 800, fontSize: '0.68rem', mr: 0.5, textTransform: 'uppercase' }}>
+                    <Typography variant="caption" sx={{ color: '#545454', fontWeight: 800, fontSize: '0.68rem', mr: 0.5, textTransform: 'uppercase', flexShrink: 0 }}>
                       A-Z:
                     </Typography>
-                    {alphabetRanges.map((range) => (
+                    {alphabetList.map((letter) => (
                       <Button
-                        key={range.label}
+                        key={letter}
                         size="small"
-                        onClick={() => setAlphabetFilter(range.label)}
+                        onClick={() => setAlphabetFilter(letter)}
                         sx={{
-                          minWidth: 32,
-                          px: 1,
-                          py: 0.25,
+                          minWidth: 28,
+                          height: 28,
+                          p: 0,
                           borderRadius: 9999,
-                          fontWeight: 700,
-                          fontSize: '0.68rem',
-                          backgroundColor: alphabetFilter === range.label ? '#06C167' : '#F6F6F6',
-                          color: alphabetFilter === range.label ? '#FFFFFF' : '#545454',
+                          fontWeight: 800,
+                          fontSize: '0.72rem',
+                          backgroundColor: alphabetFilter === letter ? '#06C167' : '#F6F6F6',
+                          color: alphabetFilter === letter ? '#FFFFFF' : '#545454',
                           border: '1px solid #EEEEEE',
+                          flexShrink: 0,
                         }}
                       >
-                        {range.label}
+                        {letter}
                       </Button>
                     ))}
                   </Box>
