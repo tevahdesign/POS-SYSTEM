@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import { TableItem, Order } from '../../../types/pos';
 import { formatINR } from '../../../utils/formatters';
@@ -96,12 +95,12 @@ export const GuestSelectModal: React.FC<GuestSelectModalProps> = ({
           Select Guest Seat to Take / Add Order Items:
         </Typography>
 
-        {/* Guest Seat Buttons Grid */}
+        {/* Guest Seat Buttons Grid - Small & Simple UI */}
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-            gap: 1.5,
+            gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)' },
+            gap: 1.25,
           }}
         >
           {guestList.map((seat) => {
@@ -117,124 +116,52 @@ export const GuestSelectModal: React.FC<GuestSelectModalProps> = ({
                   onClose();
                 }}
                 sx={{
-                  p: 1.5,
-                  borderRadius: '14px',
+                  p: 1.25,
+                  borderRadius: '12px',
                   backgroundColor: '#FFFFFF',
                   border: '1.5px solid #EEEEEE',
                   cursor: 'pointer',
-                  transition: 'all 0.2s ease-in-out',
+                  transition: 'all 0.15s ease-in-out',
                   display: 'flex',
-                  flexDirection: 'column',
-                  gap: 1,
+                  alignItems: 'center',
+                  gap: 1.25,
                   '&:hover': {
                     borderColor: '#06C167',
-                    boxShadow: '0 4px 16px rgba(6, 193, 103, 0.2)',
-                    transform: 'translateY(-2px)',
+                    backgroundColor: '#E6F9F0',
+                    boxShadow: '0 4px 14px rgba(6, 193, 103, 0.18)',
+                    transform: 'translateY(-1px)',
                   },
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box
-                      sx={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 9999,
-                        backgroundColor: '#E6F9F0',
-                        color: '#06C167',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <PersonIcon sx={{ fontSize: 18 }} />
-                    </Box>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#000000', fontSize: '0.9rem' }}>
-                      Guest #{seat}
-                    </Typography>
-                  </Box>
-
-                  <Chip
-                    label={`${guestItems.length} items`}
-                    size="small"
-                    sx={{
-                      height: 22,
-                      fontSize: '0.68rem',
-                      fontWeight: 700,
-                      backgroundColor: guestItems.length > 0 ? '#000000' : '#F6F6F6',
-                      color: guestItems.length > 0 ? '#FFFFFF' : '#545454',
-                    }}
-                  />
-                </Box>
-
-                {/* Items Summary preview */}
-                {guestItems.length > 0 ? (
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25, pt: 0.5, borderTop: '1px dashed #EEEEEE' }}>
-                    {guestItems.slice(0, 3).map((gi, idx) => (
-                      <Typography key={idx} variant="caption" sx={{ color: '#545454', fontSize: '0.72rem' }} noWrap>
-                        • {gi.quantity}x {gi.product.name}
-                      </Typography>
-                    ))}
-                    {guestItems.length > 3 && (
-                      <Typography variant="caption" sx={{ color: '#06C167', fontWeight: 700, fontSize: '0.68rem' }}>
-                        + {guestItems.length - 3} more items...
-                      </Typography>
-                    )}
-                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#06C167', mt: 0.5, textAlign: 'right' }}>
-                      {formatINR(subtotal)}
-                    </Typography>
-                  </Box>
-                ) : (
-                  <Typography variant="caption" sx={{ color: '#9E9E9E', fontStyle: 'italic', display: 'block', pt: 0.5 }}>
-                    No items ordered yet. Click to select items for Guest #{seat}.
-                  </Typography>
-                )}
-
-                <Button
-                  size="small"
-                  variant="outlined"
-                  startIcon={<AddShoppingCartIcon sx={{ fontSize: 14 }} />}
+                <Box
                   sx={{
-                    mt: 0.5,
+                    width: 36,
+                    height: 36,
                     borderRadius: 9999,
-                    fontWeight: 700,
-                    fontSize: '0.72rem',
-                    color: '#06C167',
-                    borderColor: '#A3E9C5',
-                    '&:hover': {
-                      backgroundColor: '#E6F9F0',
-                      borderColor: '#06C167',
-                    },
+                    backgroundColor: guestItems.length > 0 ? '#06C167' : '#F6F6F6',
+                    color: guestItems.length > 0 ? '#FFFFFF' : '#06C167',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
                   }}
                 >
-                  Order for Guest #{seat}
-                </Button>
+                  <PersonIcon sx={{ fontSize: 18 }} />
+                </Box>
+
+                <Box sx={{ minWidth: 0, flex: 1 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#000000', fontSize: '0.82rem', lineHeight: 1.2 }}>
+                    Guest #{seat}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: guestItems.length > 0 ? '#06C167' : '#888888', fontWeight: 700, fontSize: '0.68rem', display: 'block' }} noWrap>
+                    {guestItems.length > 0 ? `${guestItems.length} items (${formatINR(subtotal)})` : '0 items'}
+                  </Typography>
+                </Box>
               </Paper>
             );
           })}
         </Box>
 
-        {/* General / All Seats Option */}
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={() => {
-            onSelectGuest(1);
-            onClose();
-          }}
-          startIcon={<AddShoppingCartIcon />}
-          sx={{
-            mt: 2,
-            py: 1,
-            borderRadius: 9999,
-            fontWeight: 800,
-            backgroundColor: '#000000',
-            color: '#FFFFFF',
-            '&:hover': { backgroundColor: '#242424' },
-          }}
-        >
-          Open Catalog for Entire Table
-        </Button>
       </DialogContent>
 
       <Divider />

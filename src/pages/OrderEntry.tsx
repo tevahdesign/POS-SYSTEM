@@ -53,19 +53,19 @@ import { NotificationToast } from '../components/atoms/NotificationToast';
 import { formatINR } from '../utils/formatters';
 
 export const OrderEntry: React.FC = () => {
-  const { products, cart, orders, tables, selectedTableId, selectedTableName } = usePosStore();
+  const { products, cart, orders, tables, selectedTableId, selectedTableName, activeOrderType } = usePosStore();
 
   // Top level view mode: 'orders_list' vs 'catalog_cart'
   const [viewMode, setViewMode] = useState<'orders_list' | 'catalog_cart'>(
-    selectedTableId ? 'catalog_cart' : 'orders_list'
+    selectedTableId || activeOrderType !== 'Dine In' ? 'catalog_cart' : 'orders_list'
   );
 
-  // Automatically switch to catalog_cart view when a table is selected
+  // Automatically switch to catalog_cart view when a table or standalone Takeaway/Delivery is selected
   React.useEffect(() => {
-    if (selectedTableId) {
+    if (selectedTableId || activeOrderType !== 'Dine In') {
       setViewMode('catalog_cart');
     }
-  }, [selectedTableId]);
+  }, [selectedTableId, activeOrderType]);
 
   // Date Filter State
   const [dateFilter, setDateFilter] = useState<'Today' | 'Yesterday' | 'This Week' | 'Custom'>('Today');
@@ -343,6 +343,7 @@ export const OrderEntry: React.FC = () => {
                 <IconButton
                   size="small"
                   onClick={() => {
+                    posStore.setOrderType('Dine In');
                     posStore.setSelectedTable(undefined, undefined);
                     setViewMode('orders_list');
                   }}
