@@ -18,12 +18,13 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import CheckIcon from '@mui/icons-material/Check';
 import { Product, ModifierOption } from '../../../types/pos';
 import { formatINR } from '../../../utils/formatters';
+import { posStore } from '../../../store/posStore';
 
 interface ModifierModalProps {
   isOpen: boolean;
   onClose: () => void;
   product: Product | null;
-  onAddToCart: (
+  onAddToCart?: (
     product: Product,
     selectedModifiers: ModifierOption[],
     quantity: number,
@@ -80,7 +81,11 @@ export const ModifierModal: React.FC<ModifierModalProps> = ({
   const totalPrice = unitPrice * quantity;
 
   const handleAdd = () => {
-    onAddToCart(product, selectedModifiers, quantity, notes);
+    if (onAddToCart) {
+      onAddToCart(product, selectedModifiers, quantity, notes);
+    } else {
+      posStore.addToCart(product, selectedModifiers, quantity, notes);
+    }
     onClose();
   };
 

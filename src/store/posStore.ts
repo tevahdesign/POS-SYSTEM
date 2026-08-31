@@ -144,7 +144,13 @@ export const posStore = {
     saveState();
   },
 
-  addToCart: (product: Product, selectedModifiers: ModifierOption[] = [], quantity: number = 1, notes?: string) => {
+  addToCart: (
+    product: Product,
+    selectedModifiers: ModifierOption[] = [],
+    quantity: number = 1,
+    notes?: string,
+    seatNumber?: number
+  ) => {
     const modTotal = selectedModifiers.reduce((sum, m) => sum + m.price, 0);
     const unitPrice = product.price + modTotal;
     const itemTotal = Number((unitPrice * quantity).toFixed(2));
@@ -155,7 +161,9 @@ export const posStore = {
       quantity,
       selectedModifiers,
       notes,
-      itemTotal
+      itemTotal,
+      seatNumber,
+      isSentToKitchen: false
     };
 
     currentState.cart = [...currentState.cart, newItem];
@@ -166,6 +174,7 @@ export const posStore = {
     currentState.cart = currentState.cart
       .map(item => {
         if (item.id === cartItemId) {
+          if (item.isSentToKitchen) return item; // Locked if already dispatched to kitchen
           const newQty = item.quantity + delta;
           if (newQty <= 0) return null;
           const unitPrice = item.product.price + item.selectedModifiers.reduce((sum, m) => sum + m.price, 0);
@@ -182,7 +191,7 @@ export const posStore = {
   },
 
   removeFromCart: (cartItemId: string) => {
-    currentState.cart = currentState.cart.filter(item => item.id !== cartItemId);
+    currentState.cart = currentState.cart.filter(item => item.id !== cartItemId || item.isSentToKitchen);
     saveState();
   },
 
@@ -240,7 +249,15 @@ export const posStore = {
   sendToKitchen: (): Order | null => {
     if (currentState.cart.length === 0) return null;
 
-    const subtotal = currentState.cart.reduce((sum, i) => sum + i.itemTotal, 0);
+    // Separate new unsent round items vs previously sent items
+    const unsentItems = currentState.cart.filter(i => !i.isSentToKitchen);
+    const hasPreviousSent = currentState.cart.some(i => i.isSentToKitchen);
+
+    // Lock all items as sent to kitchen
+    const updatedCart = currentState.cart.map(i => ({ ...i, isSentToKitchen: true }));
+    currentState.cart = updatedCart;
+
+    const subtotal = updatedCart.reduce((sum, i) => sum + i.itemTotal, 0);
     const tax = Number((subtotal * (currentState.settings.taxRate / 100)).toFixed(2));
     const total = Number((subtotal + tax).toFixed(2));
 
@@ -253,7 +270,7 @@ export const posStore = {
       const existing = currentState.orders[existingOrderIndex];
       targetOrder = {
         ...existing,
-        items: [...currentState.cart],
+        items: [...updatedCart],
         subtotal,
         tax,
         total,
@@ -271,7 +288,7 @@ export const posStore = {
         tableId: currentState.selectedTableId,
         tableName: currentState.selectedTableName || (currentState.activeOrderType === 'Takeaway' ? 'Takeaway' : 'Delivery'),
         customerName: currentState.customerName || 'Customer',
-        items: [...currentState.cart],
+        items: [...updatedCart],
         subtotal,
         tax,
         discount: 0,
@@ -287,47 +304,46 @@ export const posStore = {
       currentState.orders = [targetOrder, ...currentState.orders];
     }
 
-    // Create Kitchen Ticket
+    // Create Kitchen Ticket ONLY for unsent items (or all if first time)
+    const ticketItems = (unsentItems.length > 0 ? unsentItems : updatedCart).map(item => ({
+      name: item.product.name + (item.seatNumber ? ` [Guest #${item.seatNumber}]` : ''),
+      quantity: item.quantity,
+      notes: item.notes,
+      modifiers: item.selectedModifiers.map(m => m.name)
+    }));
+
     const newTicket: KitchenTicket = {
       id: 'kt-' + Date.now(),
       orderId: targetOrder.id,
       orderNumber: targetOrder.orderNumber,
       type: currentState.activeOrderType,
-      tableName: targetOrder.tableName,
+      tableName: targetOrder.tableName + (hasPreviousSent && unsentItems.length > 0 ? ' (Round 2 Add-On)' : ''),
       createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       timestamp: Date.now(),
-      items: currentState.cart.map(item => ({
-        name: item.product.name,
-        quantity: item.quantity,
-        notes: item.notes,
-        modifiers: item.selectedModifiers.map(m => m.name)
-      })),
+      items: ticketItems,
       priority: 'Normal',
       status: 'New'
     };
+
     currentState.kitchenTickets = [newTicket, ...currentState.kitchenTickets];
 
-    // Update Table status if Dine In
     if (currentState.selectedTableId) {
       currentState.tables = currentState.tables.map(t => {
         if (t.id === currentState.selectedTableId) {
           return {
             ...t,
             status: 'Occupied',
-            isPaused: false,
             currentOrderId: targetOrder.id,
-            totalAmount: total,
-            serverName: currentState.currentUser.name,
-            startTime: t.startTime || targetOrder.createdAt
+            totalAmount: targetOrder.total,
+            startTime: t.startTime || targetOrder.createdAt,
+            isPaused: false
           };
         }
         return t;
       });
     }
 
-    currentState.cart = [];
     saveState();
-
     return targetOrder;
   },
 

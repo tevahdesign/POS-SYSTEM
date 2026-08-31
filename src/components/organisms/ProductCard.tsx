@@ -1,25 +1,25 @@
 import React from 'react';
-import { Card, CardMedia, Box, Typography, IconButton } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Card, CardMedia, Box, Typography, Chip } from '@mui/material';
 import { Product } from '../../types/pos';
 import { formatINR } from '../../utils/formatters';
 
 interface ProductCardProps {
   product: Product;
   onSelect: (product: Product) => void;
-  onAddDirect: (product: Product) => void;
+  onAddDirect?: (product: Product) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onAddDirect }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) => {
+  const hasModifiers = product.modifierGroups && product.modifierGroups.length > 0;
+
   return (
     <Card
       onClick={() => onSelect(product)}
       sx={{
-        p: 1.25, // Compact 10px padding
+        p: 1.25,
         display: 'flex',
         flexDirection: 'column',
-        height: 'auto', // Content-fit dynamic height
+        height: 'auto',
         cursor: 'pointer',
         borderRadius: '14px',
         backgroundColor: '#FFFFFF',
@@ -29,7 +29,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
         '&:hover': {
           transform: 'translateY(-2px)',
           boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
-          borderColor: 'rgba(6, 193, 103, 0.5)',
+          borderColor: '#06C167',
         },
       }}
     >
@@ -52,30 +52,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
             },
           }}
         />
-        <IconButton
-          size="small"
-          aria-label={`View details for ${product.name}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect(product);
-          }}
-          sx={{
-            position: 'absolute',
-            top: 6,
-            right: 6,
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid #EEEEEE',
-            p: 0.4,
-            color: '#545454',
-            '&:hover': {
-              backgroundColor: '#FFFFFF',
-              color: '#000000',
-            },
-          }}
-        >
-          <InfoOutlinedIcon sx={{ fontSize: 14 }} />
-        </IconButton>
+        {hasModifiers && (
+          <Chip
+            label="Customizable"
+            size="small"
+            sx={{
+              position: 'absolute',
+              top: 6,
+              right: 6,
+              height: 20,
+              fontSize: '0.65rem',
+              fontWeight: 800,
+              backgroundColor: 'rgba(0, 0, 0, 0.75)',
+              color: '#FFFFFF',
+              backdropFilter: 'blur(4px)',
+            }}
+          />
+        )}
       </Box>
 
       {/* Product Details */}
@@ -99,34 +92,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, onA
         </Typography>
 
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 'auto' }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.85rem' }}>
+          <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#06C167', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.85rem' }}>
             {formatINR(product.price)}
           </Typography>
 
-          <IconButton
-            size="small"
-            aria-label={`Add ${product.name} to order`}
-            onClick={(e) => {
-              e.stopPropagation();
-              onAddDirect(product);
-            }}
-            sx={{
-              backgroundColor: '#06C167',
-              color: '#FFFFFF',
-              borderRadius: 9999, // Pill Button
-              width: 30,
-              height: 30,
-              boxShadow: '0 2px 8px rgba(6, 193, 103, 0.3)',
-              transition: 'all 0.2s ease',
-              '&:hover': {
-                backgroundColor: '#049851',
-                boxShadow: '0 4px 14px rgba(6, 193, 103, 0.45)',
-                transform: 'scale(1.05)',
-              },
-            }}
-          >
-            <AddIcon sx={{ fontSize: 16 }} />
-          </IconButton>
+          <Typography variant="caption" sx={{ color: '#8E8E8E', fontWeight: 600, fontSize: '0.7rem' }}>
+            {hasModifiers ? 'Options >' : 'Select >'}
+          </Typography>
         </Box>
       </Box>
     </Card>

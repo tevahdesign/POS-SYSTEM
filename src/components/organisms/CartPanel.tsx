@@ -20,6 +20,7 @@ import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
 import LocalTakeoutIcon from '@mui/icons-material/LocalShipping';
 import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 
 import { usePosStore, posStore } from '../../store/posStore';
 import { formatINR } from '../../utils/formatters';
@@ -56,15 +57,25 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
     const sentOrder = posStore.sendToKitchen();
     setCheckoutDialogOpen(false);
     if (sentOrder) {
-      setToastMsg(`Order ${sentOrder.orderNumber} successfully completed & ticket routed to KDS!`);
+      const hasRound2 = cart.some((i) => i.isSentToKitchen);
+      setToastMsg(
+        hasRound2
+          ? `Round 2 Add-On dispatched to kitchen for ${sentOrder.tableName}!`
+          : `Order ${sentOrder.orderNumber} successfully sent to kitchen!`
+      );
       setToastOpen(true);
     }
   };
+
+  const sentItems = cart.filter((i) => i.isSentToKitchen);
+  const unsentItems = cart.filter((i) => !i.isSentToKitchen);
 
   const subtotal = cart.reduce((sum, item) => sum + item.itemTotal, 0);
   const taxTotal = Number((subtotal * (settings.taxRate / 100)).toFixed(2));
   const grandTotal = Number((subtotal + taxTotal).toFixed(2));
   const totalItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const unsentSubtotal = unsentItems.reduce((sum, item) => sum + item.itemTotal, 0);
 
   return (
     <Paper
@@ -76,11 +87,11 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
         border: '1px solid #EEEEEE',
         display: 'flex',
         flexDirection: 'column',
-        height: 'auto', // Content-fit dynamic height
+        height: 'auto',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
       }}
     >
-      {/* Top Order Type Pill Tabs */}
+      {/* Top Header */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
         {onReturnToCatalog && (
           <IconButton onClick={onReturnToCatalog} sx={{ display: { xs: 'flex', md: 'none' }, color: '#000000', mr: 1, p: 0.5 }}>
@@ -91,8 +102,8 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
           Current Order ({totalItemCount})
         </Typography>
 
-        {cart.length > 0 && (
-          <IconButton size="small" onClick={handleClearCart} sx={{ color: '#E53E3E', p: 0.5 }}>
+        {unsentItems.length > 0 && (
+          <IconButton size="small" onClick={handleClearCart} sx={{ color: '#E53E3E', p: 0.5 }} title="Clear Unsent Items">
             <DeleteOutlineIcon sx={{ fontSize: 18 }} />
           </IconButton>
         )}
@@ -114,7 +125,7 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
               onClick={() => handleOrderTypeChange(item.type)}
               startIcon={item.icon}
               sx={{
-                borderRadius: 9999, // Uber Eats Pill Tab
+                borderRadius: 9999,
                 py: 0.5,
                 px: 1,
                 fontWeight: 700,
@@ -150,61 +161,128 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
       <Divider sx={{ mb: 1.5, borderColor: '#EEEEEE' }} />
 
       {/* Cart Items Scroll Container */}
-      <Box sx={{ maxH: 340, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1, pr: 0.5 }}>
+      <Box sx={{ maxHeight: 340, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1, pr: 0.5 }}>
         {cart.length === 0 ? (
           <EmptyState
             title="Cart is Empty"
             description="Select products from the catalog to build this order ticket."
           />
         ) : (
-          cart.map((item) => (
-            <Paper
-              key={item.id}
-              elevation={0}
-              sx={{
-                p: 1.25,
-                borderRadius: '12px',
-                backgroundColor: '#FAFAFA',
-                border: '1px solid #EEEEEE',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Box sx={{ minWidth: 0, flex: 1, mr: 1 }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: '0.78rem', color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }} noWrap>
-                  {item.product.name}
-                </Typography>
-                <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600, fontSize: '0.7rem' }}>
-                  {formatINR(item.product.price)} each
-                </Typography>
-                {item.selectedModifiers.length > 0 && (
-                  <Typography variant="caption" sx={{ color: '#06C167', display: 'block', fontSize: '0.65rem' }}>
-                    + {item.selectedModifiers.map((m) => m.name).join(', ')}
+          <>
+            {/* New Unsent Round Items */}
+            {unsentItems.length > 0 && (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {sentItems.length > 0 && (
+                  <Typography variant="caption" sx={{ fontWeight: 800, color: '#06C167', textTransform: 'uppercase', letterSpacing: '0.04em', mt: 0.5 }}>
+                    ⚡ New Round Items (Unsent)
                   </Typography>
                 )}
+                {unsentItems.map((item) => (
+                  <Paper
+                    key={item.id}
+                    elevation={0}
+                    sx={{
+                      p: 1.25,
+                      borderRadius: '12px',
+                      backgroundColor: '#FFFFFF',
+                      border: '1px solid #06C167',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      boxShadow: '0 2px 8px rgba(6, 193, 103, 0.1)',
+                    }}
+                  >
+                    <Box sx={{ minWidth: 0, flex: 1, mr: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: '0.78rem', color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }} noWrap>
+                          {item.product.name}
+                        </Typography>
+                        {item.seatNumber && (
+                          <Chip label={`Guest #${item.seatNumber}`} size="small" sx={{ height: 18, fontSize: '0.62rem', fontWeight: 800, backgroundColor: '#000000', color: '#FFFFFF' }} />
+                        )}
+                      </Box>
+                      <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600, fontSize: '0.7rem' }}>
+                        {formatINR(item.product.price)} each
+                      </Typography>
+                      {item.selectedModifiers.length > 0 && (
+                        <Typography variant="caption" sx={{ color: '#06C167', display: 'block', fontSize: '0.65rem' }}>
+                          + {item.selectedModifiers.map((m) => m.name).join(', ')}
+                        </Typography>
+                      )}
+                      {item.notes && (
+                        <Typography variant="caption" sx={{ color: '#E53E3E', display: 'block', fontSize: '0.65rem', fontStyle: 'italic' }}>
+                          Note: {item.notes}
+                        </Typography>
+                      )}
+                    </Box>
+
+                    {/* Quantity Controls */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                      <IconButton size="small" onClick={() => handleQuantityChange(item.id, -1)} sx={{ color: '#545454', border: '1px solid #EEEEEE', p: 0.3, borderRadius: 9999 }}>
+                        <RemoveIcon sx={{ fontSize: 13 }} />
+                      </IconButton>
+
+                      <Typography variant="subtitle2" sx={{ fontWeight: 800, minWidth: 16, textAlign: 'center', color: '#000000', fontSize: '0.78rem' }}>
+                        {item.quantity}
+                      </Typography>
+
+                      <IconButton size="small" onClick={() => handleQuantityChange(item.id, 1)} sx={{ color: '#06C167', border: '1px solid #A3E9C5', backgroundColor: '#E6F9F0', p: 0.3, borderRadius: 9999 }}>
+                        <AddIcon sx={{ fontSize: 13 }} />
+                      </IconButton>
+
+                      <Typography variant="subtitle2" sx={{ fontWeight: 800, minWidth: 54, textAlign: 'right', color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.78rem' }}>
+                        {formatINR(item.itemTotal)}
+                      </Typography>
+                    </Box>
+                  </Paper>
+                ))}
               </Box>
+            )}
 
-              {/* Quantity Adjuster */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                <IconButton size="small" onClick={() => handleQuantityChange(item.id, -1)} sx={{ color: '#545454', border: '1px solid #EEEEEE', p: 0.3, borderRadius: 9999 }}>
-                  <RemoveIcon sx={{ fontSize: 13 }} />
-                </IconButton>
-
-                <Typography variant="subtitle2" sx={{ fontWeight: 800, minWidth: 16, textAlign: 'center', color: '#000000', fontSize: '0.78rem' }}>
-                  {item.quantity}
+            {/* Previously Sent Items (Locked in Prep) */}
+            {sentItems.length > 0 && (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: unsentItems.length > 0 ? 1.5 : 0 }}>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#545454', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  🔒 Sent to Kitchen (In-Prep)
                 </Typography>
+                {sentItems.map((item) => (
+                  <Paper
+                    key={item.id}
+                    elevation={0}
+                    sx={{
+                      p: 1.25,
+                      borderRadius: '12px',
+                      backgroundColor: '#F6F6F6',
+                      border: '1px solid #EEEEEE',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      opacity: 0.85,
+                    }}
+                  >
+                    <Box sx={{ minWidth: 0, flex: 1, mr: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                        <CheckCircleOutlinedIcon sx={{ fontSize: 14, color: '#06C167' }} />
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: '0.78rem', color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }} noWrap>
+                          {item.product.name}
+                        </Typography>
+                        {item.seatNumber && (
+                          <Chip label={`Guest #${item.seatNumber}`} size="small" sx={{ height: 18, fontSize: '0.62rem', fontWeight: 700, backgroundColor: '#EEEEEE', color: '#545454' }} />
+                        )}
+                      </Box>
+                      <Typography variant="caption" sx={{ color: '#545454', fontWeight: 600, fontSize: '0.7rem' }}>
+                        {item.quantity}x • Sent to Kitchen
+                      </Typography>
+                    </Box>
 
-                <IconButton size="small" onClick={() => handleQuantityChange(item.id, 1)} sx={{ color: '#06C167', border: '1px solid #A3E9C5', backgroundColor: '#E6F9F0', p: 0.3, borderRadius: 9999 }}>
-                  <AddIcon sx={{ fontSize: 13 }} />
-                </IconButton>
-
-                <Typography variant="subtitle2" sx={{ fontWeight: 800, minWidth: 54, textAlign: 'right', color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.78rem' }}>
-                  {formatINR(item.itemTotal)}
-                </Typography>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 800, minWidth: 54, textAlign: 'right', color: '#545454', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.78rem' }}>
+                      {formatINR(item.itemTotal)}
+                    </Typography>
+                  </Paper>
+                ))}
               </Box>
-            </Paper>
-          ))
+            )}
+          </>
         )}
       </Box>
 
@@ -222,7 +300,7 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
           <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#000000', fontSize: '0.78rem' }}>{formatINR(taxTotal)}</Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 0.75, borderTop: '1px stroke #EEEEEE' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 0.75, borderTop: '1px solid #EEEEEE' }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.875rem' }}>Total</Typography>
           <Typography variant="h6" sx={{ fontWeight: 800, color: '#06C167', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
             {formatINR(grandTotal)}
@@ -234,12 +312,12 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
         variant="contained"
         size="medium"
         fullWidth
-        disabled={cart.length === 0}
+        disabled={cart.length === 0 || unsentItems.length === 0}
         onClick={() => setCheckoutDialogOpen(true)}
         startIcon={<ShoppingCartCheckoutIcon />}
         sx={{
           py: 1.1,
-          borderRadius: 9999, // Uber Eats Pill Button
+          borderRadius: 9999,
           fontWeight: 800,
           fontFamily: "'Plus Jakarta Sans', sans-serif",
           backgroundColor: '#06C167',
@@ -252,25 +330,25 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
           },
         }}
       >
-        Send Order to Kitchen ({formatINR(grandTotal)})
+        {sentItems.length > 0 ? `Send Round 2 Add-On (${formatINR(unsentSubtotal)})` : `Send Order to Kitchen (${formatINR(grandTotal)})`}
       </Button>
 
       {/* Checkout Dialog */}
       <Dialog open={checkoutDialogOpen} onClose={() => setCheckoutDialogOpen(false)} maxWidth="xs" fullWidth>
         <DialogTitle sx={{ fontWeight: 800, color: '#000000', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          Confirm Order Submission
+          Confirm Kitchen Dispatch
         </DialogTitle>
         <DialogContent>
           <Typography variant="body2" sx={{ color: '#545454', mb: 2 }}>
-            Confirm submission of <strong>{totalItemCount} items</strong> total <strong>{formatINR(grandTotal)}</strong>? This will dispatch kitchen tickets automatically.
+            Confirm dispatching <strong>{unsentItems.length > 0 ? unsentItems.length : totalItemCount} items</strong> to the kitchen for {selectedTableName || 'Table'}?
           </Typography>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={() => setCheckoutDialogOpen(false)} sx={{ borderRadius: 9999, color: '#545454' }}>
             Cancel
           </Button>
-          <Button onClick={handleCompleteOrder} variant="contained" sx={{ borderRadius: 9999 }}>
-            Confirm & Print Ticket
+          <Button onClick={handleCompleteOrder} variant="contained" sx={{ borderRadius: 9999, backgroundColor: '#06C167' }}>
+            Confirm & Dispatch Ticket
           </Button>
         </DialogActions>
       </Dialog>

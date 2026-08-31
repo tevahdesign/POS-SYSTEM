@@ -41,6 +41,8 @@ export interface CartItem {
   selectedModifiers: ModifierOption[];
   notes?: string;
   itemTotal: number;
+  seatNumber?: number; // Seat / Guest # for multi-customer table support (e.g. 1, 2, 3)
+  isSentToKitchen?: boolean; // Flag to lock previously sent round items
 }
 
 export interface Order {
