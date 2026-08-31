@@ -135,44 +135,7 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onReturnToCatalog }) => {
         )}
       </Box>
 
-      {/* Order Type Selector Pills */}
-      <Box sx={{ display: 'flex', gap: 0.75, mb: 1.5 }}>
-        {[
-          { type: 'Dine In' as OrderType, label: 'Dine-In', icon: <TableRestaurantIcon sx={{ fontSize: 14 }} /> },
-          { type: 'Takeaway' as OrderType, label: 'Takeout', icon: <LocalTakeoutIcon sx={{ fontSize: 14 }} /> },
-          { type: 'Delivery' as OrderType, label: 'Delivery', icon: <DeliveryDiningIcon sx={{ fontSize: 14 }} /> },
-        ].map((item) => {
-          const isActive = activeOrderType === item.type;
-          return (
-            <Button
-              key={item.type}
-              fullWidth
-              size="small"
-              onClick={() => handleOrderTypeChange(item.type)}
-              startIcon={item.icon}
-              sx={{
-                borderRadius: 9999,
-                py: 0.5,
-                px: 1,
-                fontWeight: 700,
-                fontSize: '0.72rem',
-                minHeight: 32,
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                background: isActive ? '#000000' : '#F6F6F6',
-                color: isActive ? '#FFFFFF' : '#545454',
-                border: `1px solid ${isActive ? 'transparent' : '#EEEEEE'}`,
-                boxShadow: isActive ? '0 4px 12px rgba(0, 0, 0, 0.15)' : 'none',
-                '&:hover': {
-                  background: isActive ? '#242424' : '#EEEEEE',
-                  color: isActive ? '#FFFFFF' : '#000000',
-                },
-              }}
-            >
-              {item.label}
-            </Button>
-          );
-        })}
-      </Box>
+
 
       {/* Linked Table Header Badge */}
       {activeOrderType === 'Dine In' && (

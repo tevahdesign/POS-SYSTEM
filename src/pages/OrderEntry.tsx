@@ -55,8 +55,17 @@ import { formatINR } from '../utils/formatters';
 export const OrderEntry: React.FC = () => {
   const { products, cart, orders, tables, selectedTableId, selectedTableName } = usePosStore();
 
-  // Top level view mode: Always default to 'orders_list' so order details show only initially
-  const [viewMode, setViewMode] = useState<'orders_list' | 'catalog_cart'>('orders_list');
+  // Top level view mode: 'orders_list' vs 'catalog_cart'
+  const [viewMode, setViewMode] = useState<'orders_list' | 'catalog_cart'>(
+    selectedTableId ? 'catalog_cart' : 'orders_list'
+  );
+
+  // Automatically switch to catalog_cart view when a table is selected
+  React.useEffect(() => {
+    if (selectedTableId) {
+      setViewMode('catalog_cart');
+    }
+  }, [selectedTableId]);
 
   // Date Filter State
   const [dateFilter, setDateFilter] = useState<'Today' | 'Yesterday' | 'This Week' | 'Custom'>('Today');
@@ -140,14 +149,14 @@ export const OrderEntry: React.FC = () => {
     }
   };
 
-  // Start Order for Table
+  // Start Order for Table -> Open Guest Capacity Selector
   const handleSelectTableAndStart = (tableId: string, tableName: string) => {
-    posStore.setSelectedTable(tableId, tableName);
-    posStore.setOrderType('Dine In');
-    setTableSelectDialogOpen(false);
-    setViewMode('catalog_cart');
-    setToastMsg(`Selected ${tableName}. Catalog open for ordering.`);
-    setToastOpen(true);
+    const t = tables.find((tab) => tab.id === tableId);
+    if (t) {
+      setSelectedTableForGuest(t);
+      setTableSelectDialogOpen(false);
+      setGuestModalOpen(true);
+    }
   };
 
   // Add-On Round 2 Items to Table Order
@@ -205,26 +214,6 @@ export const OrderEntry: React.FC = () => {
                   />
                 )}
               </Box>
-
-              {/* Launch New Order / Table Selection Button */}
-              <Button
-                variant="contained"
-                onClick={() => setTableSelectDialogOpen(true)}
-                startIcon={<AddCircleOutlinedIcon />}
-                sx={{
-                  py: 1,
-                  px: 2.5,
-                  borderRadius: 9999,
-                  fontWeight: 800,
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  backgroundColor: '#06C167',
-                  color: '#FFFFFF',
-                  boxShadow: '0 4px 14px rgba(6, 193, 103, 0.35)',
-                  '&:hover': { backgroundColor: '#049851' },
-                }}
-              >
-                Select Table / New Order
-              </Button>
             </Box>
 
             {/* Total Sales & Total Orders Summary Cards */}
@@ -321,16 +310,6 @@ export const OrderEntry: React.FC = () => {
                                 Bill Menu
                               </Button>
                             )}
-                            {order.tableId && order.status !== 'Completed' && (
-                              <Button
-                                size="small"
-                                onClick={() => handleReopenOrderForTable(order)}
-                                startIcon={<AddShoppingCartIcon sx={{ fontSize: 14 }} />}
-                                sx={{ ml: 0.75, borderRadius: 9999, fontWeight: 700, color: '#06C167', fontSize: '0.7rem' }}
-                              >
-                                Add Round 2
-                              </Button>
-                            )}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -361,7 +340,14 @@ export const OrderEntry: React.FC = () => {
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <IconButton size="small" onClick={() => setViewMode('orders_list')} sx={{ color: '#FFFFFF' }}>
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    posStore.setSelectedTable(undefined, undefined);
+                    setViewMode('orders_list');
+                  }}
+                  sx={{ color: '#FFFFFF' }}
+                >
                   <ArrowBackIcon fontSize="small" />
                 </IconButton>
                 <TableRestaurantIcon sx={{ color: '#06C167', fontSize: 20 }} />
